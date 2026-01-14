@@ -40,6 +40,9 @@ Assets/Scripts/
 │   ├── Pool/                      # 오브젝트 풀
 │   └── Utility/                   # 유틸리티
 │
+├── Editor/                         # Editor 전용 (빌드 제외)
+│   └── AI/                        # [Sc.Editor.AI] AI 개발 도구
+│
 └── Contents/
     ├── Shared/                    # 인게임/아웃게임 공통
     │   ├── Character/             # [Sc.Contents.Character]
@@ -105,6 +108,7 @@ Assets/Scripts/
 | `Sc.Contents.Gacha` | Sc.Common, Sc.Contents.Character, Sc.Packet | 가챠 시스템 |
 | `Sc.Contents.Shop` | Sc.Common, Sc.Contents.Inventory, Sc.Packet | 상점 시스템 |
 | `Sc.Contents.Quest` | Sc.Common, Sc.Packet | 퀘스트 시스템 |
+| `Sc.Editor.AI` | Sc.Data, Sc.Core, Sc.Common | AI 개발 도구 (Editor 전용) |
 
 ---
 
@@ -193,6 +197,19 @@ if (response.Success)
 
 ---
 
+## Editor 도구
+
+| Assembly | 용도 | 빌드 포함 |
+|----------|------|-----------|
+| `Sc.Editor.AI` | AI 기반 UI/씬 배치 도구 | ❌ |
+
+**특징**:
+- Editor 폴더 하위 → 자동으로 빌드 제외
+- 게임 Assembly 참조 가능 (Data, Core, Common)
+- 개발 편의 기능만 포함
+
+---
+
 ## Namespace 규칙
 
 ```csharp
@@ -221,4 +238,7 @@ namespace Sc.Common.UI { }
 namespace Sc.Contents.Character { }
 namespace Sc.Contents.Battle { }
 namespace Sc.Contents.Gacha { }
+
+// Editor 전용 (빌드 제외)
+namespace Sc.Editor.AI { }
 ```

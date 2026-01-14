@@ -1,0 +1,20 @@
+{
+    "name": "Sc.Editor.AI",
+    "rootNamespace": "Sc.Editor.AI",
+    "references": [
+        "Sc.Data",
+        "Sc.Core",
+        "Sc.Common"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
