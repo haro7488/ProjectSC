@@ -6,6 +6,10 @@
 2. **InGame/OutGame 분리**: 게임 영역별 모듈 독립
 3. **이벤트 기반 통신**: 컨텐츠 간 직접 참조 최소화
 4. **MVP 패턴**: UI와 로직 분리
+5. **서비스 추상화**: 외부 데이터 소스는 인터페이스로 추상화, 구현체 교체 가능
+   - Local: 로컬 저장/ScriptableObject
+   - Server: 실제 네트워크 통신
+   - Dummy: 테스트용 더미 데이터
 
 ---
 
@@ -241,4 +245,80 @@ namespace Sc.Contents.Gacha { }
 
 // Editor 전용 (빌드 제외)
 namespace Sc.Editor.AI { }
+```
+
+---
+
+## 서비스 추상화 패턴
+
+### 원칙
+모든 외부 데이터 소스 접근은 인터페이스를 통해 이루어지며, 구현체는 교체 가능해야 함.
+
+### 구현체 종류
+
+| 종류 | 용도 | 예시 |
+|------|------|------|
+| **Local** | 로컬 저장, ScriptableObject | 개발 초기, 오프라인 |
+| **Server** | 실제 네트워크 통신 | 라이브 서비스 |
+| **Dummy** | 테스트용 더미 데이터 | 단위 테스트, CI |
+
+### 구조
+
+```
+┌─────────────────────────┐
+│      Manager/System     │  ← 비즈니스 로직
+└───────────┬─────────────┘
+            │ 의존성 주입
+┌───────────▼─────────────┐
+│       IXxxService       │  ← 인터페이스 (Sc.Packet 또는 해당 Assembly)
+└───────────┬─────────────┘
+      ┌─────┼─────┐
+      ▼     ▼     ▼
+┌────────┐ ┌────────┐ ┌────────┐
+│ Local  │ │ Server │ │ Dummy  │
+│Service │ │Service │ │Service │
+└────────┘ └────────┘ └────────┘
+```
+
+### 적용 대상
+
+| 시스템 | 인터페이스 | 비고 |
+|--------|------------|------|
+| 서버 통신 | `IPacketService` | Sc.Packet |
+| 라이브 이벤트 | `ILiveEventService` | Sc.Core |
+| 상점 | `IShopService` | 추후 |
+| 퀘스트 | `IQuestService` | 추후 |
+
+### 예시
+
+```csharp
+// 인터페이스 정의
+public interface ILiveEventService
+{
+    UniTask<List<LiveEventData>> GetActiveEventsAsync();
+    UniTask<LiveEventDetail> GetEventDetailAsync(string eventId);
+}
+
+// Local 구현체
+public class LocalLiveEventService : ILiveEventService
+{
+    [SerializeField] private LiveEventDatabase _database;
+
+    public async UniTask<List<LiveEventData>> GetActiveEventsAsync()
+    {
+        // ScriptableObject에서 읽기
+        return _database.GetActiveEvents(DateTime.Now);
+    }
+}
+
+// 사용처 (Manager)
+public class LiveEventManager
+{
+    private readonly ILiveEventService _service;
+
+    public LiveEventManager(ILiveEventService service)
+    {
+        _service = service;  // DI로 주입
+    }
+}
 ```

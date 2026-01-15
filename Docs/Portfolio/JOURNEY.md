@@ -1,0 +1,104 @@
+# 프로젝트 여정
+
+프로젝트의 진행 과정을 커밋 기준으로 기록합니다.
+
+---
+
+## Phase 1: 프로젝트 초기화
+
+### 2024-XX - Initial Setup
+
+**커밋**: `b9266e2` Initial commit
+- Unity 프로젝트 생성
+- 기본 디렉토리 구조 설정
+
+**커밋**: `92c3520` Add initial project configuration files and settings
+- Unity 프로젝트 설정 파일 추가
+- .gitignore, EditorConfig 등 설정
+
+**커밋**: `968b75d` Add initial meta files for various game components and systems
+- 게임 컴포넌트 기본 구조 설계
+- Assembly Definition 기반 모듈화 시작
+
+---
+
+## Phase 2: 아키텍처 설계
+
+### 이벤트/패킷 시스템 분리
+
+**커밋**: `f5a5f11` Separate Event and Packet layers with interface abstraction
+- **문제**: 이벤트와 네트워크 패킷의 책임 혼재
+- **해결**: 인터페이스 추상화를 통한 계층 분리
+- **결과**: 각 레이어가 독립적으로 변경 가능
+
+### Editor AI 도구 도입
+
+**커밋**: `d688bfd` Add Editor-only AI development tools assembly
+- **목적**: AI와 협업 시 Unity Editor 작업 자동화
+- **결정**: Editor 전용 Assembly로 분리하여 빌드 영향 제거
+
+---
+
+## Phase 3: UI 시스템 구축
+
+### UI 아키텍처 진화
+
+**커밋**: `0d89977` Update UIComponents: Unity 기본 컴포넌트 우선 사용 원칙 추가
+- Unity 기본 컴포넌트 우선 사용 원칙 확립
+- 커스텀 컴포넌트는 필요시에만 추가
+
+**커밋**: `8160eef` Add UISystem, LiveEvent, Navigation spec documents
+- UI 시스템 스펙 문서화
+- Navigation 시스템 설계
+
+**커밋**: `6792d60` Refactor UI architecture: MVP → Widget System
+- **중요 결정**: MVP 패턴에서 Widget 기반 시스템으로 전환
+- **이유**: Unity UI의 특성에 맞는 더 유연한 구조 필요
+- **상세**: [DECISIONS.md](DECISIONS.md#ui-아키텍처-mvp--widget) 참조
+
+### UI 구현
+
+**커밋**: `5f13c68` Update Unity settings and add script meta files
+- Unity 설정 최적화
+- 스크립트 메타 파일 정리
+
+**커밋**: `fcd51db` Add UniTask package dependency
+- UniTask 패키지 추가
+- 비동기 처리 기반 마련
+
+**커밋**: `73ac0c7` Implement UI system core: Widget, Screen, Popup, Navigation
+- Widget 시스템 핵심 구현
+- Screen/Popup/Navigation 기본 동작
+
+**커밋**: `28160c2` Add UI test environment: TestScreen, TestPopup, Prefabs
+- 테스트 환경 구축
+- 검증용 Screen/Popup 프리팹
+
+---
+
+## Phase 4: 개발 도구 강화
+
+**커밋**: `c422391` Add Editor AI tools: NavigationDebugWindow, UITestSceneSetup
+- Navigation 디버그 윈도우
+- UI 테스트 씬 자동 셋업 도구
+
+**커밋**: `3c19b09` Update specs: Navigation v2.0, UISystem v3.1
+- 스펙 문서 버전 업데이트
+- 구현 결과 반영
+
+---
+
+## Phase 5: 프로세스 개선
+
+**커밋**: `30359c4` Update CLAUDE.md: Progress 추적 필수 지침 추가
+- Progress 추적 필수화
+- AI 협업 프로세스 정립
+
+**커밋**: `a861c85` Add tmpclaude-* to .gitignore
+- 임시 파일 관리 개선
+
+---
+
+## 진행 중
+
+현재 진행 중인 작업은 [PROGRESS.md](../PROGRESS.md) 참조

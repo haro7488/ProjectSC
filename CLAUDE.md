@@ -8,6 +8,7 @@
 - [아키텍처](Docs/ARCHITECTURE.md) - 폴더 구조, 의존성
 - [컨벤션](Docs/CONVENTIONS.md) - 코딩 규칙
 - [문서 작성 규칙](Docs/DOC_RULES.md) - 문서 형식 및 메타데이터
+- [포트폴리오](Docs/Portfolio/README.md) - AI 협업 과정 기록
 
 ## 핵심 규칙
 - Assembly 접두사: `Sc.`
@@ -59,6 +60,28 @@ Unity 2022.x / C# / UniTask / Addressables
 ### AI 에디터 도구
 - **씬/프리팹 셋업 필요 시**: Editor 스크립트 생성 우선 제안
 - **도구 문서**: [Docs/Specs/Editor/AITools.md](Docs/Specs/Editor/AITools.md) 참조
+
+## 포트폴리오 기록 (필수)
+
+> **핵심**: 모든 의사결정과 고민 과정을 포트폴리오로 활용할 수 있도록 기록
+
+### 기록 대상
+- 아키텍처/설계 결정
+- 기술 선택 및 트레이드오프
+- 문제 해결 과정
+- AI와의 토론에서 나온 인사이트
+
+### 기록 절차
+1. **의사결정 발생 시**: [DECISIONS.md](Docs/Portfolio/DECISIONS.md)에 기록
+   - 컨텍스트, 선택지, 결정 이유, 결과
+2. **주요 마일스톤 시**: [JOURNEY.md](Docs/Portfolio/JOURNEY.md) 업데이트
+   - 해당 Phase에 커밋 내용 추가
+3. **새로운 협업 패턴 발견 시**: [AI_COLLABORATION.md](Docs/Portfolio/AI_COLLABORATION.md) 보완
+
+### 기록 원칙
+- "왜?"에 대한 답이 있어야 함 (결과만 X)
+- 실패한 시도도 기록 (배운 점 포함)
+- 코드보다 맥락과 근거 중심
 
 ## 커밋 규칙
 - 커밋 메시지에 AI 사용 관련 문구 추가 금지 (Co-Authored-By 등)
