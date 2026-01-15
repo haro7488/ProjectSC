@@ -99,6 +99,49 @@
 
 ---
 
+## Phase 6: 데이터 아키텍처 v2.0
+
+### 아키텍처 재설계
+
+**커밋**: `8b6aae0` (리셋 기준점)
+- **문제**: v1.0 로컬 중심 설계로는 라이브 서비스 대응 불가
+- **결정**: 서버 중심(Server Authority) 아키텍처로 재설계
+- **상세**: [DECISIONS.md](DECISIONS.md#데이터-아키텍처-로컬-중심--서버-중심) 참조
+
+### 마스터 데이터 파이프라인
+
+**커밋**: 여러 커밋 통합
+- Excel/JSON → Python Export → JSON → AssetPostprocessor → ScriptableObject
+- MasterDataImporter: JSON 변경 감지 시 자동 SO 생성
+- MasterDataGeneratorWindow: 수동 생성 UI
+
+### 서버 중심 데이터 흐름
+
+**커밋**: 여러 커밋 통합
+- IApiClient 인터페이스 정의
+- LocalApiClient: 서버 응답 시뮬레이션 (로컬 JSON 저장)
+- UserDataDelta: 부분 갱신 패턴
+- DataManager: 읽기 전용 뷰, SetUserData/ApplyDelta
+
+### 네트워크 아키텍처 개선
+
+**커밋**: `0750591` Refactor PacketDispatcher to callback pattern
+- PacketDispatcher 콜백 패턴으로 변경
+- 순환 참조 해결을 위한 Sc.Foundation Assembly 분리
+
+**커밋**: `8f7d28e` Optimize RequestQueue by removing reflection
+- RequestQueue 리플렉션 제거 (성능 최적화)
+
+### 통합 테스트 도구
+
+**커밋**: `0da3d36` Add DataFlowTestWindow and update docs to v2.0
+- DataFlowTestWindow 에디터 도구
+  - Login/Gacha 흐름 통합 테스트
+  - DataManager 자동 생성 및 Database 할당
+- 문서 v2.0 업데이트 (Data.md, Packet.md, Core.md)
+
+---
+
 ## 진행 중
 
 현재 진행 중인 작업은 [PROGRESS.md](../PROGRESS.md) 참조
