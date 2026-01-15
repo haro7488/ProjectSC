@@ -48,6 +48,14 @@
 
 ---
 
+## Editor (빌드 제외)
+
+| Assembly | 설명 | 대분류 | 상태 |
+|----------|------|--------|------|
+| Sc.Editor.AI | AI 기반 씬/프리팹 자동 생성 도구 | [AITools.md](Editor/AITools.md) | ✅ |
+
+---
+
 ## 문서 구조
 
 ```
@@ -86,10 +94,13 @@ Docs/Specs/
 │
 ├── Common.md
 ├── Common/
-│   ├── MVP.md
+│   ├── UISystem.md
 │   ├── UIComponents.md
 │   ├── Pool.md
 │   └── Utility.md
+│
+├── Editor/
+│   └── AITools.md             # AI 도구 모음
 │
 └── Contents (추후 작성)
     ├── Character.md

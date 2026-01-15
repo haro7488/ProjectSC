@@ -1,10 +1,10 @@
 ---
 type: spec
 assembly: Sc.Common
-class: Widget, Screen, Popup, Panel, IScreenState, IPopupState
-category: Pattern
+class: Widget, ScreenWidget, PopupWidget, Panel
+category: UI
 status: draft
-version: "3.0"
+version: "3.1"
 dependencies: [NavigationManager, EventManager]
 created: 2025-01-14
 updated: 2025-01-15
@@ -12,14 +12,27 @@ updated: 2025-01-15
 
 # UI 시스템
 
-## 개요
+## 목적
 
 Widget 기반 Composition 패턴과 State/Context 기반 화면 관리 시스템.
 
-- **Widget**: 모든 UI의 기본 단위 (Composition)
-- **Screen**: 전체 화면 (State 기반 상태 관리)
-- **Popup**: 모달 팝업 (State 기반 상태 관리)
-- **Panel**: Screen/Popup 내부 컨테이너
+---
+
+## 의존성
+
+- **참조**: NavigationManager, EventManager
+- **참조됨**: 모든 Contents UI
+
+---
+
+## 클래스 역할 정의
+
+| 클래스 | 역할 | 책임 | 비책임 |
+|--------|------|------|--------|
+| Widget | UI 기본 단위 | 생명주기, 계층 관리 | 비즈니스 로직 |
+| ScreenWidget | 전체 화면 베이스 | State 기반 상태 관리, Context 생성 | Popup 관리 |
+| PopupWidget | 모달 팝업 베이스 | State 기반 상태 관리, 닫기 처리 | Screen 전환 |
+| Panel | 화면 내 컨테이너 | 섹션 구분, 표시/숨김 | Navigation, 히스토리 |
 
 ---
 
@@ -28,404 +41,181 @@ Widget 기반 Composition 패턴과 State/Context 기반 화면 관리 시스템
 ```
 Widget (Base)
 │
-├── 일반 Widget (접미사 Widget)
-│   ├── ButtonWidget, TextWidget, ImageWidget
-│   ├── CurrencyWidget, ProfileWidget
-│   └── ListWidget, TabWidget, ScrollWidget
+├── 일반 Widget (~Widget)
+│   └── ButtonWidget, CurrencyWidget, ListWidget, TabWidget
 │
-├── Panel (컨테이너 역할)
+├── Panel (~Panel) - 컨테이너
 │   └── InventoryPanel, SettingsPanel
 │
-├── Screen<TScreen, TState> (전체 화면)
-│   └── LobbyScreen, BattleScreen, ShopScreen
+├── ScreenWidget<TScreen, TState> (베이스)
+│   └── LobbyScreen, BattleScreen, ShopScreen (구현 시 Widget 생략)
 │
-└── Popup<TPopup, TState> (모달 팝업)
-    └── ConfirmPopup, RewardPopup, SettingsPopup
-```
-
-### 역할 구분
-
-| 타입 | 역할 | Navigation 대상 | 히스토리 |
-|------|------|----------------|----------|
-| Widget | UI 기본 단위 | X | X |
-| Panel | Screen/Popup 내부 컨테이너 | X | X (State로 복구) |
-| Screen | 전체 화면 | O | O |
-| Popup | 모달 팝업 | O | O |
-
-> **Note**: Overlay 개념 없음. 전면을 덮는 상황은 새로운 Screen으로 처리.
-
----
-
-## Widget 기본 구조
-
-### Widget 클래스
-
-```csharp
-public abstract class Widget : MonoBehaviour
-{
-    // 계층 관리
-    public Widget Parent { get; private set; }
-    public IReadOnlyList<Widget> Children => _children;
-
-    // 상태
-    public bool IsVisible { get; private set; }
-    public bool IsInitialized { get; private set; }
-
-    // 생명주기
-    public virtual void OnInitialize() { }
-    public virtual void OnBind(object data) { }
-    public virtual void OnShow() { IsVisible = true; }
-    public virtual void OnHide() { IsVisible = false; }
-    public virtual void OnRefresh() { }
-    public virtual void OnRelease() { }
-
-    // 계층 관리
-    public void AddChild(Widget child);
-    public void RemoveChild(Widget child);
-    protected T FindChild<T>() where T : Widget;
-}
+└── PopupWidget<TPopup, TState> (베이스)
+    └── ConfirmPopup, RewardPopup, SettingsPopup (구현 시 Widget 생략)
 ```
 
 ### 네이밍 규칙
 
-| 분류 | 접미사 | 예시 |
-|------|--------|------|
-| 일반 Widget | `~Widget` | CurrencyWidget, ButtonWidget |
-| 컨테이너 | `~Panel` | InventoryPanel, SettingsPanel |
-| 전체 화면 | `~Screen` | LobbyScreen, BattleScreen |
-| 팝업 | `~Popup` | ConfirmPopup, RewardPopup |
+| 분류 | 베이스 클래스 | 구현 클래스 예시 |
+|------|--------------|------------------|
+| 일반 Widget | Widget | ButtonWidget, CurrencyWidget |
+| 컨테이너 | Panel | InventoryPanel, SettingsPanel |
+| 전체 화면 | ScreenWidget | LobbyScreen, BattleScreen |
+| 팝업 | PopupWidget | ConfirmPopup, RewardPopup |
+
+### 역할 구분
+
+| 타입 | Navigation 대상 | 히스토리 | State 관리 |
+|------|----------------|----------|------------|
+| Widget | X | X | X |
+| Panel | X | X (Screen State로 복구) | X |
+| Screen | O | O | O |
+| Popup | O | O | O |
 
 ---
 
-## Screen 시스템
+## Widget 인터페이스
 
-### 구조
-
-```csharp
-// State 인터페이스
-public interface IScreenState { }
-
-// Screen 베이스 (비제네릭)
-public abstract class Screen : Widget
-{
-    public abstract class Context
-    {
-        public abstract Screen View { get; }
-        public abstract Type ScreenType { get; }
-
-        public abstract UniTask Load();
-        public abstract UniTask Enter();
-        public abstract void Resume();
-        public abstract void Pause();
-        public abstract UniTask Exit();
-    }
-}
-
-// Screen 제네릭 베이스
-public abstract class Screen<TScreen, TState> : Screen
-    where TScreen : Screen<TScreen, TState>
-    where TState : class, IScreenState
-{
-    // 생명주기 - 개별 Screen에서 오버라이드
-    protected virtual void OnBind(TState state) { }
-    public virtual TState GetState() => default;
-
-    // Context - 베이스에서 완전히 정의
-    public new class Context : Screen.Context
-    {
-        private TScreen _screen;
-        private TState _state;
-        private Transition _transition;
-
-        public override Screen View => _screen;
-        public override Type ScreenType => typeof(TScreen);
-        public TState State => _state;
-
-        internal Context(TState state, Transition transition) { ... }
-
-        public override async UniTask Enter()
-        {
-            _screen.OnBind(_state);
-        }
-
-        public override async UniTask Exit()
-        {
-            var currentState = _screen.GetState();
-            if (currentState != null)
-                _state = currentState;
-            // ...
-        }
-
-        // Builder (struct) - 베이스에서 완전히 정의
-        public struct Builder
-        {
-            private TState _state;
-            private Transition _transition;
-
-            public Builder(TState state) { _state = state; _transition = null; }
-
-            public Builder SetTransition(Transition transition)
-            {
-                _transition = transition;
-                return this;
-            }
-
-            public Context Build() => new(_state, _transition ?? Transition.Default);
-
-            public static implicit operator Context(Builder b) => b.Build();
-        }
-    }
-
-    // 정적 진입점 - 베이스에서 정의
-    public static Context.Builder CreateContext(TState state) => new(state);
-
-    public static void Open(TState state = default, Transition transition = null)
-    {
-        var builder = CreateContext(state);
-        if (transition != null)
-            builder.SetTransition(transition);
-        NavigationManager.Instance.Push(builder);
-    }
-}
-```
-
-### State 정의
-
-State는 **class**로 정의 (단순 데이터, GC 영향 미미).
-
-```csharp
-public class LobbyState : IScreenState
-{
-    public int ActiveTabIndex;
-    public float ScrollPosition;
-    public string SelectedItemId;
-}
-```
-
-### Screen 구현 예시
-
-```csharp
-public class LobbyScreen : Screen<LobbyScreen, LobbyState>
-{
-    [SerializeField] private TabWidget _tabWidget;
-    [SerializeField] private ScrollRect _scrollRect;
-    [SerializeField] private HeaderWidget _header;
-
-    protected override void OnBind(LobbyState state)
-    {
-        if (state == null) return;
-
-        _tabWidget.SetActiveIndex(state.ActiveTabIndex);
-        _scrollRect.verticalNormalizedPosition = state.ScrollPosition;
-    }
-
-    public override LobbyState GetState()
-    {
-        return new LobbyState
-        {
-            ActiveTabIndex = _tabWidget.ActiveIndex,
-            ScrollPosition = _scrollRect.verticalNormalizedPosition,
-            SelectedItemId = _selectedItemId
-        };
-    }
-}
-```
-
-### 사용 패턴
-
-```csharp
-// 간단한 열기
-LobbyScreen.Open(new LobbyState { ActiveTabIndex = 2 });
-
-// 기본 State로 열기
-LobbyScreen.Open();
-
-// Transition 지정
-LobbyScreen.Open(
-    new LobbyState { ActiveTabIndex = 2 },
-    new FadeTransition()
-);
-
-// Builder 방식 (세밀한 제어)
-NavigationManager.Instance.Push(
-    LobbyScreen.CreateContext(new LobbyState { ActiveTabIndex = 2 })
-        .SetTransition(new FadeTransition())
-);
-```
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| Parent | Widget | 부모 Widget |
+| Children | IReadOnlyList\<Widget\> | 자식 Widget 목록 |
+| IsVisible | bool | 표시 여부 |
+| IsInitialized | bool | 초기화 여부 |
+| OnInitialize() | void | 최초 1회 초기화 |
+| OnBind(object) | void | 데이터 바인딩 |
+| OnShow() | void | 표시 |
+| OnHide() | void | 숨김 |
+| OnRefresh() | void | 갱신 |
+| OnRelease() | void | 해제 |
 
 ---
 
-## Popup 시스템
+## 가시성 제어
 
-Screen과 동일한 패턴. Screen별로 Popup 스택 그룹화.
+### 제어 방식
 
-### 구조
+**Canvas.enabled 사용** (GameObject.SetActive 아님)
 
-```csharp
-public interface IPopupState { }
+| 방식 | 렌더링 | OnEnable/OnDisable | 코루틴/애니메이션 | 권장 |
+|------|--------|-------------------|------------------|------|
+| SetActive(false) | 중단 | 호출됨 | 중단 | X |
+| Canvas.enabled = false | 중단 | 호출 안됨 | 유지 | O |
+| CanvasGroup.alpha = 0 | 부분 중단 | 호출 안됨 | 유지 | 보조용 |
 
-public abstract class Popup<TPopup, TState> : Widget
-    where TPopup : Popup<TPopup, TState>
-    where TState : class, IPopupState
-{
-    protected virtual void OnBind(TState state) { }
-    public virtual TState GetState() => default;
-
-    public new class Context : Popup.Context
-    {
-        // Screen.Context와 동일한 구조
-
-        public struct Builder
-        {
-            private TState _state;
-            private int _sortingOrder;
-
-            public Builder(TState state) { ... }
-
-            public Builder SetOrder(int order)
-            {
-                _sortingOrder = order;
-                return this;
-            }
-
-            public Context Build() => new(_state, _sortingOrder);
-            public static implicit operator Context(Builder b) => b.Build();
-        }
-    }
-
-    public static Context.Builder CreateContext(TState state) => new(state);
-
-    public static void Open(TState state = default)
-    {
-        NavigationManager.Instance.PushPopup(CreateContext(state));
-    }
-}
-```
-
-### Popup과 Screen 관계
-
-```
-LobbyScreen (활성)
-├── [Popup] SettingsPopup     ← LobbyScreen 소속
-└── [Popup] ConfirmPopup      ← LobbyScreen 소속
-
-       │ Screen 전환
-       ▼
-
-BattleScreen (활성)
-└── [Popup] PausePopup        ← BattleScreen 소속
-
-※ LobbyScreen의 Popup들은 자동 Pause
-※ LobbyScreen으로 돌아오면 자동 Resume
-```
-
-### Popup 구현 예시
+### 구현 규칙
 
 ```csharp
-public class ConfirmState : IPopupState
-{
-    public string Title;
-    public string Message;
-    public Action OnConfirm;
-    public Action OnCancel;
-}
+// Widget.Show()
+_canvas.enabled = true;
+IsVisible = true;
+OnShow();
 
-public class ConfirmPopup : Popup<ConfirmPopup, ConfirmState>
-{
-    [SerializeField] private TMP_Text _titleText;
-    [SerializeField] private TMP_Text _messageText;
-    [SerializeField] private Button _confirmButton;
-    [SerializeField] private Button _cancelButton;
-
-    private ConfirmState _state;
-
-    protected override void OnBind(ConfirmState state)
-    {
-        _state = state;
-        _titleText.text = state.Title;
-        _messageText.text = state.Message;
-
-        _confirmButton.onClick.AddListener(() =>
-        {
-            _state.OnConfirm?.Invoke();
-            Close();
-        });
-
-        _cancelButton.onClick.AddListener(() =>
-        {
-            _state.OnCancel?.Invoke();
-            Close();
-        });
-    }
-
-    private void Close()
-    {
-        NavigationManager.Instance.ClosePopup(this);
-    }
-}
-
-// 사용
-ConfirmPopup.Open(new ConfirmState
-{
-    Title = "삭제",
-    Message = "정말 삭제하시겠습니까?",
-    OnConfirm = () => DeleteItem(itemId),
-    OnCancel = () => { }
-});
+// Widget.Hide()
+_canvas.enabled = false;
+IsVisible = false;
+OnHide();
 ```
+
+### 컴포넌트 요구사항
+
+| 타입 | Canvas | CanvasGroup | 용도 |
+|------|--------|-------------|------|
+| ScreenWidget | 필수 | 선택 | 가시성 제어 |
+| PopupWidget | 필수 | 선택 | 가시성 제어 |
+| Panel | 선택 | 선택 | 개별 표시/숨김 |
+| Widget (일반) | 선택 | 선택 | 필요 시 |
+
+### 설계 근거
+
+1. **OnEnable/OnDisable 부작용 방지**: 이벤트 구독/해제, 초기화 로직 반복 실행 방지
+2. **코루틴/애니메이션 유지**: Hide 중에도 진행 중인 작업 유지
+3. **렌더링 완전 중단**: Canvas.enabled = false 시 드로우콜 발생 안함
+4. **상태 보존**: RectTransform, UI 컴포넌트 값 유지
 
 ---
 
-## Panel (컨테이너)
+## ScreenWidget 인터페이스
 
-Panel은 Screen/Popup 내부의 컨테이너 역할. Navigation 대상이 아님.
+### ScreenWidget (비제네릭 베이스)
 
-### 역할
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| Context | abstract class | 상태 캡슐화 (State + Transition) |
 
-- Screen/Popup 내부에서 섹션 구분
-- 탭 전환 등 내부 상태 관리
-- State의 일부로 상태 복구됨
+### ScreenWidget\<TScreen, TState\>
 
-### 예시
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| OnBind(TState) | void | State로 UI 초기화 |
+| GetState() | TState | 현재 상태 반환 |
+| CreateContext(TState) | Context.Builder | Context 빌더 생성 |
+| Open(TState, Transition) | void | 정적 진입점 |
 
-```csharp
-public class LobbyScreen : Screen<LobbyScreen, LobbyState>
-{
-    [SerializeField] private InventoryPanel _inventoryPanel;
-    [SerializeField] private CharacterPanel _characterPanel;
-    [SerializeField] private TabWidget _tabWidget;
+### ScreenWidget.Context
 
-    private Panel _activePanel;
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| View | ScreenWidget | Screen 인스턴스 |
+| ScreenType | Type | Screen 타입 |
+| State | TState | 상태 데이터 |
+| Load() | UniTask | 리소스 로딩 |
+| Enter() | UniTask | 화면 진입 (OnBind 호출) |
+| Resume() | void | 활성화 |
+| Pause() | void | 비활성화 |
+| Exit() | UniTask | 화면 퇴장 (GetState 호출) |
 
-    protected override void OnBind(LobbyState state)
-    {
-        // Tab 상태 복구
-        _tabWidget.SetActiveIndex(state.ActiveTabIndex);
+### Context.Builder
 
-        // 활성 Panel 설정
-        SetActivePanel(state.ActiveTabIndex);
-    }
-
-    private void SetActivePanel(int index)
-    {
-        _inventoryPanel.gameObject.SetActive(index == 0);
-        _characterPanel.gameObject.SetActive(index == 1);
-    }
-
-    public override LobbyState GetState()
-    {
-        return new LobbyState
-        {
-            ActiveTabIndex = _tabWidget.ActiveIndex,
-            // Panel의 내부 상태도 포함 가능
-        };
-    }
-}
-```
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| SetTransition(Transition) | Builder | Transition 설정 |
+| Build() | Context | Context 생성 |
 
 ---
 
-## 생명주기
+## PopupWidget 인터페이스
+
+### PopupWidget (비제네릭 베이스)
+
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| Context | abstract class | 상태 캡슐화 (State + Order) |
+| OnEscape() | bool | ESC 키 처리 (닫기 허용 여부) |
+
+### PopupWidget\<TPopup, TState\>
+
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| OnBind(TState) | void | State로 UI 초기화 |
+| GetState() | TState | 현재 상태 반환 |
+| CreateContext(TState) | Context.Builder | Context 빌더 생성 |
+| Open(TState) | void | 정적 진입점 |
+
+### PopupWidget.Context.Builder
+
+| 멤버 | 타입 | 설명 |
+|------|------|------|
+| SetOrder(int) | Builder | 정렬 순서 설정 |
+| Build() | Context | Context 생성 |
+
+---
+
+## State 설계
+
+### IScreenState / IPopupState
+
+마커 인터페이스. State는 class로 정의.
+
+| 포함 | 미포함 |
+|------|--------|
+| UI 복구에 필요한 데이터 | 비즈니스 로직 |
+| 탭 인덱스, 스크롤 위치 | 계산된 값 |
+| 선택된 아이템 ID | 캐시 데이터 |
+
+---
+
+## 생명주기 흐름
 
 ### Screen 생명주기
 
@@ -437,112 +227,68 @@ Load ──▶ Enter(OnBind) ──▶ Resume
                               │
                     ┌─────────┴─────────┐
                     │                   │
-                 [활성]              Pause (다른 Screen으로 전환)
+                 [활성]              Pause
                     │                   │
-                    │                   ▼
-                    │              [비활성 대기]
-                    │                   │
-                    │               Resume (돌아옴)
+                    │               Resume
                     │                   │
                     └─────────┬─────────┘
                               │
                            [Pop]
                               │
                               ▼
-                     Exit (GetState 호출)
+                     Exit (GetState)
                               │
                               ▼
                            Unload
 ```
 
-### 생명주기 메서드
+### 생명주기 메서드 용도
 
 | 메서드 | 시점 | 용도 |
 |--------|------|------|
-| Load | 인스턴스 로드 | 리소스 로딩, Provider에서 가져오기 |
-| Enter (OnBind) | 화면 진입 | State로 UI 초기화 |
+| Load | 인스턴스 로드 | Provider에서 가져오기 |
+| Enter | 화면 진입 | OnBind로 State 바인딩 |
 | Resume | 활성화 | 이벤트 구독, 갱신 시작 |
 | Pause | 비활성화 | 이벤트 해제, 갱신 중지 |
-| Exit | 화면 퇴장 | GetState로 상태 저장, Provider로 반환 |
-| Unload | 리소스 해제 | 메모리 정리 |
+| Exit | 화면 퇴장 | GetState로 상태 저장 |
+| Unload | 리소스 해제 | Provider로 반환 |
 
 ---
 
-## Context 흐름
+## 사용 패턴
 
-### 화면 전환 시 상태 보존
+```csharp
+// Screen 열기
+LobbyScreen.Open(new LobbyState { ActiveTabIndex = 2 });
 
-```
-[LobbyScreen 활성]
-├── State: { ActiveTabIndex: 2, ScrollPosition: 0.7 }
-│
-│   NavigateTo(BattleScreen)
-│         │
-│         ▼
-│   LobbyScreen.Exit()
-│   └── GetState() → State 저장
-│   └── Context에 State 보관
-│
-│   BattleScreen.Enter()
-│
-│         │
-│   NavigationManager.Back()
-│         │
-│         ▼
-│   BattleScreen.Exit()
-│
-│   LobbyScreen.Enter()
-│   └── OnBind(savedState) → 상태 복구
-│
-[LobbyScreen 활성]
-└── 이전 상태 복구됨 (Tab 2, Scroll 0.7)
+// Popup 열기
+ConfirmPopup.Open(new ConfirmState { Title = "확인", Message = "진행?" });
+
+// Builder 방식
+NavigationManager.Instance.Push(
+    LobbyScreen.CreateContext(state).SetTransition(new FadeTransition())
+);
 ```
 
 ---
 
-## 새 Screen/Popup 작성 가이드
+## 설계 원칙
 
-### 1단계: State 정의
+1. **Composition over Inheritance**: Widget 조합으로 UI 구성
+2. **State 기반 복구**: Context에 State 보관, 복귀 시 OnBind로 복구
+3. **Screen/Popup 분리**: Screen은 전체 화면, Popup은 모달
+4. **Panel은 Navigation 대상 아님**: Screen의 State로 상태 관리
 
-```csharp
-public class MyScreenState : IScreenState
-{
-    public int SomeValue;
-    public string SomeText;
-}
-```
+---
 
-### 2단계: Screen 구현
+## 주의사항
 
-```csharp
-public class MyScreen : Screen<MyScreen, MyScreenState>
-{
-    [SerializeField] private SomeWidget _widget;
-
-    protected override void OnBind(MyScreenState state)
-    {
-        if (state == null) return;
-        _widget.SetValue(state.SomeValue);
-    }
-
-    public override MyScreenState GetState()
-    {
-        return new MyScreenState
-        {
-            SomeValue = _widget.Value,
-            SomeText = _widget.Text
-        };
-    }
-}
-```
-
-### 3단계: 사용
-
-```csharp
-MyScreen.Open(new MyScreenState { SomeValue = 10 });
-```
-
-> Context, Builder, 정적 메서드는 **베이스 클래스에서 모두 제공**되므로 재정의 불필요.
+- State는 class로 정의 (GC 영향 미미, null 체크 용이)
+- OnBind에서 null 체크 필수
+- GetState는 현재 UI 상태를 정확히 반환해야 함
+- Popup의 OnEscape()가 false 반환 시 Back()으로 닫히지 않음
+- **Screen/Popup에 Canvas 컴포넌트 필수** (가시성 제어용)
+- **Show/Hide에 GameObject.SetActive 사용 금지** (OnEnable/OnDisable 부작용)
 
 ---
 
