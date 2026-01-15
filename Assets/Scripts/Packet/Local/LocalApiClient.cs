@@ -62,18 +62,22 @@ namespace Sc.Packet
             where TRequest : IRequest
             where TResponse : IResponse
         {
+            var response = await SendAsync(request);
+            return (TResponse)response;
+        }
+
+        public async UniTask<IResponse> SendAsync(IRequest request)
+        {
             await UniTask.Delay(_simulatedLatencyMs);
 
             // 요청 타입별 처리
-            IResponse response = request switch
+            return request switch
             {
                 LoginRequest loginRequest => await HandleLoginAsync(loginRequest),
                 GachaRequest gachaRequest => await HandleGachaAsync(gachaRequest),
                 ShopPurchaseRequest purchaseRequest => await HandlePurchaseAsync(purchaseRequest),
-                _ => throw new NotImplementedException($"Handler not found for {typeof(TRequest).Name}")
+                _ => throw new NotImplementedException($"Handler not found for {request.GetType().Name}")
             };
-
-            return (TResponse)response;
         }
 
         #endregion

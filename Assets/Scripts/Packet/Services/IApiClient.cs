@@ -16,7 +16,7 @@ namespace Sc.Packet
         UniTask<bool> InitializeAsync(string baseUrl);
 
         /// <summary>
-        /// 요청 전송
+        /// 요청 전송 (제네릭)
         /// </summary>
         /// <typeparam name="TRequest">요청 타입</typeparam>
         /// <typeparam name="TResponse">응답 타입</typeparam>
@@ -25,6 +25,14 @@ namespace Sc.Packet
         UniTask<TResponse> SendAsync<TRequest, TResponse>(TRequest request)
             where TRequest : IRequest
             where TResponse : IResponse;
+
+        /// <summary>
+        /// 요청 전송 (non-generic, 내부 큐에서 사용)
+        /// 리플렉션 없이 요청 처리를 위한 메서드
+        /// </summary>
+        /// <param name="request">요청 데이터</param>
+        /// <returns>응답 데이터</returns>
+        UniTask<IResponse> SendAsync(IRequest request);
 
         /// <summary>
         /// 초기화 여부

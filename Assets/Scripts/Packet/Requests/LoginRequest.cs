@@ -6,7 +6,7 @@ namespace Sc.Packet
     /// 로그인 요청
     /// </summary>
     [Serializable]
-    public class LoginRequest : IRequest
+    public class LoginRequest : IRequest<LoginResponse>
     {
         /// <summary>
         /// 디바이스 ID (게스트 로그인용)

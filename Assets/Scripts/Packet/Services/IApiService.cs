@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using Sc.Data;
 
@@ -7,6 +8,11 @@ namespace Sc.Packet
     /// API 서비스 인터페이스
     /// 서버 통신 (또는 로컬 시뮬레이션) 담당
     /// </summary>
+    /// <remarks>
+    /// [DEPRECATED] NetworkManager + IApiClient 아키텍처로 대체됨
+    /// 새로운 코드에서는 NetworkManager.Instance.Send() 사용
+    /// </remarks>
+    [Obsolete("Use NetworkManager + IApiClient instead. This interface is deprecated.")]
     public interface IApiService
     {
         /// <summary>

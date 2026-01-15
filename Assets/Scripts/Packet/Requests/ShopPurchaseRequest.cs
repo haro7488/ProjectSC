@@ -6,7 +6,7 @@ namespace Sc.Packet
     /// 상점 구매 요청
     /// </summary>
     [Serializable]
-    public class ShopPurchaseRequest : IRequest
+    public class ShopPurchaseRequest : IRequest<ShopPurchaseResponse>
     {
         /// <summary>
         /// 상품 ID

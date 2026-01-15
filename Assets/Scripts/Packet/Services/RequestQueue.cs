@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -58,7 +59,35 @@ namespace Sc.Packet
         }
 
         /// <summary>
-        /// 요청을 큐에 추가
+        /// 요청을 큐에 추가 (TResponse 자동 추론)
+        /// Request가 IRequest&lt;TResponse&gt;를 구현하면 TResponse를 자동으로 추론
+        /// </summary>
+        /// <typeparam name="TRequest">요청 타입 (IRequest&lt;TResponse&gt; 구현 필수)</typeparam>
+        /// <param name="request">요청 데이터</param>
+        public void Enqueue<TRequest>(TRequest request)
+            where TRequest : IRequest
+        {
+            var requestType = typeof(TRequest);
+            var responseType = GetResponseType(requestType);
+
+            if (responseType == null)
+            {
+                throw new InvalidOperationException(
+                    $"Request type {requestType.Name} does not implement IRequest<TResponse>");
+            }
+
+            var metadata = RequestMetadata.Create<TRequest>();
+            var queuedRequest = new QueuedRequest(request, metadata, requestType, responseType);
+
+            _pendingRequests.Enqueue(queuedRequest);
+            Debug.Log($"[RequestQueue] Enqueued: {metadata.RequestType} (Pending: {PendingCount})");
+
+            // 처리 시작
+            ProcessNextAsync().Forget();
+        }
+
+        /// <summary>
+        /// 요청을 큐에 추가 (명시적 타입 지정)
         /// </summary>
         /// <typeparam name="TRequest">요청 타입</typeparam>
         /// <typeparam name="TResponse">응답 타입</typeparam>
@@ -75,6 +104,18 @@ namespace Sc.Packet
 
             // 처리 시작
             ProcessNextAsync().Forget();
+        }
+
+        /// <summary>
+        /// IRequest&lt;TResponse&gt; 인터페이스에서 TResponse 타입 추출
+        /// </summary>
+        private static Type GetResponseType(Type requestType)
+        {
+            var genericInterface = requestType
+                .GetInterfaces()
+                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>));
+
+            return genericInterface?.GetGenericArguments().FirstOrDefault();
         }
 
         /// <summary>
@@ -125,38 +166,12 @@ namespace Sc.Packet
         }
 
         /// <summary>
-        /// 실제 요청 전송 (리플렉션 사용)
+        /// 실제 요청 전송
         /// </summary>
-        private async UniTask<IResponse> SendRequestAsync(QueuedRequest queuedRequest)
+        private UniTask<IResponse> SendRequestAsync(QueuedRequest queuedRequest)
         {
-            // SendAsync<TRequest, TResponse> 호출
-            var method = typeof(IApiClient).GetMethod(nameof(IApiClient.SendAsync));
-            var genericMethod = method.MakeGenericMethod(queuedRequest.RequestType, queuedRequest.ResponseType);
-
-            var task = genericMethod.Invoke(_apiClient, new object[] { queuedRequest.Request });
-
-            // UniTask<TResponse> → IResponse
-            if (task is UniTask<IResponse> responseTask)
-            {
-                return await responseTask;
-            }
-
-            // 리플렉션으로 await
-            var awaiter = task.GetType().GetMethod("GetAwaiter").Invoke(task, null);
-            var getResult = awaiter.GetType().GetMethod("GetResult");
-            var isCompleted = (bool)awaiter.GetType().GetProperty("IsCompleted").GetValue(awaiter);
-
-            if (!isCompleted)
-            {
-                // UniTask 대기
-                await UniTask.Yield();
-                while (!(bool)awaiter.GetType().GetProperty("IsCompleted").GetValue(awaiter))
-                {
-                    await UniTask.Yield();
-                }
-            }
-
-            return getResult.Invoke(awaiter, null) as IResponse;
+            // non-generic SendAsync 사용 (리플렉션 없음)
+            return _apiClient.SendAsync(queuedRequest.Request);
         }
 
         /// <summary>

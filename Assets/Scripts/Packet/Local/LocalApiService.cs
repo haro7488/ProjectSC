@@ -11,6 +11,11 @@ namespace Sc.Packet
     /// 로컬 API 서비스 (서버 응답 시뮬레이션)
     /// 개발/테스트용 더미 서버 구현
     /// </summary>
+    /// <remarks>
+    /// [DEPRECATED] LocalApiClient로 대체됨
+    /// 새로운 코드에서는 NetworkManager + LocalApiClient 사용
+    /// </remarks>
+    [Obsolete("Use LocalApiClient instead. This class is deprecated.")]
     public class LocalApiService : IApiService
     {
         private const string SaveFileName = "user_save_data.json";

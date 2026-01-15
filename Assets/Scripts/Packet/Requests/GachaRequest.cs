@@ -15,7 +15,7 @@ namespace Sc.Packet
     /// 가챠 요청
     /// </summary>
     [Serializable]
-    public class GachaRequest : IRequest
+    public class GachaRequest : IRequest<GachaResponse>
     {
         /// <summary>
         /// 가챠 풀 ID
