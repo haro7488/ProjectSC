@@ -282,6 +282,88 @@
 
 ---
 
+## Screen/Popup 인스턴스 로딩 방식
+
+**일자**: 2025-01-16
+**상태**: 결정됨
+**관련 커밋**: `a8e5807`
+
+### 컨텍스트
+- NavigationManager가 Screen/Popup을 Push할 때 인스턴스를 어떻게 얻을지 결정 필요
+- 기존 Context.Load()는 TODO 상태로 구현되지 않음
+- MVP 테스트를 위해 빠른 구현 필요
+
+### 선택지
+1. **ScreenProvider 패턴 (Addressables)**
+   - 장점: 런타임 로딩, 메모리 효율
+   - 단점: 구현 복잡, Addressables 설정 필요
+
+2. **Resources.Load 방식**
+   - 장점: 구현 단순
+   - 단점: Resources 폴더 제약, 빌드 크기 증가
+
+3. **씬 배치 + FindObjectOfType**
+   - 장점: 즉시 구현 가능, 에디터에서 확인 용이
+   - 단점: 모든 UI가 씬에 존재해야 함, 메모리 사용
+
+### 결정
+**씬 배치 + FindObjectOfType** 선택 (MVP 단계)
+
+**이유**:
+- MVP 테스트가 우선 목표
+- 에디터에서 UI 구조 즉시 확인 가능
+- 나중에 ScreenProvider로 마이그레이션 가능 (인터페이스 동일)
+
+### 결과
+- Context.Load()에서 FindObjectOfType<TScreen>(true) 사용
+- MVPSceneSetup에서 모든 Screen/Popup을 씬에 미리 배치
+- Canvas.enabled로 가시성 제어 (SetActive 대신)
+
+### 회고
+- 빠른 프로토타이핑에 효과적
+- 추후 Addressables 기반 Provider로 전환 예정
+- **배운 점**: MVP 단계에서는 완벽한 구조보다 동작하는 코드가 우선
+
+---
+
+## 에디터 설정 ScriptableObject 도입
+
+**일자**: 2025-01-16
+**상태**: 결정됨
+**관련 커밋**: `87b25d6`
+
+### 컨텍스트
+- MVP 프리팹 생성 시 기본 폰트(PretendardVariable) 적용 필요
+- 에디터 도구에서 공통 설정 관리 필요
+
+### 선택지
+1. **하드코딩**
+   - 장점: 단순
+   - 단점: 변경 시 코드 수정 필요
+
+2. **EditorPrefs**
+   - 장점: 빌트인 기능
+   - 단점: 프로젝트 간 공유 어려움, 타입 제한
+
+3. **ScriptableObject 기반 설정**
+   - 장점: Inspector에서 편집, 버전 관리 가능
+   - 단점: 에셋 파일 필요
+
+### 결정
+**ScriptableObject 기반 설정** 선택
+
+**이유**:
+- 기본 폰트, 색상 등 시각적 설정은 Inspector에서 편집이 편리
+- 프로젝트와 함께 버전 관리 가능
+- 싱글턴 접근으로 어디서든 사용 가능
+
+### 결과
+- ProjectEditorSettings SO 생성
+- SC Tools > Settings 메뉴 추가
+- MVPSceneSetup에서 TMP 생성 시 기본 폰트 자동 적용
+
+---
+
 ## [템플릿] 새 의사결정
 
 **일자**: YYYY-MM-DD
