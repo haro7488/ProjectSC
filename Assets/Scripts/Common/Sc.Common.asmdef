@@ -6,7 +6,8 @@
         "Sc.Core",
         "Sc.Data",
         "Sc.Event",
-        "UniTask"
+        "UniTask",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

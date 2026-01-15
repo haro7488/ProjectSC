@@ -309,6 +309,15 @@
 ## 작업 로그
 
 ### 2026-01-15
+- [x] 기본 UI Widget 컴포넌트 구현 (8개)
+  - [x] TextWidget (TMP_Text 래핑)
+  - [x] ButtonWidget (Button + TMP_Text 래핑)
+  - [x] ImageWidget (Image 래핑)
+  - [x] SliderWidget (Slider 래핑, 양방향 바인딩)
+  - [x] ToggleWidget (Toggle 래핑)
+  - [x] InputFieldWidget (TMP_InputField 래핑)
+  - [x] ProgressBarWidget (읽기 전용 진행률 표시)
+  - [x] ScrollViewWidget (ScrollRect 래핑)
 - [x] DataFlowTestWindow 에디터 도구 생성
   - [x] Login/Gacha 흐름 테스트 UI
   - [x] DataManager 자동 생성 및 Database 에셋 할당
