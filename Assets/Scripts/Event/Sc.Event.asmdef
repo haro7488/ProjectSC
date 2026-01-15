@@ -2,7 +2,8 @@
     "name": "Sc.Event",
     "rootNamespace": "Sc.Event",
     "references": [
-        "GUID:a5fb39568b1e7704a8446a4874129323"
+        "GUID:a5fb39568b1e7704a8446a4874129323",
+        "Sc.Packet"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
