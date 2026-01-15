@@ -199,9 +199,7 @@ namespace Sc.Contents.Gacha
             // 결과 팝업 열기
             if (evt.Results != null && evt.Results.Count > 0)
             {
-                NavigationManager.Instance?.Push(
-                    GachaResultPopup.CreateContext(new GachaResultState { Results = evt.Results })
-                );
+                GachaResultPopup.Open(new GachaResultState { Results = evt.Results });
             }
         }
 

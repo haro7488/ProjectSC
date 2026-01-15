@@ -20,8 +20,9 @@ namespace Sc.Contents.Title
     /// </summary>
     public class TitleScreen : ScreenWidget<TitleScreen, TitleState>
     {
-        [Header("UI References")]
-        [SerializeField] private Button _touchArea;
+        [Header("UI References")] [SerializeField]
+        private Button _touchArea;
+
         [SerializeField] private TMP_Text _touchToStartText;
         [SerializeField] private Button _resetAccountButton;
 
@@ -62,7 +63,7 @@ namespace Sc.Contents.Title
             Debug.Log("[TitleScreen] Touch to Start!");
 
             // LobbyScreen으로 전환
-            NavigationManager.Instance?.Push(LobbyScreen.CreateContext(new LobbyState()));
+            LobbyScreen.Open(new LobbyState());
         }
 
         private void OnResetAccountClicked()

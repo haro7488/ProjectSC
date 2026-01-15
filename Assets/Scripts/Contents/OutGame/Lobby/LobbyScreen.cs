@@ -97,13 +97,13 @@ namespace Sc.Contents.Lobby
         private void OnGachaButtonClicked()
         {
             Debug.Log("[LobbyScreen] Gacha button clicked");
-            NavigationManager.Instance?.Push(GachaScreen.CreateContext(new GachaState()));
+            GachaScreen.Open(new GachaState());
         }
 
         private void OnCharacterButtonClicked()
         {
             Debug.Log("[LobbyScreen] Character button clicked");
-            NavigationManager.Instance?.Push(CharacterListScreen.CreateContext(new CharacterListState()));
+            CharacterListScreen.Open(new CharacterListState());
         }
     }
 }

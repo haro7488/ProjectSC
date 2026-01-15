@@ -165,13 +165,20 @@ namespace Sc.Common.UI
         public static Context.Builder CreateContext(TState state = default) => new(state);
 
         /// <summary>
-        /// Popup 열기.
+        /// Popup 열기 (Push).
+        /// 사용법: ConfirmPopup.Open(new ConfirmState { Message = "확인?" });
         /// </summary>
         public static void Open(TState state = default)
         {
             var context = CreateContext(state).Build();
-            // NavigationManager.Instance.PushPopup(context);
+            NavigationManager.Instance?.Push(context);
         }
+
+        /// <summary>
+        /// Popup 열기 (Push) - 별칭.
+        /// </summary>
+        public static void Push(TState state = default)
+            => Open(state);
 
         #endregion
     }

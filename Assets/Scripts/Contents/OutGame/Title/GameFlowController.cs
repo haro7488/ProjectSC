@@ -53,7 +53,7 @@ namespace Sc.Contents.Title
                 return;
             }
 
-            NavigationManager.Instance.Push(TitleScreen.CreateContext(new TitleState()));
+            TitleScreen.Open(new TitleState());
         }
     }
 }

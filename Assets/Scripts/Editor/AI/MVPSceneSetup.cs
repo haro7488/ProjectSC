@@ -67,6 +67,7 @@ namespace Sc.Editor.AI
             var lobbyPrefab = CreateLobbyScreenPrefab();
             var gachaPrefab = CreateGachaScreenPrefab();
             var characterListPrefab = CreateCharacterListScreenPrefab();
+            var characterDetailPrefab = CreateCharacterDetailScreenPrefab();
             var gachaResultPrefab = CreateGachaResultPopupPrefab();
 
             // 9. 모든 Screen/Popup 프리팹을 씬에 배치 (비활성화 상태)
@@ -74,6 +75,7 @@ namespace Sc.Editor.AI
             InstantiateScreenPrefab(lobbyPrefab, screenContainer, false);
             InstantiateScreenPrefab(gachaPrefab, screenContainer, false);
             InstantiateScreenPrefab(characterListPrefab, screenContainer, false);
+            InstantiateScreenPrefab(characterDetailPrefab, screenContainer, false);
             InstantiatePopupPrefab(gachaResultPrefab, popupContainer, false);
 
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
@@ -89,6 +91,7 @@ namespace Sc.Editor.AI
             CreateLobbyScreenPrefab();
             CreateGachaScreenPrefab();
             CreateCharacterListScreenPrefab();
+            CreateCharacterDetailScreenPrefab();
             CreateGachaResultPopupPrefab();
             CreateCurrencyHUDPrefab();
             CreateCharacterListItemPrefab();
@@ -110,6 +113,7 @@ namespace Sc.Editor.AI
             CreateLobbyScreenPrefab();
             CreateGachaScreenPrefab();
             CreateCharacterListScreenPrefab();
+            CreateCharacterDetailScreenPrefab();
             CreateGachaResultPopupPrefab();
             CreateCurrencyHUDPrefab();
             CreateCharacterListItemPrefab();
@@ -127,6 +131,7 @@ namespace Sc.Editor.AI
                 "LobbyScreen.prefab",
                 "GachaScreen.prefab",
                 "CharacterListScreen.prefab",
+                "CharacterDetailScreen.prefab",
                 "GachaResultPopup.prefab",
                 "CurrencyHUD.prefab",
                 "CharacterListItem.prefab"
@@ -510,14 +515,131 @@ namespace Sc.Editor.AI
             var backBtn = CreateTMPButton(panel.transform, "BackButton", "뒤로",
                 new Vector2(0, -400), new Vector2(200, 60), new Color(0.4f, 0.4f, 0.4f, 1f));
 
+            // CharacterListItem 프리팹 로드 또는 생성
+            var itemPrefab = CreateCharacterListItemPrefab();
+
             // CharacterListScreen 컴포넌트 추가
             var characterListScreen = panel.AddComponent<Contents.Character.CharacterListScreen>();
 
             var so = new SerializedObject(characterListScreen);
             so.FindProperty("_listContainer").objectReferenceValue = listContainer;
+            so.FindProperty("_characterItemPrefab").objectReferenceValue = itemPrefab;
             so.FindProperty("_scrollRect").objectReferenceValue = scrollView.GetComponent<ScrollRect>();
             so.FindProperty("_backButton").objectReferenceValue = backBtn;
             so.FindProperty("_countText").objectReferenceValue = countText;
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(panel, prefabPath);
+            Object.DestroyImmediate(panel);
+
+            Debug.Log($"[MVPSceneSetup] Created: {prefabPath}");
+            return prefab;
+        }
+
+        #endregion
+
+        #region CharacterDetailScreen Prefab
+
+        private static GameObject CreateCharacterDetailScreenPrefab()
+        {
+            var prefabPath = $"{PrefabPath}/CharacterDetailScreen.prefab";
+
+            var existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (existingPrefab != null) return existingPrefab;
+
+            var panel = CreateFullScreenPanel("CharacterDetailScreen", new Color(0.08f, 0.1f, 0.18f, 1f));
+
+            // Canvas 추가
+            panel.AddComponent<Canvas>();
+            panel.AddComponent<GraphicRaycaster>();
+
+            // 타이틀
+            var titleText = CreateTMPText(panel.transform, "TitleText", "캐릭터 상세",
+                new Vector2(0, 480), new Vector2(400, 60), 36, TextAlignmentOptions.Center);
+
+            // 캐릭터 이미지 영역 (배경)
+            var charImageArea = new GameObject("CharacterImageArea");
+            charImageArea.transform.SetParent(panel.transform, false);
+            var charImageRect = charImageArea.AddComponent<RectTransform>();
+            charImageRect.anchorMin = new Vector2(0.5f, 0.5f);
+            charImageRect.anchorMax = new Vector2(0.5f, 0.5f);
+            charImageRect.anchoredPosition = new Vector2(-250, 150);
+            charImageRect.sizeDelta = new Vector2(300, 350);
+            var charImage = charImageArea.AddComponent<Image>();
+            charImage.color = new Color(0.2f, 0.2f, 0.3f, 0.5f);
+
+            // 기본 정보 영역
+            var nameText = CreateTMPText(panel.transform, "NameText", "캐릭터 이름",
+                new Vector2(150, 350), new Vector2(400, 50), 32, TextAlignmentOptions.Left);
+
+            var rarityText = CreateTMPText(panel.transform, "RarityText", "SSR",
+                new Vector2(150, 300), new Vector2(100, 40), 28, TextAlignmentOptions.Left);
+
+            var classText = CreateTMPText(panel.transform, "ClassText", "전사",
+                new Vector2(260, 300), new Vector2(100, 40), 24, TextAlignmentOptions.Left);
+
+            var elementText = CreateTMPText(panel.transform, "ElementText", "화",
+                new Vector2(370, 300), new Vector2(80, 40), 24, TextAlignmentOptions.Left);
+
+            var levelText = CreateTMPText(panel.transform, "LevelText", "Lv. 1",
+                new Vector2(150, 250), new Vector2(150, 40), 28, TextAlignmentOptions.Left);
+
+            var ascensionText = CreateTMPText(panel.transform, "AscensionText", "돌파 0단계",
+                new Vector2(320, 250), new Vector2(150, 40), 20, TextAlignmentOptions.Left);
+
+            // 스탯 영역
+            CreateTMPText(panel.transform, "StatLabel", "스탯",
+                new Vector2(150, 180), new Vector2(100, 30), 20, TextAlignmentOptions.Left);
+
+            var hpText = CreateTMPText(panel.transform, "HpText", "HP: 1000",
+                new Vector2(150, 140), new Vector2(180, 30), 18, TextAlignmentOptions.Left);
+
+            var atkText = CreateTMPText(panel.transform, "AtkText", "ATK: 100",
+                new Vector2(350, 140), new Vector2(180, 30), 18, TextAlignmentOptions.Left);
+
+            var defText = CreateTMPText(panel.transform, "DefText", "DEF: 50",
+                new Vector2(150, 100), new Vector2(180, 30), 18, TextAlignmentOptions.Left);
+
+            var spdText = CreateTMPText(panel.transform, "SpdText", "SPD: 100",
+                new Vector2(350, 100), new Vector2(180, 30), 18, TextAlignmentOptions.Left);
+
+            var critRateText = CreateTMPText(panel.transform, "CritRateText", "치명률: 5%",
+                new Vector2(150, 60), new Vector2(180, 30), 18, TextAlignmentOptions.Left);
+
+            var critDamageText = CreateTMPText(panel.transform, "CritDamageText", "치명피해: 150%",
+                new Vector2(350, 60), new Vector2(180, 30), 18, TextAlignmentOptions.Left);
+
+            // 설명 영역
+            CreateTMPText(panel.transform, "DescLabel", "설명",
+                new Vector2(0, -100), new Vector2(700, 30), 20, TextAlignmentOptions.Left);
+
+            var descriptionText = CreateTMPText(panel.transform, "DescriptionText", "캐릭터 설명이 여기에 표시됩니다.",
+                new Vector2(0, -180), new Vector2(700, 100), 16, TextAlignmentOptions.TopLeft);
+
+            // 뒤로가기 버튼
+            var backBtn = CreateTMPButton(panel.transform, "BackButton", "뒤로",
+                new Vector2(0, -420), new Vector2(200, 60), new Color(0.4f, 0.4f, 0.4f, 1f));
+
+            // CharacterDetailScreen 컴포넌트 추가
+            var detailScreen = panel.AddComponent<Contents.Character.CharacterDetailScreen>();
+
+            var so = new SerializedObject(detailScreen);
+            so.FindProperty("_backButton").objectReferenceValue = backBtn;
+            so.FindProperty("_titleText").objectReferenceValue = titleText;
+            so.FindProperty("_nameText").objectReferenceValue = nameText;
+            so.FindProperty("_rarityText").objectReferenceValue = rarityText;
+            so.FindProperty("_classText").objectReferenceValue = classText;
+            so.FindProperty("_elementText").objectReferenceValue = elementText;
+            so.FindProperty("_levelText").objectReferenceValue = levelText;
+            so.FindProperty("_characterImage").objectReferenceValue = charImage;
+            so.FindProperty("_hpText").objectReferenceValue = hpText;
+            so.FindProperty("_atkText").objectReferenceValue = atkText;
+            so.FindProperty("_defText").objectReferenceValue = defText;
+            so.FindProperty("_spdText").objectReferenceValue = spdText;
+            so.FindProperty("_critRateText").objectReferenceValue = critRateText;
+            so.FindProperty("_critDamageText").objectReferenceValue = critDamageText;
+            so.FindProperty("_descriptionText").objectReferenceValue = descriptionText;
+            so.FindProperty("_ascensionText").objectReferenceValue = ascensionText;
             so.ApplyModifiedPropertiesWithoutUndo();
 
             var prefab = PrefabUtility.SaveAsPrefabAsset(panel, prefabPath);
@@ -662,6 +784,11 @@ namespace Sc.Editor.AI
             var rect = item.AddComponent<RectTransform>();
             rect.sizeDelta = new Vector2(750, 80);
 
+            // LayoutElement 추가 (VerticalLayoutGroup에서 높이 인식용)
+            var layoutElement = item.AddComponent<LayoutElement>();
+            layoutElement.minHeight = 80;
+            layoutElement.preferredHeight = 80;
+
             var bg = item.AddComponent<Image>();
             bg.color = new Color(0.2f, 0.2f, 0.3f, 0.8f);
 
@@ -670,9 +797,27 @@ namespace Sc.Editor.AI
             colors.highlightedColor = new Color(0.3f, 0.3f, 0.4f, 1f);
             btn.colors = colors;
 
-            // 이름 텍스트
-            CreateTMPText(item.transform, "NameText", "[SSR] 캐릭터 이름 Lv.1",
-                new Vector2(0, 0), new Vector2(700, 60), 24, TextAlignmentOptions.Left);
+            // 이름 텍스트 (stretch anchor로 변경)
+            var nameTextGo = new GameObject("NameText");
+            nameTextGo.transform.SetParent(item.transform, false);
+
+            var nameRect = nameTextGo.AddComponent<RectTransform>();
+            nameRect.anchorMin = Vector2.zero;
+            nameRect.anchorMax = Vector2.one;
+            nameRect.offsetMin = new Vector2(20, 10);  // left, bottom padding
+            nameRect.offsetMax = new Vector2(-20, -10); // right, top padding
+
+            var nameText = nameTextGo.AddComponent<TextMeshProUGUI>();
+            nameText.text = "[SSR] 캐릭터 이름 Lv.1";
+            nameText.fontSize = 24;
+            nameText.alignment = TextAlignmentOptions.MidlineLeft;
+            nameText.color = Color.white;
+
+            var defaultFont = ProjectEditorSettings.Instance.DefaultFont;
+            if (defaultFont != null)
+            {
+                nameText.font = defaultFont;
+            }
 
             var prefab = PrefabUtility.SaveAsPrefabAsset(item, prefabPath);
             Object.DestroyImmediate(item);
@@ -828,17 +973,18 @@ namespace Sc.Editor.AI
             var scrollImage = scrollView.AddComponent<Image>();
             scrollImage.color = new Color(0, 0, 0, 0.3f);
 
-            // Viewport
+            // Viewport - RectMask2D 사용 (Image+Mask보다 효율적)
             var viewport = new GameObject("Viewport");
             viewport.transform.SetParent(scrollView.transform, false);
 
             var vpRect = viewport.AddComponent<RectTransform>();
             vpRect.anchorMin = Vector2.zero;
             vpRect.anchorMax = Vector2.one;
-            vpRect.sizeDelta = Vector2.zero;
+            vpRect.offsetMin = Vector2.zero;  // stretch anchor 필수 설정
+            vpRect.offsetMax = Vector2.zero;
+            vpRect.pivot = new Vector2(0.5f, 0.5f);
 
-            viewport.AddComponent<Image>().color = new Color(1, 1, 1, 0);
-            viewport.AddComponent<Mask>().showMaskGraphic = false;
+            viewport.AddComponent<RectMask2D>();  // Mask 대신 RectMask2D (Image 불필요)
 
             // Content
             var content = new GameObject("Content");
@@ -848,6 +994,9 @@ namespace Sc.Editor.AI
             contentRect.anchorMin = new Vector2(0, 1);
             contentRect.anchorMax = new Vector2(1, 1);
             contentRect.pivot = new Vector2(0.5f, 1);
+            contentRect.anchoredPosition = Vector2.zero;  // 위치 초기화
+            contentRect.offsetMin = new Vector2(0, contentRect.offsetMin.y);  // left = 0
+            contentRect.offsetMax = new Vector2(0, contentRect.offsetMax.y);  // right = 0
             contentRect.sizeDelta = new Vector2(0, 0);
 
             var layout = content.AddComponent<VerticalLayoutGroup>();

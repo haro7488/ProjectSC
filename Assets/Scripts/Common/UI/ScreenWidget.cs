@@ -161,7 +161,8 @@ namespace Sc.Common.UI
         public static Context.Builder CreateContext(TState state = default) => new(state);
 
         /// <summary>
-        /// Screen 열기.
+        /// Screen 열기 (Push).
+        /// 사용법: LobbyScreen.Open(new LobbyState());
         /// </summary>
         public static void Open(TState state = default, Transition transition = null)
         {
@@ -169,8 +170,14 @@ namespace Sc.Common.UI
             if (transition != null)
                 builder.SetTransition(transition);
 
-            // NavigationManager.Instance.Push(builder);
+            NavigationManager.Instance?.Push(builder);
         }
+
+        /// <summary>
+        /// Screen 열기 (Push) - 별칭.
+        /// </summary>
+        public static void Push(TState state = default, Transition transition = null)
+            => Open(state, transition);
 
         #endregion
     }

@@ -199,8 +199,8 @@ namespace Sc.Contents.Character
             Debug.Log($"[CharacterListScreen] Character clicked: {characterId}");
             _currentState.SelectedCharacterId = characterId;
 
-            // TODO: 캐릭터 상세 화면으로 이동
-            // CharacterDetailScreen.Open(new CharacterDetailState { CharacterId = characterId });
+            // 캐릭터 상세 화면으로 이동
+            CharacterDetailScreen.Open(new CharacterDetailState { CharacterId = characterId });
         }
 
         private void OnBackClicked()

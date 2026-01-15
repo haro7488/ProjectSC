@@ -16,11 +16,12 @@
 - MVPSceneSetup Editor 도구 (SC Tools/MVP 메뉴)
 - NetworkManager ↔ GachaScreen 이벤트 기반 연동
 - GameBootstrap + GameFlowController 초기화 흐름
+- CharacterDetailScreen (캐릭터 상세 화면)
 
 **다음 단계**:
-1. ⬜ Unity 에디터에서 테스트 (SC Tools/MVP/Setup MVP Scene)
+1. ⬜ Unity 에디터에서 Rebuild All (SC Tools/MVP/Rebuild All)
 2. ⬜ 버그 수정 및 UI 연출 개선
-3. ⬜ 상세 화면 구현 (캐릭터 상세, 인벤토리)
+3. ⬜ 인벤토리 화면 구현
 
 ---
 
@@ -63,6 +64,7 @@
 - [x] LobbyScreen
 - [x] GachaScreen
 - [x] CharacterListScreen
+- [x] CharacterDetailScreen
 
 **UI Components**
 - [x] CurrencyHUD (재화 표시 + 충전)
@@ -314,6 +316,22 @@
 ---
 
 ## 작업 로그
+
+### 2026-01-16
+- [x] CharacterDetailScreen 구현
+  - [x] CharacterDetailState (InstanceId, CharacterId)
+  - [x] 캐릭터 기본 정보 표시 (이름, 희귀도, 클래스, 속성)
+  - [x] 스탯 정보 표시 (HP, ATK, DEF, SPD, 치명률, 치명피해)
+  - [x] 레벨, 돌파 단계, 설명 표시
+  - [x] 뒤로가기 버튼 → NavigationManager.Back()
+- [x] CharacterListScreen → CharacterDetailScreen 연동
+  - [x] OnCharacterItemClicked에서 CharacterDetailScreen.Open() 호출
+- [x] MVPSceneSetup에 CharacterDetailScreen 프리팹 생성 추가
+- [x] Navigation API 간소화
+  - [x] ScreenWidget.Open() / Push() 메서드 활성화
+  - [x] PopupWidget.Open() / Push() 메서드 활성화
+  - [x] 기존 코드 마이그레이션 (긴 형식 → 짧은 형식)
+  - [x] Navigation.md 문서 업데이트 (v2.1)
 
 ### 2026-01-15 (오후 - 계속)
 - [x] MVPSceneSetup Editor 도구 확장

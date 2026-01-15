@@ -4,10 +4,10 @@ assembly: Sc.Common
 class: NavigationManager, INavigationContext
 category: UI
 status: draft
-version: "2.0"
+version: "2.1"
 dependencies: [Sc.Data, Sc.Event, UISystem]
 created: 2025-01-14
-updated: 2025-01-15
+updated: 2026-01-16
 ---
 
 # Navigation 시스템
@@ -366,15 +366,49 @@ return true
 
 ## 사용 패턴
 
+### 권장 API (간소화된 호출)
+
 ```csharp
-// Screen 이동
+// Screen 열기 (Open 또는 Push 사용 가능)
 LobbyScreen.Open(new LobbyState { ActiveTabIndex = 2 });
+CharacterDetailScreen.Open(new CharacterDetailState { CharacterId = "char_001" });
 
 // Popup 열기
+GachaResultPopup.Open(new GachaResultState { Results = results });
 ConfirmPopup.Open(new ConfirmState { Title = "확인", Message = "진행?" });
 
 // 뒤로가기
 NavigationManager.Instance.Back();
+```
+
+### 전체 API
+
+| 메서드 | 설명 | 예시 |
+|--------|------|------|
+| `Screen.Open(state)` | Screen Push (권장) | `LobbyScreen.Open(new LobbyState())` |
+| `Screen.Push(state)` | Screen Push (별칭) | `LobbyScreen.Push(new LobbyState())` |
+| `Popup.Open(state)` | Popup Push (권장) | `ConfirmPopup.Open(new ConfirmState())` |
+| `Popup.Push(state)` | Popup Push (별칭) | `ConfirmPopup.Push(new ConfirmState())` |
+| `Back()` | 최상위 항목 닫기 | `NavigationManager.Instance.Back()` |
+
+### 고급 사용법 (Transition 지정)
+
+```csharp
+// Transition 지정이 필요한 경우
+LobbyScreen.Open(new LobbyState(), new FadeTransition(0.3f));
+
+// Builder 패턴 (세밀한 제어)
+var context = LobbyScreen.CreateContext(new LobbyState())
+    .SetTransition(new SlideTransition())
+    .Build();
+NavigationManager.Instance.Push(context);
+```
+
+### ❌ 비권장 (긴 형식)
+
+```csharp
+// 이전 방식 - 동작하지만 권장하지 않음
+NavigationManager.Instance?.Push(LobbyScreen.CreateContext(new LobbyState()));
 ```
 
 ---

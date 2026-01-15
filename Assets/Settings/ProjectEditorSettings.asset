@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9397bf838425b0d4aabb78c84f2aaf75, type: 3}
   m_Name: ProjectEditorSettings
   m_EditorClassIdentifier: 
-  _defaultFont: {fileID: 0}
+  _defaultFont: {fileID: 11400000, guid: 7451dd7c1e89092498da61a48452c1ff, type: 2}
   _defaultFontSize: 24
   _defaultButtonColor: {r: 0.3, g: 0.3, b: 0.4, a: 1}
   _defaultBackgroundColor: {r: 0.1, g: 0.1, b: 0.15, a: 1}
