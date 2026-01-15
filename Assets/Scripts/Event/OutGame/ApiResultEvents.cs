@@ -142,6 +142,26 @@ namespace Sc.Event.OutGame
 
     #endregion
 
+    #region Game Flow Events
+
+    /// <summary>
+    /// 게임 초기화 완료 이벤트
+    /// </summary>
+    public readonly struct GameInitializedEvent
+    {
+        /// <summary>
+        /// 초기화 성공 여부
+        /// </summary>
+        public bool IsSuccess { get; init; }
+
+        /// <summary>
+        /// 실패 시 에러 메시지
+        /// </summary>
+        public string ErrorMessage { get; init; }
+    }
+
+    #endregion
+
     #region UserData Events
 
     /// <summary>

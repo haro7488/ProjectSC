@@ -6,7 +6,11 @@
         "Sc.Core",
         "Sc.Data",
         "Sc.Packet",
-        "UniTask"
+        "Sc.Foundation",
+        "Sc.Contents.Gacha",
+        "Sc.Contents.Character",
+        "UniTask",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
