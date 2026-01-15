@@ -7,18 +7,20 @@
 
 ## 🚀 다음 작업 (clear 후 시작점)
 
-**지시**: "MVP 구현 시작해줘" 또는 "단기 목표 구현 진행해줘"
+**지시**: "Unity에서 테스트해줘" 또는 "다음 기능 구현하자"
 
-**작업 순서**:
-1. TitleScreen → LobbyScreen 화면 전환
-2. CurrencyHUD (재화 표시 + 충전)
-3. GachaScreen (1회/10회 소환)
-4. CharacterListScreen (보유 캐릭터)
+**완료된 작업**: ✅
+- MVP 화면 구현 (Title, Lobby, Gacha, CharacterList)
+- CurrencyHUD, GachaResultPopup
+- DataManager 연동 (재화, 캐릭터 목록)
+- MVPSceneSetup Editor 도구 (SC Tools/MVP 메뉴)
+- NetworkManager ↔ GachaScreen 이벤트 기반 연동
+- GameBootstrap + GameFlowController 초기화 흐름
 
-**선행 조건**: ✅ 모두 완료
-- 기반 레이어 (Foundation, Data, Packet, Core, Common)
-- UI 시스템 (Widget, Screen, Popup, NavigationManager)
-- 데이터 시스템 (DataManager, LocalApiClient, Delta 패턴)
+**다음 단계**:
+1. ⬜ Unity 에디터에서 테스트 (SC Tools/MVP/Setup MVP Scene)
+2. ⬜ 버그 수정 및 UI 연출 개선
+3. ⬜ 상세 화면 구현 (캐릭터 상세, 인벤토리)
 
 ---
 
@@ -57,20 +59,24 @@
 ### 필요 컴포넌트
 
 **Screens (NavigationManager)**
-- [ ] TitleScreen
-- [ ] LobbyScreen
-- [ ] GachaScreen
-- [ ] CharacterListScreen
+- [x] TitleScreen
+- [x] LobbyScreen
+- [x] GachaScreen
+- [x] CharacterListScreen
 
 **UI Components**
-- [ ] CurrencyHUD (재화 표시 + 충전)
-- [ ] CharacterListItem (캐릭터 셀)
-- [ ] GachaResultPopup (소환 결과)
+- [x] CurrencyHUD (재화 표시 + 충전)
+- [x] GachaResultPopup (소환 결과)
 
 **데이터 연동**
-- [ ] DataManager ↔ CurrencyHUD (재화 바인딩)
-- [ ] DataManager ↔ CharacterList (캐릭터 목록)
-- [ ] LocalApiClient ↔ Gacha (소환 요청/응답)
+- [x] DataManager ↔ CurrencyHUD (재화 바인딩)
+- [x] DataManager ↔ CharacterList (캐릭터 목록)
+- [x] NetworkManager ↔ Gacha (소환 요청/응답)
+
+**게임 흐름**
+- [x] GameBootstrap - 초기화 흐름 (NetworkManager → DataManager → Login)
+- [x] GameFlowController - 초기화 완료 후 TitleScreen 전환
+- [x] GameInitializedEvent - 초기화 완료 이벤트
 
 ### 제외 범위 (추후)
 - 캐릭터 상세 화면
@@ -102,6 +108,7 @@
 |----------|------|------|------|
 | Sc.Editor.AI | UITestSceneSetup | ✅ | UI 테스트 씬/프리팹 자동 생성 |
 | Sc.Editor.AI | NavigationDebugWindow | ✅ | Navigation 상태 시각화 윈도우 |
+| Sc.Editor.AI | MVPSceneSetup | ✅ | MVP 씬/프리팹 자동 생성 (SC Tools/MVP) |
 | Sc.Editor.Data | MasterDataImporter | ✅ | JSON → SO 자동 변환 |
 
 ### Contents - Shared
@@ -307,6 +314,33 @@
 ---
 
 ## 작업 로그
+
+### 2026-01-15 (오후 - 계속)
+- [x] MVPSceneSetup Editor 도구 확장
+  - [x] NetworkManager, GameBootstrap, GameFlowController 자동 생성
+  - [x] Clear 기능에 새 오브젝트 포함
+- [x] NetworkManager ↔ GachaScreen 연동
+  - [x] GachaScreen에서 NetworkManager.Send() 호출
+  - [x] GachaCompletedEvent/GachaFailedEvent 구독
+  - [x] 결과 수신 시 GachaResultPopup 표시
+- [x] 게임 초기화 흐름 구현
+  - [x] GameInitializedEvent 이벤트 추가
+  - [x] GameBootstrap에서 초기화 완료 시 이벤트 발행
+  - [x] GameFlowController 생성 (이벤트 수신 → TitleScreen Push)
+  - [x] Sc.Contents.Title Assembly에 Foundation, Event 참조 추가
+
+### 2026-01-15 (오후)
+- [x] MVP 화면 구현 (Phase 1)
+  - [x] Sc.Contents.Title Assembly 생성
+  - [x] TitleScreen 구현 (터치 시 로비 전환)
+  - [x] LobbyScreen 구현 (가챠/캐릭터 버튼)
+  - [x] GachaScreen 구현 (1회/10회 소환 UI)
+  - [x] GachaResultPopup 구현 (소환 결과 표시)
+  - [x] CharacterListScreen 구현 (보유 캐릭터 목록)
+  - [x] CurrencyHUD 위젯 구현 (재화 표시 + 충전 이벤트)
+- [x] Assembly 참조 설정
+  - [x] Title → Lobby 참조
+  - [x] Lobby → Gacha, Character 참조
 
 ### 2026-01-15
 - [x] 기본 UI Widget 컴포넌트 구현 (8개)

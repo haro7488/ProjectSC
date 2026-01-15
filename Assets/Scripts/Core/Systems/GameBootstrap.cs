@@ -123,6 +123,10 @@ namespace Sc.Core
             LogCurrentState();
 
             _isInitialized = true;
+
+            // 게임 초기화 완료 이벤트 발행
+            EventManager.Instance.Publish(new GameInitializedEvent { IsSuccess = true });
+
             return true;
         }
 
