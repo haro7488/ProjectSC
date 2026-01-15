@@ -5,7 +5,7 @@ category: Shared
 status: draft
 version: "1.0"
 dependencies: [Sc.Core, Sc.Data, Sc.Packet]
-detail_docs: [MVP, UIComponents, Pool, Utility]
+detail_docs: [UISystem, UIComponents, Pool, Utility]
 created: 2025-01-14
 updated: 2025-01-14
 ---
@@ -25,7 +25,8 @@ updated: 2025-01-14
 
 | 개념 | 설명 |
 |------|------|
-| **MVP 패턴** | Model-View-Presenter. UI와 로직 분리 |
+| **Widget** | 모든 UI의 기본 단위. Composition 패턴 |
+| **MVP 패턴** | 화면 단위 Widget에 적용. UI와 로직 분리 |
 | **Object Pool** | 객체 재사용으로 GC 최소화 |
 | **Extension** | 기존 타입에 메서드 추가 |
 
@@ -33,14 +34,15 @@ updated: 2025-01-14
 
 ## 클래스 역할 정의
 
-### UI - MVP Base
+### UI - Widget System
 
 | 클래스 | 역할 | 책임 | 하지 않는 것 |
 |--------|------|------|--------------|
-| IView | 뷰 계약 정의 | 뷰가 제공해야 할 기능 명세 | 구현 |
-| IPresenter | 프레젠터 계약 정의 | 프레젠터가 제공해야 할 기능 명세 | 구현 |
-| BaseView | 뷰 공통 기능 | Show/Hide, 애니메이션, 이벤트 바인딩 | 비즈니스 로직, 데이터 가공 |
-| BasePresenter\<T\> | 프레젠터 공통 기능 | 뷰 참조, 초기화, 정리 | Unity 컴포넌트 직접 조작 |
+| Widget | 모든 UI 기본 클래스 | 생명주기, 계층 관리, 갱신 | 비즈니스 로직 |
+| ScreenWidget | 전체 화면 Widget | 화면 단위 구성, Presenter 연결 | 팝업/패널 로직 |
+| PanelWidget | 화면 내 섹션 | 패널 표시/숨김 | 전체 화면 관리 |
+| PopupWidget | 모달 팝업 | 팝업 스택, 배경 딤 | 화면 전환 |
+| BasePresenter\<T\> | 프레젠터 공통 기능 | 이벤트 구독, 데이터 가공, View 갱신 | Unity 컴포넌트 직접 조작 |
 
 ### UI - Components
 
@@ -67,45 +69,52 @@ updated: 2025-01-14
 
 ---
 
-## MVP 패턴 흐름
+## Widget + MVP 흐름
 
 ```
-┌─────────┐      ┌─────────────┐      ┌─────────┐
-│  View   │ ←──→ │  Presenter  │ ←──→ │  Model  │
-└─────────┘      └─────────────┘      └─────────┘
-     │                  │                   │
- UI 표시            로직 처리           데이터
- 사용자 입력        데이터 가공         상태 저장
+┌─────────────────────────────────────────────┐
+│              ScreenWidget                   │
+│  ┌─────────────────────────────────────┐    │
+│  │  Widget (자식들)                     │    │
+│  │  ├── HeaderWidget                   │    │
+│  │  │     └── CurrencyWidget           │    │
+│  │  └── ContentWidget                  │    │
+│  └─────────────────────────────────────┘    │
+└──────────────────┬──────────────────────────┘
+                   │
+            ┌──────▼──────┐      ┌─────────┐
+            │  Presenter  │ ←──→ │  Model  │
+            └─────────────┘      └─────────┘
 ```
 
 ### 책임 분리
 
 | 계층 | 알아야 하는 것 | 몰라야 하는 것 |
 |------|----------------|----------------|
-| **View** | UI 요소, 애니메이션 | 비즈니스 로직, 데이터 구조 |
-| **Presenter** | View 인터페이스, Model | Unity 컴포넌트, UI 세부사항 |
-| **Model** | 데이터, 규칙 | View, Presenter |
+| **Widget** | UI 요소, 자식 Widget, 표시 갱신 | 비즈니스 로직, 데이터 구조 |
+| **Presenter** | Widget 인터페이스, Model | Unity 컴포넌트, UI 세부사항 |
+| **Model** | 데이터, 규칙 | Widget, Presenter |
 
 ---
 
 ## 클래스 관계도
 
 ```
-┌─ UI ──────────────────────────────────────────┐
+┌─ UI (Widget System) ─────────────────────────┐
 │                                               │
-│  ┌─────────┐    ┌──────────────┐              │
-│  │ IView   │←───│  BaseView    │              │
-│  └─────────┘    └──────────────┘              │
-│        ↑               ↑                      │
-│        │               │ 상속                 │
-│  ┌─────────────┐  ┌─────────┐  ┌──────────┐  │
-│  │IPresenter   │  │UIButton │  │ UIPopup  │  │
-│  └─────────────┘  └─────────┘  └──────────┘  │
-│        ↑                            ↑        │
-│        │                            │ 관리    │
-│  ┌─────────────────┐         ┌───────────┐   │
-│  │BasePresenter<T> │         │ UIManager │   │
-│  └─────────────────┘         └───────────┘   │
+│  ┌────────────────────────────────────────┐  │
+│  │               Widget (Base)             │  │
+│  └────────────────────────────────────────┘  │
+│        ↑               ↑              ↑      │
+│        │               │              │      │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐│
+│  │ScreenWidget│ │PanelWidget│  │PopupWidget ││
+│  └───────────┘  └───────────┘  └───────────┘│
+│        │                                     │
+│        │ 연결                                │
+│  ┌─────────────────┐         ┌───────────┐  │
+│  │BasePresenter<T> │         │ UIManager │  │
+│  └─────────────────┘         └───────────┘  │
 └───────────────────────────────────────────────┘
 
 ┌─ Pool ────────────────────────────────────────┐
@@ -131,9 +140,16 @@ updated: 2025-01-14
 ## 사용 예시
 
 ```csharp
-// MVP 패턴
-public class LobbyView : BaseView, ILobbyView { }
-public class LobbyPresenter : BasePresenter<ILobbyView> { }
+// Widget + MVP 패턴
+public class LobbyScreenWidget : ScreenWidget { }
+public class LobbyPresenter : BasePresenter<LobbyScreenWidget> { }
+
+// Widget 생명주기
+widget.OnInitialize();   // 최초 1회
+widget.OnBind(data);     // 데이터 주입
+widget.OnShow();         // 표시
+widget.OnRefresh();      // 갱신
+widget.OnHide();         // 숨김
 
 // 오브젝트 풀
 var bullet = PoolManager.Instance.Spawn<Bullet>();
@@ -155,7 +171,7 @@ var shuffled = cardList.Shuffle();
 ---
 
 ## 상세 문서
-- [MVP.md](Common/MVP.md) - MVP 패턴 상세 (IView, IPresenter, Base 클래스)
+- [UISystem.md](Common/UISystem.md) - UI 시스템 상세 (Widget, MVP, 생명주기)
 - [UIComponents.md](Common/UIComponents.md) - UI 컴포넌트 상세 (Button, Popup, Manager)
 - [Pool.md](Common/Pool.md) - 오브젝트 풀 상세
 - [Utility.md](Common/Utility.md) - 유틸리티 상세

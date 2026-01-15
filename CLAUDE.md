@@ -7,6 +7,7 @@
 - [진행상황](Docs/PROGRESS.md) - 현재 작업 상태
 - [아키텍처](Docs/ARCHITECTURE.md) - 폴더 구조, 의존성
 - [컨벤션](Docs/CONVENTIONS.md) - 코딩 규칙
+- [문서 작성 규칙](Docs/DOC_RULES.md) - 문서 형식 및 메타데이터
 
 ## 핵심 규칙
 - Assembly 접두사: `Sc.`
@@ -20,7 +21,8 @@
 Unity 2022.x / C# / UniTask / Addressables
 
 ## 문서 규칙
-- [문서 작성 규칙](Docs/Specs/DOC_RULES.md) - 문서 형식 및 메타데이터
+
+> **필수**: 문서 작업 전 [문서 작성 규칙](Docs/DOC_RULES.md)을 반드시 먼저 읽을 것
 
 ### 문서-코드 관계
 - **문서**: What, Why 정의 (역할, 책임, 인터페이스)
@@ -40,6 +42,10 @@ Unity 2022.x / C# / UniTask / Addressables
 - 코드 변경 → 문서 자동 업데이트 아님 (수동 동기화)
 - 문서에 전체 코드 포함 금지
 - 메타데이터 형식 준수 (DOC_RULES.md 참조)
+
+## 제약 사항
+- **문서 작업 전**: [Docs/DOC_RULES.md](Docs/DOC_RULES.md)를 읽지 않았다면 반드시 먼저 읽을 것
+- **코드 작업 전**: 관련 스펙 문서(대분류)를 먼저 확인할 것
 
 ## 커밋 규칙
 - 커밋 메시지에 AI 사용 관련 문구 추가 금지 (Co-Authored-By 등)

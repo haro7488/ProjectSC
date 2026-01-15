@@ -15,7 +15,7 @@
 | Sc.Event | 클라이언트 내부 이벤트 | [Event.md](Event.md) | [Common](Event/CommonEvents.md), [InGame](Event/InGameEvents.md), [OutGame](Event/OutGameEvents.md) | ⬜ |
 | Sc.Packet | 서버 통신 인터페이스 | [Packet.md](Packet.md) | [IPacketService](Packet/IPacketService.md), [Requests](Packet/Requests.md), [Responses](Packet/Responses.md) | ⬜ |
 | Sc.Core | 핵심 시스템 | [Core.md](Core.md) | [Singleton](Core/Singleton.md), [EventManager](Core/EventManager.md), [ResourceManager](Core/ResourceManager.md), [SceneLoader](Core/SceneLoader.md), [AudioManager](Core/AudioManager.md), [SaveManager](Core/SaveManager.md), [StateMachine](Core/StateMachine.md) | ⬜ |
-| Sc.Common | 공통 모듈 | [Common.md](Common.md) | [MVP](Common/MVP.md), [UIComponents](Common/UIComponents.md), [Pool](Common/Pool.md), [Utility](Common/Utility.md) | ⬜ |
+| Sc.Common | 공통 모듈 | [Common.md](Common.md) | [UISystem](Common/UISystem.md), [UIComponents](Common/UIComponents.md), [Pool](Common/Pool.md), [Utility](Common/Utility.md) | ⬜ |
 
 ---
 
