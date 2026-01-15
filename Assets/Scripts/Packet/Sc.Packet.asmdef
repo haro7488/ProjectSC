@@ -3,7 +3,8 @@
     "rootNamespace": "Sc.Packet",
     "references": [
         "GUID:a5fb39568b1e7704a8446a4874129323",
-        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:d0ebcf97112c3e94586b26165f1b6125"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
