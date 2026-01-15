@@ -13,10 +13,11 @@
 
 | Assembly | 구조 | 구현 | 설명 |
 |----------|------|------|------|
+| Sc.Foundation | ✅ | ✅ | 최하위 레이어 (Singleton, EventManager) |
 | Sc.Data | ✅ | ✅ | 마스터/유저 데이터 정의 |
-| Sc.Event | ✅ | ⬜ | 클라이언트 내부 이벤트 |
-| Sc.Packet | ✅ | ✅ | 서버 통신 인터페이스 (IApiService) |
-| Sc.Core | ✅ | ✅ | 핵심 시스템 (Singleton, DataManager) |
+| Sc.Event | ✅ | ✅ | 클라이언트 내부 이벤트 |
+| Sc.Packet | ✅ | ✅ | 서버 통신 (NetworkManager, RequestQueue) |
+| Sc.Core | ✅ | ✅ | 핵심 시스템 (DataManager, 핸들러) |
 | Sc.Common | ✅ | ✅ | 공통 모듈 (UI 시스템 완료) |
 
 ### Editor (빌드 제외)
@@ -231,6 +232,14 @@
 ## 작업 로그
 
 ### 2026-01-15
+- [x] 네트워크 이벤트 큐 아키텍처 구현
+  - [x] Sc.Foundation Assembly 생성 (순환 참조 해결)
+  - [x] Singleton, EventManager → Foundation으로 이동
+  - [x] IApiClient 인터페이스 (non-generic SendAsync 추가)
+  - [x] PacketDispatcher 콜백 패턴으로 변경 (이벤트 직접 발행 제거)
+  - [x] NetworkManager 콜백 핸들러 구현 (RequestCompletedEvent, NetworkErrorEvent 발행)
+  - [x] LocalApiClient non-generic SendAsync 구현
+  - [x] RequestQueue 리플렉션 제거 (성능 최적화)
 - [x] 데이터 아키텍처 v2.0 구현 완료
   - [x] 기존 Data 관련 커밋 리셋 (8b6aae0)
   - [x] 서버 중심 아키텍처로 재설계
