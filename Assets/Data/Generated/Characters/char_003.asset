@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a647e48f7caf84893e86b366fe164d, type: 3}
+  m_Name: char_003
+  m_EditorClassIdentifier: 
+  _id: char_003
+  _name: "\uCE74\uC774"
+  _nameEn: Kai
+  _rarity: 2
+  _characterClass: 2
+  _element: 2
+  _baseHp: 750
+  _baseAtk: 380
+  _baseDef: 100
+  _baseSpd: 150
+  _critRate: 0.25
+  _critDamage: 2
+  _skillIds:
+  - skill_007
+  - skill_008
+  _description: "\uADF8\uB9BC\uC790 \uC18D\uC758 \uC554\uC0B4\uC790"

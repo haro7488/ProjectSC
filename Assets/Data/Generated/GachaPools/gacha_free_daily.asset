@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4ea351fb31a37b478cec297dd89f5a3, type: 3}
+  m_Name: gacha_free_daily
+  m_EditorClassIdentifier: 
+  _id: gacha_free_daily
+  _name: "\uBB34\uB8CC \uC77C\uC77C \uC18C\uD658"
+  _nameEn: Free Daily Summon
+  _type: 2
+  _costType: 3
+  _costAmount: 0
+  _costAmount10: 0
+  _pityCount: 0
+  _characterIds:
+  - char_003
+  - char_004
+  - char_005
+  - char_006
+  _rates:
+    SSR: 0
+    SR: 0.1
+    R: 0.9
+  _rateUpCharacterId: 
+  _rateUpBonus: 0
+  _isActive: 1
+  _startDate: 2026-01-01T00:00:00Z
+  _endDate: 
+  _description: "\uB9E4\uC77C 1\uD68C \uBB34\uB8CC \uC18C\uD658 (SSR \uC81C\uC678)"

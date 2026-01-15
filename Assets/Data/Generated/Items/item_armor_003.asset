@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96cce8a09af7d3543a63321fe9c6b144, type: 3}
+  m_Name: item_armor_003
+  m_EditorClassIdentifier: 
+  _id: item_armor_003
+  _name: "\uB4DC\uB798\uACE4 \uC2A4\uCF00\uC77C"
+  _nameEn: Dragon Scale
+  _type: 1
+  _rarity: 3
+  _atkBonus: 0
+  _defBonus: 180
+  _hpBonus: 500
+  _description: "\uC6A9\uC758 \uBE44\uB298\uB85C \uB9CC\uB4E0 \uAC11\uC637"

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a647e48f7caf84893e86b366fe164d, type: 3}
+  m_Name: char_006
+  m_EditorClassIdentifier: 
+  _id: char_006
+  _name: "\uBBF8\uB77C"
+  _nameEn: Mira
+  _rarity: 1
+  _characterClass: 5
+  _element: 5
+  _baseHp: 700
+  _baseAtk: 320
+  _baseDef: 110
+  _baseSpd: 130
+  _critRate: 0.2
+  _critDamage: 1.6
+  _skillIds:
+  - skill_013
+  - skill_014
+  _description: "\uBC14\uB78C\uC758 \uAD81\uC218"

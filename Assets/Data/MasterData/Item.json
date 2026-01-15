@@ -1,0 +1,116 @@
+{
+  "version": "1.0.0",
+  "exportedAt": "2026-01-15T12:00:00Z",
+  "data": [
+    {
+      "Id": "item_weapon_001",
+      "Name": "강철 검",
+      "NameEn": "Steel Sword",
+      "Type": "Weapon",
+      "Rarity": "R",
+      "ATKBonus": 50,
+      "DEFBonus": 0,
+      "HPBonus": 0,
+      "Description": "기본적인 강철 검"
+    },
+    {
+      "Id": "item_weapon_002",
+      "Name": "화염의 검",
+      "NameEn": "Flame Sword",
+      "Type": "Weapon",
+      "Rarity": "SR",
+      "ATKBonus": 120,
+      "DEFBonus": 0,
+      "HPBonus": 0,
+      "Description": "불꽃이 깃든 검"
+    },
+    {
+      "Id": "item_weapon_003",
+      "Name": "용의 이빨",
+      "NameEn": "Dragon Fang",
+      "Type": "Weapon",
+      "Rarity": "SSR",
+      "ATKBonus": 250,
+      "DEFBonus": 0,
+      "HPBonus": 0,
+      "Description": "용의 이빨로 만든 전설의 검"
+    },
+    {
+      "Id": "item_armor_001",
+      "Name": "가죽 갑옷",
+      "NameEn": "Leather Armor",
+      "Type": "Armor",
+      "Rarity": "R",
+      "ATKBonus": 0,
+      "DEFBonus": 30,
+      "HPBonus": 100,
+      "Description": "기본적인 가죽 갑옷"
+    },
+    {
+      "Id": "item_armor_002",
+      "Name": "기사의 갑옷",
+      "NameEn": "Knight Armor",
+      "Type": "Armor",
+      "Rarity": "SR",
+      "ATKBonus": 0,
+      "DEFBonus": 80,
+      "HPBonus": 250,
+      "Description": "기사단의 갑옷"
+    },
+    {
+      "Id": "item_armor_003",
+      "Name": "드래곤 스케일",
+      "NameEn": "Dragon Scale",
+      "Type": "Armor",
+      "Rarity": "SSR",
+      "ATKBonus": 0,
+      "DEFBonus": 180,
+      "HPBonus": 500,
+      "Description": "용의 비늘로 만든 갑옷"
+    },
+    {
+      "Id": "item_acc_001",
+      "Name": "힘의 반지",
+      "NameEn": "Ring of Power",
+      "Type": "Accessory",
+      "Rarity": "R",
+      "ATKBonus": 20,
+      "DEFBonus": 10,
+      "HPBonus": 50,
+      "Description": "힘을 증가시키는 반지"
+    },
+    {
+      "Id": "item_acc_002",
+      "Name": "수호의 목걸이",
+      "NameEn": "Guardian Necklace",
+      "Type": "Accessory",
+      "Rarity": "SR",
+      "ATKBonus": 30,
+      "DEFBonus": 50,
+      "HPBonus": 150,
+      "Description": "수호의 힘이 깃든 목걸이"
+    },
+    {
+      "Id": "item_consume_001",
+      "Name": "체력 포션",
+      "NameEn": "HP Potion",
+      "Type": "Consumable",
+      "Rarity": "N",
+      "ATKBonus": 0,
+      "DEFBonus": 0,
+      "HPBonus": 0,
+      "Description": "HP를 500 회복한다"
+    },
+    {
+      "Id": "item_consume_002",
+      "Name": "경험치 포션",
+      "NameEn": "EXP Potion",
+      "Type": "Consumable",
+      "Rarity": "R",
+      "ATKBonus": 0,
+      "DEFBonus": 0,
+      "HPBonus": 0,
+      "Description": "경험치를 1000 획득한다"
+    }
+  ]
+}

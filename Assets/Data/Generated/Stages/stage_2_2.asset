@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2afa2a6086d9c414dbba1e2624895b4b, type: 3}
+  m_Name: stage_2_2
+  m_EditorClassIdentifier: 
+  _id: stage_2_2
+  _name: "\uD654\uC5FC\uC758 \uB3D9\uAD74 2"
+  _nameEn: Fire Cave 2
+  _chapter: 2
+  _stageNumber: 2
+  _difficulty: 1
+  _staminaCost: 8
+  _recommendedPower: 2500
+  _enemyIds:
+  - enemy_003
+  - enemy_004
+  - enemy_004
+  _rewardGold: 250
+  _rewardExp: 120
+  _rewardItemIds:
+  - item_weapon_001
+  - item_consume_002
+  _rewardItemRates:
+  - 0.15
+  - 0.15
+  _description: "\uC6A9\uC554 \uC9C0\uB300"

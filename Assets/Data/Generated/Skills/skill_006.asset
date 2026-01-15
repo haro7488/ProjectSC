@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76facf83e1f700445b50618cf31e5981, type: 3}
+  m_Name: skill_006
+  m_EditorClassIdentifier: 
+  _id: skill_006
+  _name: "\uD574\uC77C"
+  _nameEn: Tsunami
+  _type: 2
+  _targetType: 1
+  _element: 1
+  _power: 220
+  _coolDown: 5
+  _manaCost: 100
+  _description: "\uAC70\uB300\uD55C \uD30C\uB3C4\uB85C \uC804\uC7A5\uC744 \uD729\uC4F4\uB2E4"

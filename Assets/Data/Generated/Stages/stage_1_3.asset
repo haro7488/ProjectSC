@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2afa2a6086d9c414dbba1e2624895b4b, type: 3}
+  m_Name: stage_1_3
+  m_EditorClassIdentifier: 
+  _id: stage_1_3
+  _name: "\uC2DC\uC791\uC758 \uC232 \uBCF4\uC2A4"
+  _nameEn: Beginning Forest Boss
+  _chapter: 1
+  _stageNumber: 3
+  _difficulty: 1
+  _staminaCost: 10
+  _recommendedPower: 1500
+  _enemyIds:
+  - enemy_002
+  - enemy_002
+  - enemy_boss_001
+  _rewardGold: 300
+  _rewardExp: 150
+  _rewardItemIds:
+  - item_weapon_001
+  - item_armor_001
+  _rewardItemRates:
+  - 0.2
+  - 0.2
+  _description: "\uC232\uC758 \uC218\uD638\uC790\uC640\uC758 \uB300\uACB0"

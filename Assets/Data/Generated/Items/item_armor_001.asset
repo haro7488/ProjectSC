@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96cce8a09af7d3543a63321fe9c6b144, type: 3}
+  m_Name: item_armor_001
+  m_EditorClassIdentifier: 
+  _id: item_armor_001
+  _name: "\uAC00\uC8FD \uAC11\uC637"
+  _nameEn: Leather Armor
+  _type: 1
+  _rarity: 1
+  _atkBonus: 0
+  _defBonus: 30
+  _hpBonus: 100
+  _description: "\uAE30\uBCF8\uC801\uC778 \uAC00\uC8FD \uAC11\uC637"

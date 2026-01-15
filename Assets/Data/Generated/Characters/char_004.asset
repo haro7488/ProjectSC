@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a647e48f7caf84893e86b366fe164d, type: 3}
+  m_Name: char_004
+  m_EditorClassIdentifier: 
+  _id: char_004
+  _name: "\uC5D8\uB77C"
+  _nameEn: Ella
+  _rarity: 2
+  _characterClass: 3
+  _element: 3
+  _baseHp: 900
+  _baseAtk: 200
+  _baseDef: 150
+  _baseSpd: 95
+  _critRate: 0.1
+  _critDamage: 1.2
+  _skillIds:
+  - skill_009
+  - skill_010
+  _description: "\uBE5B\uC758 \uCE58\uC720\uC0AC"

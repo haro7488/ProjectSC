@@ -1,0 +1,94 @@
+{
+  "version": "1.0.0",
+  "exportedAt": "2026-01-15T12:00:00Z",
+  "data": [
+    {
+      "Id": "gacha_standard",
+      "Name": "일반 소환",
+      "NameEn": "Standard Summon",
+      "Type": "Standard",
+      "CostType": "Gem",
+      "CostAmount": 300,
+      "CostAmount10": 2700,
+      "PityCount": 90,
+      "CharacterIds": ["char_001", "char_002", "char_003", "char_004", "char_005", "char_006"],
+      "Rates": {
+        "SSR": 0.03,
+        "SR": 0.12,
+        "R": 0.85
+      },
+      "RateUpCharacterId": null,
+      "RateUpBonus": 0,
+      "IsActive": true,
+      "StartDate": "2026-01-01T00:00:00Z",
+      "EndDate": null,
+      "Description": "다양한 영웅을 소환할 수 있는 기본 소환"
+    },
+    {
+      "Id": "gacha_pickup_aria",
+      "Name": "아리아 픽업 소환",
+      "NameEn": "Aria Pickup Summon",
+      "Type": "Pickup",
+      "CostType": "Gem",
+      "CostAmount": 300,
+      "CostAmount10": 2700,
+      "PityCount": 80,
+      "CharacterIds": ["char_001", "char_002", "char_003", "char_004", "char_005", "char_006"],
+      "Rates": {
+        "SSR": 0.03,
+        "SR": 0.12,
+        "R": 0.85
+      },
+      "RateUpCharacterId": "char_001",
+      "RateUpBonus": 0.5,
+      "IsActive": true,
+      "StartDate": "2026-01-15T00:00:00Z",
+      "EndDate": "2026-02-15T00:00:00Z",
+      "Description": "불꽃의 전사 아리아 확률 UP!"
+    },
+    {
+      "Id": "gacha_pickup_luna",
+      "Name": "루나 픽업 소환",
+      "NameEn": "Luna Pickup Summon",
+      "Type": "Pickup",
+      "CostType": "Gem",
+      "CostAmount": 300,
+      "CostAmount10": 2700,
+      "PityCount": 80,
+      "CharacterIds": ["char_001", "char_002", "char_003", "char_004", "char_005", "char_006"],
+      "Rates": {
+        "SSR": 0.03,
+        "SR": 0.12,
+        "R": 0.85
+      },
+      "RateUpCharacterId": "char_002",
+      "RateUpBonus": 0.5,
+      "IsActive": false,
+      "StartDate": "2026-02-15T00:00:00Z",
+      "EndDate": "2026-03-15T00:00:00Z",
+      "Description": "달빛의 마법사 루나 확률 UP!"
+    },
+    {
+      "Id": "gacha_free_daily",
+      "Name": "무료 일일 소환",
+      "NameEn": "Free Daily Summon",
+      "Type": "Free",
+      "CostType": "None",
+      "CostAmount": 0,
+      "CostAmount10": 0,
+      "PityCount": 0,
+      "CharacterIds": ["char_003", "char_004", "char_005", "char_006"],
+      "Rates": {
+        "SSR": 0.00,
+        "SR": 0.10,
+        "R": 0.90
+      },
+      "RateUpCharacterId": null,
+      "RateUpBonus": 0,
+      "IsActive": true,
+      "StartDate": "2026-01-01T00:00:00Z",
+      "EndDate": null,
+      "Description": "매일 1회 무료 소환 (SSR 제외)"
+    }
+  ]
+}

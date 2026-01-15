@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76facf83e1f700445b50618cf31e5981, type: 3}
+  m_Name: skill_002
+  m_EditorClassIdentifier: 
+  _id: skill_002
+  _name: "\uBD88\uAF43 \uD3ED\uD48D"
+  _nameEn: Flame Storm
+  _type: 0
+  _targetType: 1
+  _element: 0
+  _power: 100
+  _coolDown: 3
+  _manaCost: 30
+  _description: "\uBD88\uAF43 \uD3ED\uD48D\uC73C\uB85C \uBAA8\uB4E0 \uC801\uC744
+    \uACF5\uACA9\uD55C\uB2E4"

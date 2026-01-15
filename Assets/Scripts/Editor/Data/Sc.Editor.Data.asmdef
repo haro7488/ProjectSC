@@ -1,0 +1,19 @@
+{
+    "name": "Sc.Editor.Data",
+    "rootNamespace": "Sc.Editor.Data",
+    "references": [
+        "Sc.Data",
+        "Sc.Core"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
