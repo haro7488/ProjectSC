@@ -237,6 +237,51 @@
 
 ---
 
+## Unity 기본 컴포넌트 Widget화
+
+**일자**: 2025-01-15
+**상태**: 결정됨
+**관련 커밋**: `548caf3`
+
+### 컨텍스트
+- MVP 화면 구현 전, UI 컴포넌트 사용 패턴 정립 필요
+- Unity 기본 컴포넌트(Button, Text 등)를 Screen/Popup에서 일관되게 사용할 방법 필요
+- Widget 시스템의 라이프사이클(Initialize, Bind, Show/Hide, Release)과 통합 필요
+
+### 선택지
+1. **Unity 컴포넌트 직접 사용**
+   - 장점: 추가 코드 없음, 단순
+   - 단점: 라이프사이클 불일치, 리스너 관리 분산, 일관성 부족
+
+2. **Widget 래퍼 클래스 생성**
+   - 장점: 일관된 라이프사이클, 이벤트 관리 중앙화, 재사용 용이
+   - 단점: 래퍼 코드 작성 비용, 간접 레이어 추가
+
+3. **확장 메서드로 기능 추가**
+   - 장점: 기존 컴포넌트 그대로 사용
+   - 단점: Widget 계층 구조와 통합 어려움
+
+### 결정
+**Widget 래퍼 클래스 생성** 선택
+
+**이유**:
+- Widget 시스템의 Composition 패턴과 자연스럽게 통합
+- OnInitialize에서 리스너 등록, OnRelease에서 정리 → 메모리 누수 방지
+- OnBind로 데이터 바인딩 표준화
+- Screen/Popup에서 일관된 방식으로 UI 컴포넌트 사용 가능
+
+### 결과
+- 8개 기본 Widget 구현: Text, Button, Image, Slider, Toggle, InputField, ProgressBar, ScrollView
+- 각 Widget이 Unity 컴포넌트를 래핑하고 Widget 라이프사이클 준수
+- MVP 화면 구현 시 일관된 패턴으로 UI 구성 가능
+
+### 회고
+- 초기에는 "오버엔지니어링 아닌가?" 고민
+- 실제 구현해보니 Screen/Popup 코드가 훨씬 깔끔해짐
+- **배운 점**: 기반 컴포넌트에 투자하면 상위 레이어 구현이 단순해짐
+
+---
+
 ## [템플릿] 새 의사결정
 
 **일자**: YYYY-MM-DD

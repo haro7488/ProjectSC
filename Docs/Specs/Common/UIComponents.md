@@ -213,6 +213,77 @@ UIManager.Instance.CloseTopPopup();
 | DOTween | 의존성 필요 |
 | 메모리 | 씬 전환 시 CloseAllPopups 권장 |
 
+---
+
+## 기본 Widget 컴포넌트
+
+Unity 기본 UI 컴포넌트를 Widget 시스템에 통합한 래퍼 클래스들.
+
+### 컴포넌트 목록
+
+| Widget | Unity 컴포넌트 | 용도 |
+|--------|---------------|------|
+| TextWidget | TMP_Text | 텍스트 표시/스타일링 |
+| ButtonWidget | Button + TMP_Text | 클릭 이벤트, 라벨/아이콘 |
+| ImageWidget | Image | Sprite 표시, 색상/투명도 |
+| SliderWidget | Slider | 값 조절, 양방향 바인딩 |
+| ToggleWidget | Toggle | ON/OFF 스위치 |
+| InputFieldWidget | TMP_InputField | 텍스트 입력 |
+| ProgressBarWidget | Slider (읽기 전용) | 진행률 표시 |
+| ScrollViewWidget | ScrollRect | 스크롤 컨테이너 |
+
+### 공통 패턴
+
+```csharp
+// 라이프사이클
+OnInitialize()  // 리스너 등록
+OnBind(data)    // 데이터 수신 → UI 갱신
+OnRelease()     // 이벤트 정리
+
+// 데이터 바인딩
+textWidget.Bind("Hello");        // object로 전달
+buttonWidget.Bind("확인");       // 타입 자동 변환
+```
+
+### 주요 API
+
+```csharp
+// TextWidget
+textWidget.SetText("내용");
+textWidget.SetColor(Color.red);
+textWidget.SetFontSize(24f);
+
+// ButtonWidget
+buttonWidget.OnClick += HandleClick;
+buttonWidget.SetLabel("확인");
+buttonWidget.SetInteractable(false);
+
+// SliderWidget
+sliderWidget.OnValueChanged += OnVolumeChanged;
+sliderWidget.SetValue(0.5f);
+sliderWidget.SetRange(0, 100);
+
+// ProgressBarWidget
+progressBar.SetProgress(0.75f);
+progressBar.SetFillColor(Color.green);
+```
+
+### 파일 위치
+
+```
+Assets/Scripts/Common/UI/Widgets/
+├── TextWidget.cs
+├── ButtonWidget.cs
+├── ImageWidget.cs
+├── SliderWidget.cs
+├── ToggleWidget.cs
+├── InputFieldWidget.cs
+├── ProgressBarWidget.cs
+└── ScrollViewWidget.cs
+```
+
+---
+
 ## 관련
 - [Common.md](../Common.md)
 - [UISystem.md](UISystem.md)

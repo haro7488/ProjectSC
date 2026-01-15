@@ -142,6 +142,30 @@
 
 ---
 
+## Phase 7: MVP 기반 컴포넌트
+
+### 기본 Widget 컴포넌트
+
+**커밋**: `548caf3` Add base UI Widget components (8 types)
+- Unity 기본 UI 컴포넌트를 Widget 시스템에 통합
+- **목적**: MVP 화면 구현 전 일관된 UI 패턴 확립
+- **결정**: Widget 래퍼로 라이프사이클 통합
+- **상세**: [DECISIONS.md](DECISIONS.md#unity-기본-컴포넌트-widget화) 참조
+
+구현된 Widget:
+| Widget | 역할 |
+|--------|------|
+| TextWidget | 텍스트 표시/스타일링 |
+| ButtonWidget | 클릭 이벤트, 라벨/아이콘 |
+| ImageWidget | Sprite 표시 |
+| SliderWidget | 값 조절 (볼륨 등) |
+| ToggleWidget | ON/OFF 스위치 |
+| InputFieldWidget | 텍스트 입력 |
+| ProgressBarWidget | 진행률 표시 |
+| ScrollViewWidget | 스크롤 컨테이너 |
+
+---
+
 ## 진행 중
 
 현재 진행 중인 작업은 [PROGRESS.md](../PROGRESS.md) 참조
