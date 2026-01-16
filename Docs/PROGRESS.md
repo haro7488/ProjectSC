@@ -7,7 +7,7 @@
 
 ## 🚀 다음 작업 (clear 후 시작점)
 
-**지시**: "Phase 1 구현하자" 또는 "[Phase명] 진행해줘"
+**지시**: "Phase 0 구현하자" 또는 "[Phase명] 진행해줘"
 
 **현재 마일스톤**: 🎯 아웃게임 아키텍처 1차 완성 (OUTGAME-V1)
 - 상세 문서: [Milestones/OUTGAME_ARCHITECTURE_V1.md](Milestones/OUTGAME_ARCHITECTURE_V1.md)
@@ -15,8 +15,9 @@
 **Phase 진행 상태**:
 | Phase | 이름 | 상태 | 핵심 산출물 |
 |-------|------|------|-------------|
-| 1 | 공통 모듈 | ✅ 설계 완료 | RewardInfo, SystemPopup, RewardPopup, Sc.LocalServer |
-| 2 | 상점 | ⬜ 대기 | ShopScreen, PurchaseAsync |
+| 0 | Foundation | ✅ 설계 완료 | Log, ErrorCode, SaveManager, LoadingIndicator |
+| 1 | 공통 모듈 | ✅ 설계 완료 | RewardInfo, TimeService, SystemPopup, RewardPopup |
+| 2 | 상점 | ✅ 설계 완료 | ShopScreen, ShopHandler |
 | 3 | 스테이지 진입 | ⬜ 대기 | StageListScreen, PartySelectScreen |
 | 4 | 라이브 이벤트 | ⬜ 대기 | EventDashboard, EventDetail |
 | 5 | 기존 강화 | ⬜ 대기 | 가챠 연출, 캐릭터 필터 |
@@ -40,16 +41,58 @@
 
 ### Phase 상세
 
-#### Phase 1: 공통 모듈 ⬜
-> 스펙: [Reward.md](Specs/Common/Reward.md), [ConfirmPopup.md](Specs/Common/Popups/ConfirmPopup.md), [RewardPopup.md](Specs/Common/Popups/RewardPopup.md)
+#### Phase 0: Foundation ⬜
+> 기반 인프라: 로깅, 에러처리, 세이브, 로딩UI
 
 ```
-- [ ] RewardType.cs, RewardInfo.cs (Data/Enums/, Data/Structs/Common/)
-- [ ] RewardProcessor.cs (Core/Utility/)
-- [ ] ConfirmPopup.cs (Common/UI/Popups/)
-- [ ] RewardPopup.cs (Common/UI/Popups/)
-- [ ] CommonPopupEvents.cs (Event/OutGame/)
-- [ ] MVPSceneSetup에 팝업 프리팹 추가
+로깅:
+- [ ] LogLevel.cs, Log.cs (Foundation/)
+- [ ] ILogOutput.cs, UnityLogOutput.cs (Foundation/)
+- [ ] LogConfig.cs (Foundation/)
+
+에러 처리:
+- [ ] ErrorCode.cs, ErrorMessages.cs (Foundation/)
+- [ ] Result.cs (Foundation/)
+
+세이브:
+- [ ] ISaveStorage.cs, FileSaveStorage.cs (Core/)
+- [ ] SaveManager.cs (Core/Managers/)
+- [ ] ISaveMigration.cs, SaveMigrator.cs (Core/)
+- [ ] UserSaveData Version 필드 추가
+
+로딩 UI:
+- [ ] LoadingIndicator.cs (Common/UI/)
+- [ ] LoadingWidget.cs (Common/UI/Widgets/)
+- [ ] Loading 프리팹 생성
+```
+
+#### Phase 1: 공통 모듈 ⬜
+> 스펙: [Reward.md](Specs/Common/Reward.md), [SystemPopup.md](Specs/Common/Popups/SystemPopup.md), [RewardPopup.md](Specs/Common/Popups/RewardPopup.md)
+
+```
+보상 시스템:
+- [ ] RewardType.cs, ItemCategory.cs (Data/Enums/)
+- [ ] RewardInfo.cs (Data/Structs/Common/)
+- [ ] RewardHelper.cs (Core/Utility/)
+
+서버/클라 분리:
+- [ ] Sc.LocalServer Assembly 생성
+- [ ] LocalGameServer.cs, RewardService.cs
+- [ ] ResponseValidator.cs (Core/)
+
+시간 처리:
+- [ ] ITimeService.cs, TimeService.cs (Core/)
+- [ ] ServerTimeService.cs (LocalServer/)
+- [ ] TimeHelper.cs (Core/Utility/)
+
+시스템 팝업:
+- [ ] SystemPopupBase.cs, ButtonStyle.cs
+- [ ] ConfirmPopup.cs, AlertPopup.cs
+- [ ] InputPopup.cs, CostConfirmPopup.cs
+
+보상 팝업:
+- [ ] RewardCard.cs, RewardPopup.cs
+- [ ] RewardFullViewPopup.cs
 ```
 
 #### Phase 2: 상점 ⬜
@@ -58,20 +101,23 @@
 ```
 마스터 데이터:
 - [ ] ProductType.cs, LimitType.cs (Data/Enums/)
+- [ ] CurrencyIds.cs (Data/Constants/)
 - [ ] ShopProductData.cs, ShopProductDatabase.cs (Data/ScriptableObjects/)
-- [ ] ShopProduct.json (Data/MasterData/)
-- [ ] MasterDataImporter에 ShopProduct 추가
+- [ ] ShopProduct.json 샘플 데이터
 
 유저 데이터:
 - [ ] ShopPurchaseRecord 구조체
-- [ ] UserSaveData v3 마이그레이션
+- [ ] UserSaveData 버전 마이그레이션
 
-API:
-- [ ] LocalApiClient.PurchaseAsync 구현
+서버 로직 (Sc.LocalServer):
+- [ ] ShopHandler.cs (Handlers/)
+- [ ] ShopService.cs (Services/)
+- [ ] LocalGameServer에 등록
 
 UI:
-- [ ] Sc.Contents.Shop Assembly 생성
-- [ ] ShopScreen.cs, ShopProductItem.cs, PurchaseConfirmPopup.cs
+- [ ] ShopScreen.cs, ShopProductItem.cs
+- [ ] ShopTabGroup.cs
+- [ ] CostConfirmPopup 재사용 (Phase 1)
 ```
 
 #### Phase 3: 스테이지 진입 ⬜

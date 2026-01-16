@@ -50,7 +50,8 @@
 
 | Phase | 이름 | 핵심 산출물 | 의존성 |
 |-------|------|-------------|--------|
-| **1** | 공통 모듈 | RewardInfo, TimeService, SystemPopup, RewardPopup | - |
+| **0** | Foundation | Log, ErrorCode, SaveManager, LoadingIndicator | - |
+| **1** | 공통 모듈 | RewardInfo, TimeService, SystemPopup, RewardPopup | Phase 0 |
 | **2** | 상점 | ShopScreen, PurchaseAsync | Phase 1 |
 | **3** | 스테이지 진입 | StageListScreen, PartySelectScreen | Phase 1 |
 | **4** | 라이브 이벤트 | EventDashboard, EventDetail | Phase 1, 2 |
@@ -61,6 +62,252 @@
 | 기능 | 이유 | 예정 마일스톤 |
 |------|------|---------------|
 | **시즌패스** | 미션 기반형 선택 → 별도 시스템 필요 (복잡도 높음) | PASS-V1 |
+
+---
+
+## Phase 0: Foundation
+
+> **목표**: 전체 시스템에서 사용하는 기반 인프라 구축
+> **상태**: 📝 설계 완료
+
+### 0.1 로깅 시스템 (Log)
+
+**필요 이유**: 디버깅, 문제 추적, 릴리즈 빌드 최적화
+
+#### 산출물
+
+| 파일 | 위치 | 역할 |
+|------|------|------|
+| `LogLevel.cs` | Foundation/ | 로그 레벨 enum |
+| `Log.cs` | Foundation/ | 정적 로깅 API |
+| `ILogOutput.cs` | Foundation/ | 출력 인터페이스 |
+| `UnityLogOutput.cs` | Foundation/ | Unity 콘솔 출력 |
+| `LogConfig.cs` | Foundation/ | 로그 설정 (ScriptableObject) |
+
+#### LogLevel 정의
+```csharp
+public enum LogLevel
+{
+    Verbose = 0,    // 상세 디버깅 (릴리즈 제거)
+    Debug = 1,      // 개발 디버깅 (릴리즈 제거)
+    Info = 2,       // 정보성 로그
+    Warning = 3,    // 경고
+    Error = 4,      // 에러
+    None = 5,       // 로그 끔
+}
+```
+
+#### Log API
+```csharp
+public static class Log
+{
+    // 기본 사용
+    [Conditional("ENABLE_LOG_VERBOSE")]
+    public static void Verbose(string message);
+    
+    [Conditional("ENABLE_LOG_DEBUG"), Conditional("UNITY_EDITOR")]
+    public static void Debug(string message);
+    
+    public static void Info(string message);
+    public static void Warning(string message);
+    public static void Error(string message, Exception ex = null);
+    
+    // 카테고리 지정
+    public static void Info(string category, string message);
+    
+    // 구조화된 로그
+    public static void Info<T>(string category, string message, T context);
+}
+```
+
+### 0.2 에러 처리 시스템 (Error)
+
+**필요 이유**: 일관된 에러 코드, 명시적 에러 전파
+
+#### 산출물
+
+| 파일 | 위치 | 역할 |
+|------|------|------|
+| `ErrorCode.cs` | Foundation/ | 에러 코드 상수 |
+| `ErrorMessages.cs` | Foundation/ | 에러 메시지 매핑 |
+| `Result.cs` | Foundation/ | Result<T> 구조체 |
+
+#### ErrorCode 체계
+```csharp
+public static class ErrorCode
+{
+    // 공통 (0xxx)
+    public const string SUCCESS = "0000";
+    public const string UNKNOWN = "0001";
+    public const string INVALID_REQUEST = "0002";
+    public const string TIMEOUT = "0003";
+    public const string NETWORK_ERROR = "0004";
+    
+    // 인증 (1xxx)
+    public const string AUTH_FAILED = "1001";
+    public const string SESSION_EXPIRED = "1002";
+    
+    // 상점 (2xxx)
+    public const string SHOP_INSUFFICIENT_CURRENCY = "2001";
+    public const string SHOP_LIMIT_EXCEEDED = "2002";
+    public const string SHOP_PRODUCT_NOT_FOUND = "2003";
+    public const string SHOP_EVENT_ENDED = "2004";
+    
+    // 가챠 (3xxx)
+    public const string GACHA_NOT_ENOUGH_CURRENCY = "3001";
+    public const string GACHA_POOL_NOT_FOUND = "3002";
+    
+    // 스테이지 (4xxx)
+    public const string STAGE_NOT_UNLOCKED = "4001";
+    public const string STAGE_STAMINA_NOT_ENOUGH = "4002";
+    
+    // 데이터 (5xxx)
+    public const string DATA_SAVE_FAILED = "5001";
+    public const string DATA_LOAD_FAILED = "5002";
+    public const string DATA_MIGRATION_FAILED = "5003";
+    public const string DATA_CORRUPTED = "5004";
+}
+```
+
+#### Result<T> 패턴
+```csharp
+public readonly struct Result<T>
+{
+    public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
+    public T Value { get; }
+    public string ErrorCode { get; }
+    
+    public static Result<T> Success(T value);
+    public static Result<T> Failure(string errorCode);
+    
+    public Result<U> Map<U>(Func<T, U> mapper);
+    public Result<T> OnSuccess(Action<T> action);
+    public Result<T> OnFailure(Action<string> action);
+}
+```
+
+### 0.3 세이브 시스템 (Save)
+
+**필요 이유**: 안전한 저장/로드, 버전 마이그레이션
+
+#### 산출물
+
+| 파일 | 위치 | 역할 |
+|------|------|------|
+| `ISaveStorage.cs` | Core/Interfaces/ | 저장소 인터페이스 |
+| `FileSaveStorage.cs` | Core/Services/ | 파일 기반 저장소 |
+| `SaveManager.cs` | Core/Managers/ | 저장/로드 관리 |
+| `ISaveMigration.cs` | Core/Interfaces/ | 마이그레이션 인터페이스 |
+| `SaveMigrator.cs` | Core/Services/ | 마이그레이션 실행 |
+
+#### SaveManager API
+```csharp
+public class SaveManager : Singleton<SaveManager>
+{
+    public int CurrentVersion { get; }
+    
+    // 저장/로드
+    public Result<bool> Save(UserSaveData data);
+    public Result<UserSaveData> Load();
+    
+    // 마이그레이션
+    public bool NeedsMigration(UserSaveData data);
+    public UserSaveData Migrate(UserSaveData data);
+    
+    // 자동 저장
+    public void EnableAutoSave(float intervalSeconds);
+    public void DisableAutoSave();
+}
+```
+
+#### 마이그레이션 체인
+```csharp
+public interface ISaveMigration
+{
+    int FromVersion { get; }
+    int ToVersion { get; }
+    UserSaveData Migrate(UserSaveData data);
+}
+```
+
+### 0.4 로딩 UI (LoadingIndicator)
+
+**필요 이유**: 네트워크 요청 중 화면 차단, UX 개선
+
+#### 산출물
+
+| 파일 | 위치 | 역할 |
+|------|------|------|
+| `LoadingIndicator.cs` | Common/UI/ | 로딩 관리 (싱글톤) |
+| `LoadingWidget.cs` | Common/UI/Widgets/ | 로딩 UI 위젯 |
+
+#### LoadingIndicator API
+```csharp
+public class LoadingIndicator : Singleton<LoadingIndicator>
+{
+    // 기본 사용
+    public void Show();
+    public void Hide();
+    
+    // 메시지 포함
+    public void Show(string message);
+    
+    // 타임아웃 자동 해제
+    public void Show(float timeoutSeconds);
+    
+    // 스코프 기반 (using 패턴)
+    public IDisposable Scope(string message = null);
+}
+```
+
+#### 사용 예시
+```csharp
+// using 패턴
+using (LoadingIndicator.Instance.Scope("구매 중..."))
+{
+    var response = await _apiClient.PurchaseAsync(request);
+}
+// 자동 Hide
+
+// 수동 제어
+LoadingIndicator.Instance.Show();
+try { ... }
+finally { LoadingIndicator.Instance.Hide(); }
+```
+
+### 0.5 체크리스트
+
+```
+Phase 0 체크리스트:
+
+로깅 시스템:
+- [ ] LogLevel.cs 생성
+- [ ] Log.cs 생성 (정적 API)
+- [ ] ILogOutput.cs 생성
+- [ ] UnityLogOutput.cs 생성
+- [ ] LogConfig.cs 생성 (ScriptableObject)
+- [ ] 에디터 로그 필터 UI (선택)
+
+에러 처리:
+- [ ] ErrorCode.cs 생성
+- [ ] ErrorMessages.cs 생성
+- [ ] Result.cs 생성
+
+세이브 시스템:
+- [ ] ISaveStorage.cs 생성
+- [ ] FileSaveStorage.cs 생성
+- [ ] SaveManager.cs 생성
+- [ ] ISaveMigration.cs 생성
+- [ ] SaveMigrator.cs 생성
+- [ ] UserSaveData에 Version 필드 추가
+
+로딩 UI:
+- [ ] LoadingIndicator.cs 생성
+- [ ] LoadingWidget.cs 생성
+- [ ] Loading 프리팹 생성
+- [ ] MVPSceneSetup에 LoadingIndicator 추가
+```
 
 ---
 
