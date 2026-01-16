@@ -1,4 +1,5 @@
 using Sc.Common.UI;
+using Sc.Common.UI.Widgets;
 using Sc.Contents.Lobby;
 using TMPro;
 using UnityEngine;
@@ -44,6 +45,9 @@ namespace Sc.Contents.Title
         protected override void OnBind(TitleState state)
         {
             Debug.Log("[TitleScreen] OnBind");
+
+            // Header 숨김
+            ScreenHeader.Instance?.Hide();
         }
 
         protected override void OnShow()

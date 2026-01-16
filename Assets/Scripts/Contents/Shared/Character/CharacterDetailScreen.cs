@@ -1,7 +1,10 @@
 using System.Linq;
 using Sc.Common.UI;
+using Sc.Common.UI.Widgets;
 using Sc.Core;
 using Sc.Data;
+using Sc.Event.UI;
+using Sc.Foundation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -72,6 +75,9 @@ namespace Sc.Contents.Character
             _currentState = state ?? new CharacterDetailState();
             Debug.Log($"[CharacterDetailScreen] OnBind - CharacterId: {_currentState.CharacterId}");
 
+            // Header 설정
+            ScreenHeader.Instance?.Configure("character_detail");
+
             LoadCharacterData();
             RefreshUI();
         }
@@ -84,6 +90,9 @@ namespace Sc.Contents.Character
             {
                 DataManager.Instance.OnUserDataChanged += OnUserDataChanged;
             }
+
+            // Header Back 이벤트 구독
+            EventManager.Instance?.Subscribe<HeaderBackClickedEvent>(OnHeaderBackClicked);
         }
 
         protected override void OnHide()
@@ -94,6 +103,9 @@ namespace Sc.Contents.Character
             {
                 DataManager.Instance.OnUserDataChanged -= OnUserDataChanged;
             }
+
+            // Header Back 이벤트 해제
+            EventManager.Instance?.Unsubscribe<HeaderBackClickedEvent>(OnHeaderBackClicked);
         }
 
         protected override void OnRelease()
@@ -337,6 +349,11 @@ namespace Sc.Contents.Character
         {
             Debug.Log("[CharacterDetailScreen] Back clicked");
             NavigationManager.Instance?.Back();
+        }
+
+        private void OnHeaderBackClicked(HeaderBackClickedEvent evt)
+        {
+            OnBackClicked();
         }
 
         #endregion

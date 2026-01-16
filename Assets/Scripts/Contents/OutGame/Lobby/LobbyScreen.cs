@@ -1,4 +1,5 @@
 using Sc.Common.UI;
+using Sc.Common.UI.Widgets;
 using Sc.Contents.Character;
 using Sc.Contents.Gacha;
 using Sc.Core;
@@ -50,6 +51,9 @@ namespace Sc.Contents.Lobby
         {
             _currentState = state ?? new LobbyState();
             Debug.Log($"[LobbyScreen] OnBind - Tab: {_currentState.ActiveTabIndex}");
+
+            // Header 설정
+            ScreenHeader.Instance?.Configure("lobby_default");
 
             RefreshUI();
         }

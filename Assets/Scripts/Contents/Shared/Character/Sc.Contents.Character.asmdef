@@ -7,6 +7,7 @@
         "Sc.Data",
         "Sc.Packet",
         "Sc.Foundation",
+        "Sc.Event",
         "UniTask",
         "Unity.TextMeshPro"
     ],

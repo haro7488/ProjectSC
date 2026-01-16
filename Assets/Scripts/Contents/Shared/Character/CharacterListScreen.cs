@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using Sc.Common.UI;
+using Sc.Common.UI.Widgets;
 using Sc.Core;
 using Sc.Data;
+using Sc.Event.UI;
+using Sc.Foundation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,6 +57,9 @@ namespace Sc.Contents.Character
             _currentState = state ?? new CharacterListState();
             Debug.Log("[CharacterListScreen] OnBind");
 
+            // Header 설정
+            ScreenHeader.Instance?.Configure("character_list");
+
             RefreshList();
         }
 
@@ -65,6 +71,9 @@ namespace Sc.Contents.Character
             {
                 DataManager.Instance.OnUserDataChanged += OnUserDataChanged;
             }
+
+            // Header Back 이벤트 구독
+            EventManager.Instance?.Subscribe<HeaderBackClickedEvent>(OnHeaderBackClicked);
 
             RefreshList();
 
@@ -83,6 +92,9 @@ namespace Sc.Contents.Character
             {
                 DataManager.Instance.OnUserDataChanged -= OnUserDataChanged;
             }
+
+            // Header Back 이벤트 해제
+            EventManager.Instance?.Unsubscribe<HeaderBackClickedEvent>(OnHeaderBackClicked);
 
             // 스크롤 위치 저장
             if (_scrollRect != null && _currentState != null)
@@ -207,6 +219,11 @@ namespace Sc.Contents.Character
         {
             Debug.Log("[CharacterListScreen] Back clicked");
             NavigationManager.Instance?.Back();
+        }
+
+        private void OnHeaderBackClicked(HeaderBackClickedEvent evt)
+        {
+            OnBackClicked();
         }
     }
 }

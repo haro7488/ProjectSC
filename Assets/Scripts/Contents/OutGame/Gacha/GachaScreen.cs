@@ -1,6 +1,8 @@
 using Sc.Common.UI;
+using Sc.Common.UI.Widgets;
 using Sc.Core;
 using Sc.Event.OutGame;
+using Sc.Event.UI;
 using Sc.Foundation;
 using Sc.Packet;
 using TMPro;
@@ -65,6 +67,9 @@ namespace Sc.Contents.Gacha
             _currentState = state ?? new GachaState();
             Debug.Log($"[GachaScreen] OnBind - Pool: {_currentState.SelectedPoolId}");
 
+            // Header 설정
+            ScreenHeader.Instance?.Configure("gacha_main");
+
             RefreshUI();
         }
 
@@ -82,6 +87,9 @@ namespace Sc.Contents.Gacha
             EventManager.Instance?.Subscribe<GachaCompletedEvent>(OnGachaCompleted);
             EventManager.Instance?.Subscribe<GachaFailedEvent>(OnGachaFailed);
 
+            // Header Back 이벤트 구독
+            EventManager.Instance?.Subscribe<HeaderBackClickedEvent>(OnHeaderBackClicked);
+
             RefreshUI();
         }
 
@@ -98,6 +106,9 @@ namespace Sc.Contents.Gacha
             // 가챠 이벤트 해제
             EventManager.Instance?.Unsubscribe<GachaCompletedEvent>(OnGachaCompleted);
             EventManager.Instance?.Unsubscribe<GachaFailedEvent>(OnGachaFailed);
+
+            // Header Back 이벤트 해제
+            EventManager.Instance?.Unsubscribe<HeaderBackClickedEvent>(OnHeaderBackClicked);
         }
 
         public override GachaState GetState() => _currentState;
@@ -217,6 +228,11 @@ namespace Sc.Contents.Gacha
         {
             Debug.Log("[GachaScreen] Back clicked");
             NavigationManager.Instance?.Back();
+        }
+
+        private void OnHeaderBackClicked(HeaderBackClickedEvent evt)
+        {
+            OnBackClicked();
         }
     }
 }
