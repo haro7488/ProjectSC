@@ -17,6 +17,7 @@
 - NetworkManager ↔ GachaScreen 이벤트 기반 연동
 - GameBootstrap + GameFlowController 초기화 흐름
 - CharacterDetailScreen (캐릭터 상세 화면)
+- ScreenHeader (상단 공용 UI) - 데이터 기반 설정
 
 **다음 단계**:
 1. ⬜ Unity 에디터에서 Rebuild All (SC Tools/MVP/Rebuild All)
@@ -318,6 +319,27 @@
 ## 작업 로그
 
 ### 2026-01-16
+- [x] 재화 시스템 확장 (Full 복잡도)
+  - [x] CostType enum 확장 (16개 재화 타입)
+  - [x] UserCurrency 필드 확장 (소환권, 육성재료, 컨텐츠재화, 시즌재화)
+  - [x] EventCurrencyData 신규 구조체 (동적 이벤트 재화)
+  - [x] UserSaveData v2 마이그레이션 (EventCurrency 추가)
+  - [x] UserDataDelta EventCurrency 지원
+  - [x] DataManager EventCurrency 프로퍼티 추가
+  - [x] LocalApiClient 마이그레이션 로직 추가
+  - [x] Data.md 문서 업데이트 (v2.1)
+- [x] ScreenHeader 구현 (상단 공용 UI)
+  - [x] 요구사항 정의 및 설계 토론
+  - [x] ScreenHeader.md 스펙 문서 작성
+  - [x] ScreenHeaderConfigData.cs (SO 정의)
+  - [x] ScreenHeaderConfigDatabase.cs (Database SO)
+  - [x] HeaderEvents.cs (이벤트 정의)
+  - [x] ScreenHeader.cs (싱글턴 Widget)
+  - [x] MasterDataImporter에 ScreenHeaderConfig 추가
+  - [x] ScreenHeaderConfig.json (샘플 데이터)
+  - [x] 기존 Screen에 Header 연동 (Title, Lobby, Gacha, CharacterList, CharacterDetail)
+  - [x] MVPSceneSetup에 ScreenHeader 프리팹 자동생성 추가
+  - [x] MVPSceneSetup에 마스터 데이터 자동생성 기능 추가
 - [x] CharacterDetailScreen 구현
   - [x] CharacterDetailState (InstanceId, CharacterId)
   - [x] 캐릭터 기본 정보 표시 (이름, 희귀도, 클래스, 속성)

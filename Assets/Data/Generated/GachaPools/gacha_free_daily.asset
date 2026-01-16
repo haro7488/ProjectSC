@@ -16,7 +16,7 @@ MonoBehaviour:
   _name: "\uBB34\uB8CC \uC77C\uC77C \uC18C\uD658"
   _nameEn: Free Daily Summon
   _type: 2
-  _costType: 3
+  _costType: 0
   _costAmount: 0
   _costAmount10: 0
   _pityCount: 0

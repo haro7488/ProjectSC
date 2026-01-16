@@ -20,4 +20,7 @@ MonoBehaviour:
   _atkBonus: 30
   _defBonus: 50
   _hpBonus: 150
+  _maxStackCount: 0
+  _consumeCount: 1
+  _cooldown: 0
   _description: "\uC218\uD638\uC758 \uD798\uC774 \uAE43\uB4E0 \uBAA9\uAC78\uC774"

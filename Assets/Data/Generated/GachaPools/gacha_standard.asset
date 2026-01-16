@@ -16,7 +16,7 @@ MonoBehaviour:
   _name: "\uC77C\uBC18 \uC18C\uD658"
   _nameEn: Standard Summon
   _type: 0
-  _costType: 1
+  _costType: 2
   _costAmount: 300
   _costAmount10: 2700
   _pityCount: 90

@@ -20,4 +20,7 @@ MonoBehaviour:
   _atkBonus: 0
   _defBonus: 0
   _hpBonus: 0
+  _maxStackCount: 0
+  _consumeCount: 1
+  _cooldown: 0
   _description: "HP\uB97C 500 \uD68C\uBCF5\uD55C\uB2E4"
