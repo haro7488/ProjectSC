@@ -92,6 +92,7 @@ namespace Sc.Editor.AI
             CreateGachaScreenPrefab();
             CreateCharacterListScreenPrefab();
             CreateCharacterDetailScreenPrefab();
+            CreateGachaResultItemPrefab();  // GachaResultPopup보다 먼저 생성
             CreateGachaResultPopupPrefab();
             CreateCurrencyHUDPrefab();
             CreateCharacterListItemPrefab();
@@ -114,6 +115,7 @@ namespace Sc.Editor.AI
             CreateGachaScreenPrefab();
             CreateCharacterListScreenPrefab();
             CreateCharacterDetailScreenPrefab();
+            CreateGachaResultItemPrefab();  // GachaResultPopup보다 먼저 생성
             CreateGachaResultPopupPrefab();
             CreateCurrencyHUDPrefab();
             CreateCharacterListItemPrefab();
@@ -134,7 +136,8 @@ namespace Sc.Editor.AI
                 "CharacterDetailScreen.prefab",
                 "GachaResultPopup.prefab",
                 "CurrencyHUD.prefab",
-                "CharacterListItem.prefab"
+                "CharacterListItem.prefab",
+                "GachaResultItem.prefab"
             };
 
             foreach (var file in prefabFiles)
@@ -686,11 +689,15 @@ namespace Sc.Editor.AI
             var retryBtn = CreateTMPButton(panel.transform, "RetryButton", "다시 뽑기",
                 new Vector2(100, -330), new Vector2(180, 60), new Color(0.6f, 0.4f, 0.2f, 1f));
 
+            // GachaResultItem 프리팹 로드 또는 생성
+            var resultItemPrefab = CreateGachaResultItemPrefab();
+
             // GachaResultPopup 컴포넌트 추가
             var popup = panel.AddComponent<Contents.Gacha.GachaResultPopup>();
 
             var so = new SerializedObject(popup);
             so.FindProperty("_resultContainer").objectReferenceValue = resultContainer;
+            so.FindProperty("_resultItemPrefab").objectReferenceValue = resultItemPrefab;
             so.FindProperty("_confirmButton").objectReferenceValue = confirmBtn;
             so.FindProperty("_retryButton").objectReferenceValue = retryBtn;
             so.FindProperty("_titleText").objectReferenceValue = titleText;
@@ -698,6 +705,59 @@ namespace Sc.Editor.AI
 
             var prefab = PrefabUtility.SaveAsPrefabAsset(panel, prefabPath);
             Object.DestroyImmediate(panel);
+
+            Debug.Log($"[MVPSceneSetup] Created: {prefabPath}");
+            return prefab;
+        }
+
+        #endregion
+
+        #region GachaResultItem Prefab
+
+        private static GameObject CreateGachaResultItemPrefab()
+        {
+            var prefabPath = $"{PrefabPath}/GachaResultItem.prefab";
+
+            var existingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (existingPrefab != null) return existingPrefab;
+
+            var item = new GameObject("GachaResultItem");
+            var rect = item.AddComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(600, 60);
+
+            // LayoutElement 추가 (VerticalLayoutGroup에서 높이 인식용)
+            var layoutElement = item.AddComponent<LayoutElement>();
+            layoutElement.minHeight = 60;
+            layoutElement.preferredHeight = 60;
+
+            var bg = item.AddComponent<Image>();
+            bg.color = new Color(0.2f, 0.2f, 0.3f, 0.8f);
+
+            // 이름 텍스트 (stretch anchor)
+            var nameTextGo = new GameObject("NameText");
+            nameTextGo.transform.SetParent(item.transform, false);
+
+            var nameRect = nameTextGo.AddComponent<RectTransform>();
+            nameRect.anchorMin = Vector2.zero;
+            nameRect.anchorMax = Vector2.one;
+            nameRect.offsetMin = new Vector2(15, 5);
+            nameRect.offsetMax = new Vector2(-15, -5);
+
+            var nameText = nameTextGo.AddComponent<TextMeshProUGUI>();
+            nameText.text = "[SSR] 캐릭터 이름";
+            nameText.fontSize = 22;
+            nameText.alignment = TextAlignmentOptions.MidlineLeft;
+            nameText.color = Color.white;
+            nameText.richText = true;  // Rich Text 활성화 (색상 태그용)
+
+            var defaultFont = ProjectEditorSettings.Instance.DefaultFont;
+            if (defaultFont != null)
+            {
+                nameText.font = defaultFont;
+            }
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(item, prefabPath);
+            Object.DestroyImmediate(item);
 
             Debug.Log($"[MVPSceneSetup] Created: {prefabPath}");
             return prefab;
