@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b114c13f2476834ca2aabf9df91cc2f, type: 3}
+  m_Name: ScreenHeaderConfigDatabase
+  m_EditorClassIdentifier: 
+  _configs:
+  - {fileID: 11400000, guid: b761c8eb3689013439d204dc045afbc8, type: 2}
+  - {fileID: 11400000, guid: 5d614b64875ed65468e260952a790ac2, type: 2}
+  - {fileID: 11400000, guid: 6cee789c567d2a74cb62177b2f910d84, type: 2}
+  - {fileID: 11400000, guid: 6661dc349c19f6e448abe56a312d780f, type: 2}
+  - {fileID: 11400000, guid: 8edde8d5701aff84dac927dc902d7337, type: 2}
+  - {fileID: 11400000, guid: bd5039fa6f71e0b4b93445f4fa2a0846, type: 2}

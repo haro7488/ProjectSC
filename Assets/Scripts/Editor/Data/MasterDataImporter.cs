@@ -60,6 +60,9 @@ namespace Sc.Editor.Data
                 case "GachaPool":
                     ImportGachaPools(json);
                     break;
+                case "ScreenHeaderConfig":
+                    ImportScreenHeaderConfigs(json);
+                    break;
                 default:
                     Debug.LogWarning($"[MasterDataImporter] 알 수 없는 데이터 타입: {fileName}");
                     break;
@@ -433,6 +436,70 @@ namespace Sc.Editor.Data
             EditorUtility.SetDirty(database);
             AssetDatabase.SaveAssets();
             Debug.Log($"[MasterDataImporter] GachaPool {wrapper.data.Length}개 임포트 완료");
+        }
+
+        #endregion
+
+        #region ScreenHeaderConfig Import
+
+        [Serializable]
+        private class ScreenHeaderConfigJsonWrapper
+        {
+            public string version;
+            public string exportedAt;
+            public ScreenHeaderConfigJson[] data;
+        }
+
+        [Serializable]
+        private class ScreenHeaderConfigJson
+        {
+            public string Id;
+            public string Title;
+            public bool ShowBackButton;
+            public bool ShowProfileButton;
+            public bool ShowMenuButton;
+            public bool ShowMailButton;
+            public bool ShowNoticeButton;
+            public bool ShowCurrency;
+            public string[] CurrencyTypes;
+        }
+
+        private static void ImportScreenHeaderConfigs(string json)
+        {
+            var wrapper = JsonUtility.FromJson<ScreenHeaderConfigJsonWrapper>(json);
+            if (wrapper?.data == null) return;
+
+            EnsureOutputDirectory();
+            var dataDir = $"{OutputPath}/ScreenHeaderConfigs";
+            EnsureDirectory(dataDir);
+
+            var database = LoadOrCreateDatabase<Sc.Data.ScreenHeaderConfigDatabase>($"{OutputPath}/ScreenHeaderConfigDatabase.asset");
+            database.Clear();
+
+            foreach (var item in wrapper.data)
+            {
+                var assetPath = $"{dataDir}/{item.Id}.asset";
+                var data = LoadOrCreateAsset<Sc.Data.ScreenHeaderConfigData>(assetPath);
+
+                data.Initialize(
+                    item.Id,
+                    item.Title ?? "",
+                    item.ShowBackButton,
+                    item.ShowProfileButton,
+                    item.ShowMenuButton,
+                    item.ShowMailButton,
+                    item.ShowNoticeButton,
+                    item.ShowCurrency,
+                    item.CurrencyTypes != null ? new List<string>(item.CurrencyTypes) : new List<string>()
+                );
+
+                EditorUtility.SetDirty(data);
+                database.Add(data);
+            }
+
+            EditorUtility.SetDirty(database);
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[MasterDataImporter] ScreenHeaderConfig {wrapper.data.Length}개 임포트 완료");
         }
 
         #endregion
