@@ -36,6 +36,11 @@ namespace Sc.Common.UI
             /// Popup의 OnEscape()에 위임.
             /// </summary>
             public virtual bool HandleEscape() => View?.OnEscape() ?? true;
+
+            /// <summary>
+            /// Popup 전환 애니메이션 반환.
+            /// </summary>
+            public abstract PopupTransition GetTransition();
         }
     }
 
@@ -73,17 +78,21 @@ namespace Sc.Common.UI
             private TPopup _popup;
             private TState _state;
             private readonly int _sortingOrder;
+            private readonly PopupTransition _transition;
 
             public override PopupWidget View => _popup;
             public override Type PopupType => typeof(TPopup);
             public TState State => _state;
             public int SortingOrder => _sortingOrder;
 
-            internal Context(TState state, int sortingOrder)
+            internal Context(TState state, int sortingOrder, PopupTransition transition)
             {
                 _state = state;
                 _sortingOrder = sortingOrder;
+                _transition = transition ?? PopupTransition.Default;
             }
+
+            public override PopupTransition GetTransition() => _transition;
 
             public override async UniTask Load()
             {
@@ -134,11 +143,13 @@ namespace Sc.Common.UI
             {
                 private readonly TState _state;
                 private int _sortingOrder;
+                private PopupTransition _transition;
 
                 public Builder(TState state)
                 {
                     _state = state;
                     _sortingOrder = 0;
+                    _transition = null;
                 }
 
                 public Builder SetOrder(int order)
@@ -147,7 +158,13 @@ namespace Sc.Common.UI
                     return this;
                 }
 
-                public Context Build() => new(_state, _sortingOrder);
+                public Builder SetTransition(PopupTransition transition)
+                {
+                    _transition = transition;
+                    return this;
+                }
+
+                public Context Build() => new(_state, _sortingOrder, _transition);
 
                 public static implicit operator Context(Builder builder) => builder.Build();
             }
@@ -168,17 +185,20 @@ namespace Sc.Common.UI
         /// Popup 열기 (Push).
         /// 사용법: ConfirmPopup.Open(new ConfirmState { Message = "확인?" });
         /// </summary>
-        public static void Open(TState state = default)
+        public static void Open(TState state = default, PopupTransition transition = null)
         {
-            var context = CreateContext(state).Build();
-            NavigationManager.Instance?.Push(context);
+            var builder = CreateContext(state);
+            if (transition != null)
+                builder.SetTransition(transition);
+
+            NavigationManager.Instance?.Push(builder.Build());
         }
 
         /// <summary>
         /// Popup 열기 (Push) - 별칭.
         /// </summary>
-        public static void Push(TState state = default)
-            => Open(state);
+        public static void Push(TState state = default, PopupTransition transition = null)
+            => Open(state, transition);
 
         #endregion
     }

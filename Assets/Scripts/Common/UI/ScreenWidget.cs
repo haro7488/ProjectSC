@@ -31,6 +31,11 @@ namespace Sc.Common.UI
             /// Screen은 기본적으로 ESC로 닫기 허용.
             /// </summary>
             public virtual bool HandleEscape() => true;
+
+            /// <summary>
+            /// Screen 전환 애니메이션 반환.
+            /// </summary>
+            public abstract Transition GetTransition();
         }
     }
 
@@ -122,7 +127,7 @@ namespace Sc.Common.UI
                 await UniTask.CompletedTask;
             }
 
-            public Transition GetTransition() => _transition;
+            public override Transition GetTransition() => _transition;
 
             #region Builder
 
