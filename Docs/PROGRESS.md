@@ -1,33 +1,140 @@
 # 진행 상황
 
 ## 상태 범례
-- ⬜ 대기 | 🔨 진행 중 | ✅ 완료
+- ⬜ 대기 | 📝 설계 검토 | 🔨 진행 중 | ✅ 완료
 
 ---
 
 ## 🚀 다음 작업 (clear 후 시작점)
 
-**지시**: "Unity에서 테스트해줘" 또는 "다음 기능 구현하자"
+**지시**: "Phase 1 구현하자" 또는 "[Phase명] 진행해줘"
 
-**완료된 작업**: ✅
-- MVP 화면 구현 (Title, Lobby, Gacha, CharacterList)
-- CurrencyHUD, GachaResultPopup
-- DataManager 연동 (재화, 캐릭터 목록)
-- MVPSceneSetup Editor 도구 (SC Tools/MVP 메뉴)
-- NetworkManager ↔ GachaScreen 이벤트 기반 연동
-- GameBootstrap + GameFlowController 초기화 흐름
-- CharacterDetailScreen (캐릭터 상세 화면)
-- ScreenHeader (상단 공용 UI) - 데이터 기반 설정
-- ScreenHeader 뒤로가기 버튼 → Navigation 연동 (Initialize 라이프사이클 수정)
+**현재 마일스톤**: 🎯 아웃게임 아키텍처 1차 완성 (OUTGAME-V1)
+- 상세 문서: [Milestones/OUTGAME_ARCHITECTURE_V1.md](Milestones/OUTGAME_ARCHITECTURE_V1.md)
 
-**다음 단계**:
-1. ✅ Screen/Popup Transition 애니메이션 구현
-2. ⬜ Unity 에디터에서 테스트 (Play 모드 → CharacterDetail → 뒤로가기)
-3. ⬜ 인벤토리 화면 구현
+**Phase 진행 상태**:
+| Phase | 이름 | 상태 | 핵심 산출물 |
+|-------|------|------|-------------|
+| 1 | 공통 모듈 | ✅ 설계 완료 | RewardInfo, SystemPopup, RewardPopup, Sc.LocalServer |
+| 2 | 상점 | ⬜ 대기 | ShopScreen, PurchaseAsync |
+| 3 | 스테이지 진입 | ⬜ 대기 | StageListScreen, PartySelectScreen |
+| 4 | 라이브 이벤트 | ⬜ 대기 | EventDashboard, EventDetail |
+| 5 | 기존 강화 | ⬜ 대기 | 가챠 연출, 캐릭터 필터 |
+
+**이전 작업 (MVP 완료)**: ✅
+- MVP 화면 (Title, Lobby, Gacha, CharacterList, CharacterDetail)
+- CurrencyHUD, GachaResultPopup, ScreenHeader
+- DataManager 연동, NetworkManager 이벤트 기반
+- Screen/Popup Transition 애니메이션
 
 ---
 
-## 단기 목표: MVP 플레이 가능 버전
+---
+
+## 🎯 마일스톤: 아웃게임 아키텍처 1차 (OUTGAME-V1)
+
+> **상세 문서**: [Milestones/OUTGAME_ARCHITECTURE_V1.md](Milestones/OUTGAME_ARCHITECTURE_V1.md)
+
+### 목표
+아웃게임 핵심 기능(가챠, 상점, 캐릭터리스트, 스테이지진입, 이벤트진입) 기초 토대 완성
+
+### Phase 상세
+
+#### Phase 1: 공통 모듈 ⬜
+> 스펙: [Reward.md](Specs/Common/Reward.md), [ConfirmPopup.md](Specs/Common/Popups/ConfirmPopup.md), [RewardPopup.md](Specs/Common/Popups/RewardPopup.md)
+
+```
+- [ ] RewardType.cs, RewardInfo.cs (Data/Enums/, Data/Structs/Common/)
+- [ ] RewardProcessor.cs (Core/Utility/)
+- [ ] ConfirmPopup.cs (Common/UI/Popups/)
+- [ ] RewardPopup.cs (Common/UI/Popups/)
+- [ ] CommonPopupEvents.cs (Event/OutGame/)
+- [ ] MVPSceneSetup에 팝업 프리팹 추가
+```
+
+#### Phase 2: 상점 ⬜
+> 스펙: [Shop.md](Specs/Shop.md), [ShopProductData.md](Specs/Shop/ShopProductData.md)
+
+```
+마스터 데이터:
+- [ ] ProductType.cs, LimitType.cs (Data/Enums/)
+- [ ] ShopProductData.cs, ShopProductDatabase.cs (Data/ScriptableObjects/)
+- [ ] ShopProduct.json (Data/MasterData/)
+- [ ] MasterDataImporter에 ShopProduct 추가
+
+유저 데이터:
+- [ ] ShopPurchaseRecord 구조체
+- [ ] UserSaveData v3 마이그레이션
+
+API:
+- [ ] LocalApiClient.PurchaseAsync 구현
+
+UI:
+- [ ] Sc.Contents.Shop Assembly 생성
+- [ ] ShopScreen.cs, ShopProductItem.cs, PurchaseConfirmPopup.cs
+```
+
+#### Phase 3: 스테이지 진입 ⬜
+> 스펙: [Stage.md](Specs/Stage.md)
+
+```
+마스터 데이터:
+- [ ] StageType.cs, StageUnlockCondition 구조체
+- [ ] StageData.cs 확장 (FirstClearRewards, StageType, UnlockCondition)
+
+유저 데이터:
+- [ ] PartyPreset 구조체
+- [ ] UserSaveData.PartyPresets 필드
+
+API:
+- [ ] StageBattleRequest/Response
+- [ ] LocalApiClient.StartBattleAsync
+
+UI:
+- [ ] Sc.Contents.Stage Assembly 생성
+- [ ] StageListScreen, StageItem, PartySelectScreen
+```
+
+#### Phase 4: 라이브 이벤트 ⬜
+> 스펙: [LiveEvent.md](Specs/LiveEvent.md)
+
+```
+마스터 데이터:
+- [ ] EventType.cs, MissionConditionType.cs
+- [ ] LiveEventData.cs, EventMissionData.cs
+- [ ] LiveEvent.json, EventMission.json
+
+유저 데이터:
+- [ ] LiveEventProgress, EventMissionProgress
+- [ ] UserSaveData.EventProgress
+
+API:
+- [ ] GetActiveEventsRequest/Response
+- [ ] ClaimEventMissionRequest/Response
+- [ ] LocalApiClient.GetActiveEventsAsync, ClaimEventMissionAsync
+
+UI:
+- [ ] Sc.Contents.Event Assembly 생성
+- [ ] EventDashboardScreen, EventDetailScreen, EventMissionItem
+```
+
+#### Phase 5: 기존 강화 ⬜
+> 마일스톤 문서 참조
+
+```
+가챠 강화:
+- [ ] 배너별 UI, 소환 연출, 히스토리 화면
+
+캐릭터 강화:
+- [ ] 필터/정렬, 레벨업/돌파, 장비 장착
+
+Navigation 강화:
+- [ ] Shortcut, DeepLink, 탭 그룹
+```
+
+---
+
+## 단기 목표: MVP 플레이 가능 버전 ✅
 
 ### 목표
 게임 실행 → 타이틀 → 로비 → 가챠/캐릭터 확인까지 플레이 가능한 최소 버전
@@ -363,6 +470,38 @@ Phase 4: 검증
 ---
 
 ## 작업 로그
+
+### 2026-01-17 (계속)
+- [x] 아웃게임 아키텍처 V1 검토 - Phase 1 완료
+  - [x] Phase 1.1 보상 시스템 논의 완료
+    - [x] RewardType 범위 검토 (수집형 RPG 비교)
+    - [x] ItemCategory 세분화 결정
+    - [x] 장비 시스템 (인벤토리 수량 기반, 장착 시 인스턴스화)
+    - [x] 스킨 시스템 (별도 캐릭터로 처리)
+  - [x] Phase 1.2 서버/클라 분리 논의 완료
+    - [x] Sc.LocalServer Assembly 분리 결정
+    - [x] ResponseValidator 2차 검증 (요청-응답 일관성)
+    - [x] RewardHelper (클라 UI 유틸리티) 분리
+  - [x] Phase 1.3 범용 팝업 논의 완료
+    - [x] SystemPopup 하이브리드 구조 (Base + 특화)
+    - [x] ConfirmPopup, AlertPopup, InputPopup, CostConfirmPopup
+    - [x] RewardPopup 좌우 스크롤 카드형 결정
+    - [x] RewardFullViewPopup 그리드 전체보기
+  - [x] DECISIONS.md 기록 완료
+  - [ ] Phase 2~5 검토 (추후)
+
+### 2026-01-17
+- [x] 아웃게임 아키텍처 갭 분석
+  - [x] 현재 구현 상태 파악 (가챠/캐릭터리스트 기초 완료)
+  - [x] 필요 기능 분석 (상점, 스테이지, 이벤트)
+  - [x] 공통 필요 모듈 식별 (RewardInfo, ConfirmPopup, RewardPopup)
+- [x] 아웃게임 아키텍처 1차 마일스톤 문서화
+  - [x] OUTGAME_ARCHITECTURE_V1.md 마일스톤 개요 문서
+  - [x] Phase 1: Reward.md, ConfirmPopup.md, RewardPopup.md
+  - [x] Phase 2: Shop.md, ShopProductData.md
+  - [x] Phase 3: Stage.md
+  - [x] Phase 4: LiveEvent.md (확장)
+  - [x] PROGRESS.md 업데이트
 
 ### 2026-01-16 (저녁)
 - [x] Screen/Popup Transition 애니메이션 구현
