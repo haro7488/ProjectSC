@@ -3,11 +3,11 @@ type: overview
 assembly: Sc.Data
 category: Data
 status: approved
-version: "2.0"
+version: "2.1"
 dependencies: []
 detail_docs: [Enums, MasterData, UserData]
 created: 2025-01-14
-updated: 2025-01-15
+updated: 2026-01-16
 ---
 
 # Sc.Data
@@ -71,7 +71,7 @@ DataManager.ApplyDelta() (부분 갱신)
 | ItemType | 아이템 유형 | Weapon, Armor, Accessory, Consumable, Material |
 | Difficulty | 난이도 | Normal, Hard, Hell |
 | GachaType | 가챠 유형 | Standard, Limited, Pickup |
-| CostType | 재화 유형 | Gold, Gem, FreeGem, Stamina |
+| CostType | 재화 유형 | Gold, Gem, Stamina, SummonTicket, PickupSummonTicket, CharacterExp, BreakthroughMaterial, SkillBook, EquipmentExp, EnhanceStone, ArenaTicket, ArenaCoin, GuildCoin, RaidCoin, SeasonCoin, EventCurrency |
 
 ### 마스터 데이터 (ScriptableObject)
 
@@ -97,9 +97,10 @@ DataManager.ApplyDelta() (부분 갱신)
 
 | 클래스 | 역할 | 주요 필드 |
 |--------|------|-----------|
-| UserSaveData | 통합 저장 구조체 | Version, Profile, Currency, Characters, Items, ... |
+| UserSaveData | 통합 저장 구조체 | Version, Profile, Currency, EventCurrency, Characters, Items, ... |
 | UserProfile | 유저 프로필 | Uid, Nickname, Level, Exp, CreatedAt, LastLoginAt |
-| UserCurrency | 유저 재화 | Gold, Gem, FreeGem, Stamina, MaxStamina |
+| UserCurrency | 유저 재화 | 기본(Gold, Gem, FreeGem, Stamina), 소환권, 육성재료, 컨텐츠재화, 시즌재화 |
+| EventCurrencyData | 이벤트 재화 | Currencies (EventCurrencyItem 리스트) |
 | OwnedCharacter | 보유 캐릭터 | InstanceId, CharacterId, Level, Ascension, Equipment |
 | OwnedItem | 보유 아이템 | InstanceId, ItemId, Count, EnhanceLevel |
 | StageProgress | 스테이지 진행 | ClearedStages (StageClearInfo 리스트) |
@@ -165,4 +166,52 @@ Assets/Data/
 | Enums | 9 | ✅ |
 | MasterData SO | 5 | ✅ |
 | Database SO | 5 | ✅ |
-| UserData Structs | 8 | ✅ |
+| UserData Structs | 9 | ✅ |
+
+---
+
+## 재화 구조 (v2.1)
+
+### CostType 카테고리
+
+| 카테고리 | 타입 | 설명 |
+|----------|------|------|
+| 기본 | None, Gold, Gem, Stamina | 핵심 재화 |
+| 소환 | SummonTicket, PickupSummonTicket | 가챠 소환권 |
+| 캐릭터 육성 | CharacterExp, BreakthroughMaterial, SkillBook | 캐릭터 성장 재료 |
+| 장비 육성 | EquipmentExp, EnhanceStone | 장비 강화 재료 |
+| 컨텐츠 | ArenaTicket, ArenaCoin, GuildCoin, RaidCoin | 컨텐츠별 재화 |
+| 시즌/이벤트 | SeasonCoin, EventCurrency | 기간제 재화 |
+
+### UserCurrency 필드
+
+```
+기본: Gold(long), Gem/FreeGem(int), Stamina(int), MaxStamina(int)
+소환: SummonTicket, PickupSummonTicket
+육성: CharacterExpMaterial, BreakthroughMaterial, SkillBook
+장비: EquipmentExpMaterial, EnhanceStone
+컨텐츠: ArenaTicket, ArenaCoin, GuildCoin, RaidCoin
+시즌: SeasonCoin
+```
+
+### EventCurrencyData (동적 이벤트 재화)
+
+```
+EventCurrencyItem:
+  - EventId (이벤트 식별자)
+  - CurrencyId (재화 식별자)
+  - Amount (보유량)
+  - ExpiresAt (만료 시간)
+```
+
+### 재화 조회 패턴
+
+```csharp
+// 정적 재화
+currency.GetAmount(CostType.Gold);
+currency.CanAfford(CostType.Gem, 300);
+
+// 이벤트 재화
+eventCurrency.GetAmount("event_summer", "coin");
+eventCurrency.CanAfford("event_summer", "coin", 100);
+```

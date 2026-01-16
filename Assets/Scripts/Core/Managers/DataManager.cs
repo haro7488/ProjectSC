@@ -98,6 +98,11 @@ namespace Sc.Core
         /// </summary>
         public QuestProgress QuestProgress => _userData.QuestProgress;
 
+        /// <summary>
+        /// 이벤트 재화 (읽기 전용)
+        /// </summary>
+        public EventCurrencyData EventCurrency => _userData.EventCurrency;
+
         #endregion
 
         #region Initialization
@@ -250,6 +255,12 @@ namespace Sc.Core
             if (delta.QuestProgress.HasValue)
             {
                 _userData.QuestProgress = delta.QuestProgress.Value;
+            }
+
+            // 이벤트 재화 갱신
+            if (delta.EventCurrency.HasValue)
+            {
+                _userData.EventCurrency = delta.EventCurrency.Value;
             }
 
             _userData.LastSyncAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();

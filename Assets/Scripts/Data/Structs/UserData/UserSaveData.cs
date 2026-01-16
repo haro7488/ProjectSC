@@ -50,6 +50,11 @@ namespace Sc.Data
         public QuestProgress QuestProgress;
 
         /// <summary>
+        /// 이벤트 재화 데이터
+        /// </summary>
+        public EventCurrencyData EventCurrency;
+
+        /// <summary>
         /// 마지막 동기화 시간 (Unix Timestamp)
         /// </summary>
         public long LastSyncAt;
@@ -57,7 +62,7 @@ namespace Sc.Data
         /// <summary>
         /// 현재 데이터 버전
         /// </summary>
-        public const int CurrentVersion = 1;
+        public const int CurrentVersion = 2;
 
         /// <summary>
         /// 신규 유저 데이터 생성
@@ -74,8 +79,28 @@ namespace Sc.Data
                 StageProgress = StageProgress.CreateDefault(),
                 GachaPity = GachaPityData.CreateDefault(),
                 QuestProgress = QuestProgress.CreateDefault(),
+                EventCurrency = EventCurrencyData.CreateDefault(),
                 LastSyncAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
+        }
+
+        /// <summary>
+        /// 데이터 마이그레이션 (버전 업그레이드)
+        /// </summary>
+        public static UserSaveData Migrate(UserSaveData data)
+        {
+            // Version 1 → 2: EventCurrency 필드 추가
+            if (data.Version < 2)
+            {
+                // EventCurrency가 null/비어있을 수 있음 (JSON 역직렬화 특성)
+                if (data.EventCurrency.Currencies == null)
+                {
+                    data.EventCurrency = EventCurrencyData.CreateDefault();
+                }
+                data.Version = 2;
+            }
+
+            return data;
         }
 
         /// <summary>

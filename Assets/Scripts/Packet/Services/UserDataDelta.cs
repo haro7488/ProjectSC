@@ -56,6 +56,11 @@ namespace Sc.Packet
         public QuestProgress? QuestProgress;
 
         /// <summary>
+        /// 이벤트 재화 변경 (null이면 변경 없음)
+        /// </summary>
+        public EventCurrencyData? EventCurrency;
+
+        /// <summary>
         /// 변경사항 있는지 확인
         /// </summary>
         public bool HasChanges =>
@@ -67,7 +72,8 @@ namespace Sc.Packet
             (RemovedItemIds != null && RemovedItemIds.Count > 0) ||
             StageProgress.HasValue ||
             GachaPity.HasValue ||
-            QuestProgress.HasValue;
+            QuestProgress.HasValue ||
+            EventCurrency.HasValue;
 
         /// <summary>
         /// 빈 Delta 생성
@@ -96,6 +102,14 @@ namespace Sc.Packet
         public static UserDataDelta WithAddedItems(List<OwnedItem> items)
         {
             return new UserDataDelta { AddedItems = items };
+        }
+
+        /// <summary>
+        /// 이벤트 재화 변경만 포함하는 Delta 생성
+        /// </summary>
+        public static UserDataDelta WithEventCurrency(EventCurrencyData eventCurrency)
+        {
+            return new UserDataDelta { EventCurrency = eventCurrency };
         }
     }
 }

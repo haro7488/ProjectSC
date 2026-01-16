@@ -45,6 +45,21 @@ namespace Sc.Packet
                 {
                     var json = await File.ReadAllTextAsync(SaveFilePath);
                     _userData = JsonUtility.FromJson<UserSaveData>(json);
+
+                    // 마이그레이션 적용 (버전 업그레이드)
+                    if (_userData.Version < UserSaveData.CurrentVersion)
+                    {
+                        Debug.Log($"[LocalApiClient] 데이터 마이그레이션: v{_userData.Version} → v{UserSaveData.CurrentVersion}");
+                        _userData = UserSaveData.Migrate(_userData);
+                        await SaveUserDataAsync();
+                    }
+
+                    // EventCurrency null 체크 (JSON 역직렬화 특성)
+                    if (_userData.EventCurrency.Currencies == null)
+                    {
+                        _userData.EventCurrency = EventCurrencyData.CreateDefault();
+                    }
+
                     Debug.Log($"[LocalApiClient] 저장 데이터 로드 완료: {_userData.Profile.Nickname}");
                 }
                 catch (Exception e)

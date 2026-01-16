@@ -8,6 +8,7 @@ namespace Sc.Data
         Weapon,      // 무기
         Armor,       // 방어구
         Accessory,   // 악세서리
-        Consumable   // 소모품
+        Consumable,  // 소모품
+        Material     // 재료
     }
 }
