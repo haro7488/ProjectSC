@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using UnityEngine;
 
 namespace Sc.Common.UI
 {
@@ -10,8 +12,18 @@ namespace Sc.Common.UI
         public ScreenWidget OutScreen { get; set; }
         public ScreenWidget InScreen { get; set; }
 
+        public abstract float Duration { get; }
+
         public abstract UniTask Out();
         public abstract UniTask In();
+
+        /// <summary>
+        /// CrossFade - Out/In 동시 실행.
+        /// </summary>
+        public virtual async UniTask CrossFade()
+        {
+            await UniTask.WhenAll(Out(), In());
+        }
 
         public static Transition Default => new FadeTransition();
     }
@@ -21,38 +33,107 @@ namespace Sc.Common.UI
     /// </summary>
     public class FadeTransition : Transition
     {
-        public float Duration { get; set; } = 0.3f;
+        private readonly float _duration;
+        private readonly Ease _ease;
+
+        public override float Duration => _duration;
+
+        public FadeTransition(float duration = 0.3f, Ease ease = Ease.InOutQuad)
+        {
+            _duration = duration;
+            _ease = ease;
+        }
 
         public override async UniTask Out()
         {
-            // TODO: 페이드 아웃 구현
-            await UniTask.Delay((int)(Duration * 1000));
+            if (OutScreen == null) return;
+
+            var canvasGroup = OutScreen.GetOrAddCanvasGroup();
+            canvasGroup.alpha = 1f;
+
+            await canvasGroup
+                .DOFade(0f, _duration)
+                .SetEase(_ease)
+                .SetUpdate(true) // TimeScale 무시
+                .ToUniTask();
+
+            OutScreen.Hide();
         }
 
         public override async UniTask In()
         {
-            // TODO: 페이드 인 구현
-            await UniTask.Delay((int)(Duration * 1000));
+            if (InScreen == null) return;
+
+            var canvasGroup = InScreen.GetOrAddCanvasGroup();
+            canvasGroup.alpha = 0f;
+
+            // CrossFade 시 InScreen은 먼저 보여야 함
+            InScreen.Show();
+
+            await canvasGroup
+                .DOFade(1f, _duration)
+                .SetEase(_ease)
+                .SetUpdate(true)
+                .ToUniTask();
         }
     }
 
     /// <summary>
-    /// 슬라이드 전환.
+    /// 슬라이드 전환 (오른쪽에서 들어오고, 왼쪽으로 나감).
     /// </summary>
     public class SlideTransition : Transition
     {
-        public float Duration { get; set; } = 0.3f;
+        private readonly float _duration;
+        private readonly Ease _ease;
+
+        public override float Duration => _duration;
+
+        public SlideTransition(float duration = 0.3f, Ease ease = Ease.OutQuad)
+        {
+            _duration = duration;
+            _ease = ease;
+        }
 
         public override async UniTask Out()
         {
-            // TODO: 슬라이드 아웃 구현
-            await UniTask.Delay((int)(Duration * 1000));
+            if (OutScreen == null) return;
+
+            var rectTransform = OutScreen.GetComponent<RectTransform>();
+            if (rectTransform == null) return;
+
+            var screenWidth = Screen.width;
+            var startPos = rectTransform.anchoredPosition;
+            var endPos = new Vector2(-screenWidth, startPos.y);
+
+            await rectTransform
+                .DOAnchorPos(endPos, _duration)
+                .SetEase(_ease)
+                .SetUpdate(true)
+                .ToUniTask();
+
+            OutScreen.Hide();
+            rectTransform.anchoredPosition = startPos; // 위치 복원
         }
 
         public override async UniTask In()
         {
-            // TODO: 슬라이드 인 구현
-            await UniTask.Delay((int)(Duration * 1000));
+            if (InScreen == null) return;
+
+            var rectTransform = InScreen.GetComponent<RectTransform>();
+            if (rectTransform == null) return;
+
+            var screenWidth = Screen.width;
+            var endPos = rectTransform.anchoredPosition;
+            var startPos = new Vector2(screenWidth, endPos.y);
+
+            rectTransform.anchoredPosition = startPos;
+            InScreen.Show();
+
+            await rectTransform
+                .DOAnchorPos(endPos, _duration)
+                .SetEase(_ease)
+                .SetUpdate(true)
+                .ToUniTask();
         }
     }
 
@@ -61,7 +142,18 @@ namespace Sc.Common.UI
     /// </summary>
     public class EmptyTransition : Transition
     {
-        public override UniTask Out() => UniTask.CompletedTask;
-        public override UniTask In() => UniTask.CompletedTask;
+        public override float Duration => 0f;
+
+        public override UniTask Out()
+        {
+            OutScreen?.Hide();
+            return UniTask.CompletedTask;
+        }
+
+        public override UniTask In()
+        {
+            InScreen?.Show();
+            return UniTask.CompletedTask;
+        }
     }
 }
