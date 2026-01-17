@@ -885,6 +885,200 @@ Sc.LocalServer/
 
 ---
 
+## PresetGroupId 기반 파티 프리셋
+
+**일자**: 2026-01-18
+**상태**: 결정됨
+**관련 커밋**: `1b1d122`
+
+### 컨텍스트
+- 스테이지 시스템 설계 중 파티 프리셋 관리 방식 결정 필요
+- 유저가 여러 컨텐츠(데일리 던전, 보스, 이벤트 등)에서 각각 다른 파티 구성 사용
+- 컨텐츠별로 "마지막 사용 파티" 기억 필요
+
+### 선택지
+1. **컨텐츠 타입 Enum 기반**
+   - 장점: 타입 안전, IDE 자동완성
+   - 단점: 새 컨텐츠 추가 시 Enum 수정 필요, 이벤트마다 다른 프리셋 불가
+
+2. **StageGroupId 직접 연결**
+   - 장점: 단순, 1:1 매핑
+   - 단점: 같은 카테고리 스테이지가 프리셋 공유 불가
+
+3. **PresetGroupId (문자열 기반 그룹핑)**
+   - 장점: 유연한 확장, 이벤트별 개별 프리셋, 코드 변경 없이 기획 추가
+   - 단점: 문자열이라 타입 안전성 낮음, 오타 위험
+
+### 결정
+**PresetGroupId (선택지 3)** 선택
+
+**이유**:
+- 이벤트가 자주 추가되는 라이브 서비스 특성상 코드 수정 없이 확장 가능해야 함
+- `event_{eventId}` 형식으로 이벤트마다 고유 프리셋 그룹 가능
+- StageGroupData에 PresetGroupId 필드로 기획 데이터에서 제어
+
+**명명 규칙**:
+```
+daily_{attribute}    # 데일리 던전 (daily_fire, daily_water)
+weekly_{type}        # 주간 컨텐츠 (weekly_raid)
+boss_{bossId}        # 보스전
+event_{eventId}      # 이벤트 (event_summer2026)
+story                # 스토리 (전체 공유)
+```
+
+### 결과
+- StageGroupData에 `PresetGroupId` 필드 추가
+- UserStageProgress에 `Dictionary<string, PartyPreset> PartyPresets` 저장
+- StageDashboardScreen 진입 시 해당 그룹의 프리셋 자동 로드
+- 파티 변경 시 PresetGroupId 기준으로 저장
+
+### 회고
+- 문자열 기반이지만 Constants 클래스로 상수 정의하면 오타 방지 가능
+- **배운 점**: 라이브 서비스에서는 확장성 > 타입 안전성인 경우가 많음
+
+---
+
+## 모듈형 이벤트 서브컨텐츠 (EventSubContent)
+
+**일자**: 2026-01-18
+**상태**: 결정됨
+**관련 커밋**: `e4cdc93`
+
+### 컨텍스트
+- 라이브 이벤트 내부 컨텐츠 구성 방식 결정 필요
+- 이벤트마다 다른 조합의 컨텐츠 포함 (미션만, 미션+스테이지, 미션+상점+미니게임 등)
+- 유연한 이벤트 구성이 라이브 서비스 핵심
+
+### 선택지
+1. **A: 고정형 구조**
+   - 모든 이벤트가 Mission, Stage, Shop 필드를 항상 포함
+   - 장점: 구조 단순, 타입 안전
+   - 단점: 사용 안 하는 필드도 존재, 새 컨텐츠 타입 추가 시 스키마 변경
+
+2. **B: 모듈형 서브컨텐츠**
+   - `EventSubContent[]` 배열로 필요한 모듈만 포함
+   - 장점: 유연한 조합, 새 타입 추가 용이, 탭 순서 커스터마이징
+   - 단점: 런타임 타입 체크 필요
+
+3. **C: 상속 기반 이벤트 타입**
+   - MissionEvent, StageEvent, ComboEvent 등 타입별 클래스
+   - 장점: 타입별 특화 로직
+   - 단점: 클래스 폭발, 조합 복잡
+
+### 결정
+**B: 모듈형 서브컨텐츠** 선택
+
+**구조**:
+```csharp
+public enum EventSubContentType
+{
+    Mission,    // 이벤트 미션
+    Stage,      // 이벤트 스테이지
+    Shop,       // 이벤트 상점
+    Minigame,   // 미니게임
+    Story       // 이벤트 스토리
+}
+
+[Serializable]
+public struct EventSubContent
+{
+    public EventSubContentType Type;
+    public string ContentId;      // MissionGroupId, StageGroupId 등
+    public int TabOrder;          // UI 탭 순서
+    public string TabNameKey;     // 탭 이름 (로컬라이징 키)
+    public bool IsUnlocked;       // 해금 여부
+    public string UnlockCondition;
+}
+```
+
+**이유**:
+- 실제 라이브 서비스 이벤트는 매번 다른 조합 (여름 이벤트: 스테이지+상점, 콜라보: 미션+미니게임)
+- 기획팀이 코드 변경 없이 이벤트 구성 가능
+- UI 탭 순서도 데이터로 제어
+
+### 결과
+- LiveEventData에 `EventSubContent[] SubContents` 배열
+- EventDetailScreen에서 SubContents 기반으로 동적 탭 생성
+- 각 탭은 Type에 따라 적절한 하위 화면 로드
+
+---
+
+## 이벤트 재화 정책: 유예 기간 + 자동 전환
+
+**일자**: 2026-01-18
+**상태**: 결정됨
+**관련 커밋**: `e4cdc93`
+
+### 컨텍스트
+- 이벤트 전용 재화 처리 방식 결정 필요
+- 이벤트 종료 후 남은 재화를 어떻게 처리할지
+- 유저 경험과 운영 편의성 모두 고려 필요
+
+### 선택지
+1. **즉시 삭제**
+   - 장점: 구현 단순
+   - 단점: 유저 불만 (못 쓴 재화 손실), CS 이슈
+
+2. **영구 보존**
+   - 장점: 유저 친화적
+   - 단점: 재화 종류 무한 증가, DB 비대화, UI 복잡
+
+3. **유예 기간 후 범용 재화로 전환**
+   - 장점: 유저에게 사용 기회 제공 + 정리 가능, 손실 없음
+   - 단점: 전환 로직 구현 필요
+
+### 결정
+**유예 기간 후 범용 재화로 전환 (선택지 3)** 선택
+
+**구조**:
+```csharp
+[Serializable]
+public struct EventCurrencyPolicy
+{
+    public string CurrencyId;           // 이벤트 전용 재화 ID
+    public string CurrencyNameKey;
+    public string CurrencyIcon;
+    public int GracePeriodDays;         // 유예 기간 (기본 7일)
+    public string ConvertToCurrencyId;  // 전환 대상 재화 (예: gold)
+    public float ConversionRate;        // 전환 비율 (예: 0.5 = 50%)
+}
+```
+
+**이유**:
+- 유저 관점: 이벤트 종료 후에도 7일간 상점 이용 가능
+- 운영 관점: 유예 기간 후 자동 정리로 DB 비대화 방지
+- 손실 최소화: 남은 재화도 범용 재화로 전환되어 0이 아님
+
+**흐름**:
+```
+이벤트 종료
+    │
+    ▼
+유예 기간 (7일)
+├─ 이벤트 상점 여전히 이용 가능
+├─ 재화 획득은 불가
+└─ UI에 "N일 후 전환 예정" 표시
+    │
+    ▼
+유예 기간 종료
+├─ 남은 재화 × 전환 비율 = 범용 재화
+├─ 이벤트 재화 삭제
+└─ 알림: "이벤트 코인 → 골드 전환 완료"
+```
+
+### 결과
+- LiveEventData에 `EventCurrencyPolicy CurrencyPolicy` 필드
+- TimeService에서 유예 기간 체크
+- 로그인 시 전환 대상 이벤트 검사 → 자동 전환 처리
+- EventCurrencyConvertedResponse로 전환 결과 전달
+
+### 회고
+- 실제 서비스에서 이벤트 재화 처리는 CS 민감 이슈
+- 유예 기간 + 전환은 대부분의 수집형 RPG에서 채택하는 방식
+- **배운 점**: 재화 정책은 기술보다 UX/운영 관점이 더 중요
+
+---
+
 ## [템플릿] 새 의사결정
 
 **일자**: YYYY-MM-DD

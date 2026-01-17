@@ -237,6 +237,42 @@
 
 ---
 
+## Phase 10: OUTGAME-V1 설계
+
+### Foundation & Stage 설계 (Phase 0, 3)
+
+**커밋**: `1b1d122` Add spec documents and update CLAUDE.md
+- Phase 0 Foundation 시스템 상세 설계
+  - Logging: LogLevel/LogCategory, ILogOutput 확장성
+  - Error: ErrorCode 체계, Result<T> 패턴
+  - StringData: 자체 구현 문자열 관리 (경량화)
+  - SaveManager: 버전 마이그레이션 시스템
+  - LoadingService: 레퍼런스 카운팅 기반
+- Phase 3 Stage 시스템 설계
+  - StageDashboardScreen: 파티편성 + 스테이지 정보 통합
+  - PresetGroupId: 컨텐츠별 파티 프리셋 그룹핑
+  - 3-Star 시스템: 스테이지별 커스텀 조건
+- **상세**: [DECISIONS.md](DECISIONS.md#presetgroupid-기반-파티-프리셋) 참조
+
+### LiveEvent 설계 (Phase 4)
+
+**커밋**: `e4cdc93` Add Phase 4 LiveEvent detailed spec
+- **중요 결정**: 모듈형 서브컨텐츠 구조
+  - EventSubContent 배열로 유연한 이벤트 구성
+  - Mission, Stage, Shop, Minigame, Story 모듈
+  - 탭 순서/해금 조건 데이터 제어
+- **중요 결정**: 이벤트 재화 정책
+  - 유예 기간 (GracePeriodDays) 후 자동 전환
+  - 범용 재화로 ConversionRate 비율 전환
+- LiveEventData/LiveEventProgress 구조
+- EventMissionData/EventMissionProgress 구조
+- 16가지 MissionConditionType 정의
+- Request/Response 패턴 설계
+- Error 코드 6001-6007 범위 할당
+- **상세**: [DECISIONS.md](DECISIONS.md#모듈형-이벤트-서브컨텐츠-eventsubcontent) 참조
+
+---
+
 ## 진행 중
 
 현재 진행 중인 작업은 [PROGRESS.md](../PROGRESS.md) 참조
