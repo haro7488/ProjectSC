@@ -18,7 +18,7 @@
 | 0 | Foundation | ✅ 설계 완료 | Log, ErrorCode, SaveManager, LoadingIndicator |
 | 1 | 공통 모듈 | ✅ 설계 완료 | RewardInfo, TimeService, SystemPopup, RewardPopup |
 | 2 | 상점 | ✅ 설계 완료 | ShopScreen, ShopHandler |
-| 3 | 스테이지 진입 | ⬜ 대기 | StageListScreen, PartySelectScreen |
+| 3 | 스테이지 진입 | ✅ 설계 완료 | StageDashboardScreen, StageListScreen, PartySelectScreen |
 | 4 | 라이브 이벤트 | ⬜ 대기 | EventDashboard, EventDetail |
 | 5 | 기존 강화 | ⬜ 대기 | 가챠 연출, 캐릭터 필터 |
 
@@ -120,25 +120,25 @@ UI:
 - [ ] CostConfirmPopup 재사용 (Phase 1)
 ```
 
-#### Phase 3: 스테이지 진입 ⬜
+#### Phase 3: 스테이지 진입 ✅ 설계완료
 > 스펙: [Stage.md](Specs/Stage.md)
 
 ```
-마스터 데이터:
-- [ ] StageType.cs, StageUnlockCondition 구조체
-- [ ] StageData.cs 확장 (FirstClearRewards, StageType, UnlockCondition)
+설계 완료:
+- [x] StageType.cs, UnlockConditionType.cs, StarConditionType.cs
+- [x] StageUnlockCondition, StarCondition 구조체
+- [x] StageData.cs 확장 (PresetGroupId, StarConditions 포함)
+- [x] PartyPreset 구조체 (PresetGroupId 기반)
+- [x] PresetGroupId 시스템 (컨텐츠별 프리셋 분리: daily_fire, boss_dragon 등)
+- [x] StageBattleRequest/Response, BattleInitialData, CharacterBattleData
+- [x] UI 설계: StageDashboardScreen, StageListScreen, PartySelectScreen
 
-유저 데이터:
-- [ ] PartyPreset 구조체
-- [ ] UserSaveData.PartyPresets 필드
-
-API:
-- [ ] StageBattleRequest/Response
-- [ ] LocalApiClient.StartBattleAsync
-
-UI:
-- [ ] Sc.Contents.Stage Assembly 생성
-- [ ] StageListScreen, StageItem, PartySelectScreen
+구현 대기:
+- [ ] Enums 구현 (StageType, UnlockConditionType, StarConditionType)
+- [ ] 마스터 데이터 구현 (StageData 확장, Stage.json 업데이트)
+- [ ] 유저 데이터 구현 (PartyPreset, StageProgress)
+- [ ] Request/Response 구현
+- [ ] UI 구현 (Sc.Contents.Stage Assembly)
 ```
 
 #### Phase 4: 라이브 이벤트 ⬜
@@ -516,6 +516,22 @@ Phase 4: 검증
 ---
 
 ## 작업 로그
+
+### 2026-01-18
+- [x] Phase 3 스테이지 시스템 설계 완료
+  - [x] Stage.md v2.0 구조 설계
+    - [x] StageDashboardScreen (타입 선택 대시보드)
+    - [x] StageListScreen, PartySelectScreen (재사용 컴포넌트)
+    - [x] StageType: MainStory, HardMode, DailyDungeon, BossRaid, Tower, Event
+  - [x] 해금 시스템 (UnlockConditionType: None, StageClear, ChapterClear, PlayerLevel)
+  - [x] 3성 시스템 (StarConditionType: Clear, NoDeaths, TurnLimit, FullHP, NoBossSkill, ElementParty)
+  - [x] PresetGroupId 기반 파티 프리셋 시스템
+    - [x] 스테이지 타입 내 세부 분류 지원 (daily_fire, daily_water, boss_dragon 등)
+    - [x] StageData.PresetGroupId 필드 추가
+    - [x] UserSaveData.PartyPresets: Dictionary<string, List<PartyPreset>>
+  - [x] StageBattleRequest/Response 설계
+  - [x] 전투력 계산 공식 정의
+  - [x] 에러 코드 정의 (5101~5107)
 
 ### 2026-01-17 (계속)
 - [x] 아웃게임 아키텍처 V1 검토 - Phase 1 완료
