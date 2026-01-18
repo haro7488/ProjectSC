@@ -1,0 +1,19 @@
+{
+    "name": "Sc.Editor.Tests",
+    "rootNamespace": "Sc.Editor.Tests",
+    "references": [
+        "GUID:f867ad2afe9744b4a9f844e8d08c176c",
+        "GUID:901a6a368720d384c849395fd6ce5ea6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

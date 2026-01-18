@@ -39,8 +39,8 @@
 
 | 단계 | 항목 | 상태 | 비고 |
 |------|------|------|------|
-| 1차 | 베이스 인프라 | ⬜ 대기 | Services, SystemTestRunner |
-| 1차 | Navigation 테스트 | ⬜ 대기 | 첫 번째 시스템 |
+| 1차 | 베이스 인프라 | ✅ 완료 | Services, SystemTestRunner |
+| 1차 | Navigation 테스트 | ✅ 완료 | 첫 번째 시스템 |
 | 2차 | 자동화 연동 | ⬜ 대기 | Unity Test Framework |
 | 3차 | 시스템 확장 | ⬜ 대기 | Loading, Popup, ... |
 
@@ -48,21 +48,21 @@
 
 ```
 베이스 인프라:
-- [ ] Services.cs (ServiceLocator)
-- [ ] SystemTestRunner.cs (베이스 클래스)
-- [ ] TestCanvasFactory.cs
-- [ ] TestUIBuilder.cs
-- [ ] TestResult.cs
+- [x] Services.cs (ServiceLocator)
+- [x] SystemTestRunner.cs (베이스 클래스)
+- [x] TestCanvasFactory.cs
+- [x] TestUIBuilder.cs
+- [x] TestResult.cs
 
 Mock:
-- [ ] MockTimeService.cs
-- [ ] MockSaveStorage.cs
-- [ ] MockApiClient.cs
+- [x] MockTimeService.cs
+- [x] MockSaveStorage.cs
+- [x] MockApiClient.cs
 
 Navigation 테스트:
-- [ ] NavigationTestScenarios.cs
-- [ ] NavigationTestRunner.cs
-- [ ] SystemTestMenu.cs (에디터 메뉴)
+- [x] NavigationTestScenarios.cs
+- [x] NavigationTestRunner.cs
+- [x] SystemTestMenu.cs (에디터 메뉴)
 ```
 
 ### 시스템별 테스트 우선순위
@@ -585,6 +585,17 @@ Phase 4: 검증
 ## 작업 로그
 
 ### 2026-01-18
+- [x] 테스트 기초 인프라 1차 구축 완료
+  - [x] Services.cs (ServiceLocator 패턴)
+  - [x] Sc.Tests Assembly 생성
+  - [x] TestResult.cs, TestCanvasFactory.cs, TestUIBuilder.cs
+  - [x] SystemTestRunner.cs (베이스 클래스)
+  - [x] ITestInterfaces.cs (ITimeService, ISaveStorage 임시 정의)
+  - [x] MockTimeService.cs, MockSaveStorage.cs, MockApiClient.cs
+  - [x] SimpleTestScreen.cs, SimpleTestPopup.cs (테스트 위젯)
+  - [x] NavigationTestScenarios.cs (테스트 시나리오)
+  - [x] NavigationTestRunner.cs
+  - [x] SystemTestMenu.cs (에디터 메뉴)
 - [x] Phase 5 기존 강화 상세 설계 완료
   - [x] Phase 5.1 가챠 강화 스펙 작성 (Gacha/Enhancement.md)
     - [x] GachaPoolData 확장 (배너, 천장, 픽업 필드)
