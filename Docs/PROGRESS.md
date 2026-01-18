@@ -51,7 +51,7 @@
 | # | 시스템 | 상태 | 의존성 | 스펙 문서 |
 |---|--------|------|--------|-----------|
 | 5 | Reward | ✅ | 없음 | ✅ Common/Reward.md |
-| 6 | TimeService | ⬜ | 없음 | 마일스톤 내 |
+| 6 | TimeService | ✅ | 없음 | ✅ Core/TimeService.md |
 
 #### Phase D: 공통 UI (Phase C 의존)
 | # | 시스템 | 상태 | 의존성 | 스펙 문서 |
@@ -583,6 +583,19 @@ Enum:
 ---
 
 ## 작업 로그
+
+### 2026-01-19 (TimeService 구현)
+- [x] TimeService 시스템 구현 완료
+  - [x] LimitType.cs - 제한 타입 열거형 (None, Daily, Weekly, Monthly, Permanent, EventPeriod)
+  - [x] ITimeService.cs - 시간 서비스 인터페이스 (서버 전환 비용 최소화 설계)
+  - [x] TimeService.cs - 로컬 구현 (UTC 기반, 서버 시간 오프셋 지원)
+  - [x] TimeHelper.cs - UI 헬퍼 (FormatRemainingTime, FormatRelativeTime, ToLocalTimeString)
+- [x] MockTimeService 업데이트 (새 ITimeService 인터페이스 구현)
+- [x] TimeService 단위 테스트 작성 (25개)
+  - [x] TimeServiceTests.cs - ServerTimeUtc, SyncServerTime, GetNextResetTime, HasResetOccurred
+- [x] TimeHelper 단위 테스트 작성 (20개)
+  - [x] TimeHelperTests.cs - FormatRemainingTime, FormatRelativeTime, GetLimitTypeDisplayName
+- [x] DECISIONS.md 기록 - "TimeService 서버 전환 비용 최소화 설계"
 
 ### 2026-01-19 (Reward 시스템 구현)
 - [x] Reward 시스템 구현 완료

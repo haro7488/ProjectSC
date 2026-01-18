@@ -780,6 +780,78 @@ SystemPopupBase (추상)
 
 ---
 
+## TimeService 서버 전환 비용 최소화 설계
+
+**일자**: 2026-01-19
+**상태**: 결정됨
+**관련 커밋**: (이번 커밋)
+
+### 컨텍스트
+- TimeService 구현 시 로컬 환경과 실제 서버 환경의 차이 고려 필요
+- 기존 프로젝트 패턴(IApiService, ISaveStorage)과 일관성 유지 필요
+- 서버 전환 시 구현체만 교체하면 되는 구조 목표
+
+### 선택지
+1. **로컬 전용 구현**
+   - 장점: 구현 단순, 즉시 사용 가능
+   - 단점: 서버 전환 시 인터페이스 변경 필요, 호출부 수정 발생
+
+2. **서버 기준 인터페이스 + 로컬 구현**
+   - 장점: 서버 전환 시 구현체만 교체, 호출부 변경 없음
+   - 단점: 초기 인터페이스 설계 비용
+
+3. **실제 서버 구현**
+   - 장점: 완전한 구조
+   - 단점: 백엔드 인프라 필요, 범위 초과
+
+### 결정
+**서버 기준 인터페이스 + 로컬 구현 (선택지 2)** 선택
+
+**인터페이스 설계 (서버 고려)**:
+```csharp
+public interface ITimeService
+{
+    long ServerTimeUtc { get; }        // 서버 시간 (UTC)
+    DateTime ServerDateTime { get; }
+    long TimeOffset { get; }           // 클라-서버 오프셋
+    
+    void SyncServerTime(long serverTimestamp);  // 서버 시간 동기화
+    
+    long GetNextResetTime(LimitType limitType);
+    bool HasResetOccurred(long lastTimestamp, LimitType limitType);
+    bool IsWithinPeriod(long startTime, long endTime);
+    long GetRemainingSeconds(long targetTime);
+}
+```
+
+**이유**:
+- 기존 패턴과 일관성: IApiService → LocalApiService, ISaveStorage → FileSaveStorage
+- TimeOffset 필드로 서버 시간 동기화 구조 미리 확보
+- SyncServerTime으로 서버 응답 시 시간 보정 가능
+- 로컬 환경에서는 Offset = 0으로 클라이언트 시간 사용
+
+**서버 전환 시 변경 범위**:
+| 영역 | 변경 내용 |
+|------|----------|
+| 인터페이스 | **없음** |
+| 구현체 | TimeService → ServerTimeService 교체 |
+| 등록 | Services.Register 변경 |
+| 호출부 | **없음** |
+
+### 결과
+- ITimeService: Core/Interfaces/ (서버 동기화 고려한 설계)
+- TimeService: Core/Services/ (로컬 구현, Offset 기반)
+- TimeHelper: Core/Utility/ (UI 표시 헬퍼, 정적 메서드)
+- MockTimeService 업데이트 (새 인터페이스 구현)
+- 단위 테스트 작성 (TimeServiceTests, TimeHelperTests)
+
+### 회고
+- 인터페이스에 SyncServerTime, TimeOffset을 미리 포함시켜 서버 전환 대비
+- 로컬 구현에서도 동일 인터페이스를 사용하여 테스트와 실제 동작 일관성 확보
+- **배운 점**: 외부 의존성(서버 시간)은 항상 교체 가능한 구조로 설계해야 함
+
+---
+
 ## TimeService 시간 처리 설계
 
 **일자**: 2026-01-17
