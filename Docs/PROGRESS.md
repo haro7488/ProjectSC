@@ -7,22 +7,87 @@
 
 ## 🚀 다음 작업 (clear 후 시작점)
 
-**지시**: "Phase 0 구현하자" 또는 "[Phase명] 진행해줘"
+**지시**: "[시스템명] 구현하자" (예: "Logging 구현하자", "SaveManager 구현하자")
 
 **현재 마일스톤**: 🎯 아웃게임 아키텍처 1차 완성 (OUTGAME-V1)
 - 상세 문서: [Milestones/OUTGAME_ARCHITECTURE_V1.md](Milestones/OUTGAME_ARCHITECTURE_V1.md)
 
-**Phase 진행 상태**:
-| Phase | 이름 | 상태 | 핵심 산출물 |
-|-------|------|------|-------------|
-| 0 | Foundation | ✅ 설계 완료 | Log, ErrorCode, SaveManager, LoadingIndicator |
-| 1 | 공통 모듈 | ✅ 설계 완료 | RewardInfo, TimeService, SystemPopup, RewardPopup |
-| 2 | 상점 | ✅ 설계 완료 | ShopScreen, ShopHandler |
-| 3 | 스테이지 진입 | ✅ 설계 완료 | StageDashboardScreen, StageListScreen, PartySelectScreen |
-| 4 | 라이브 이벤트 | ✅ 설계 완료 | LiveEventScreen, EventDetailScreen, EventSubContent |
-| 5 | 기존 강화 | ✅ 설계 완료 | 가챠/캐릭터/Navigation Phase 0~4 연동 |
+---
 
-**이전 작업 (MVP 완료)**: ✅
+### 구현 원칙: 시스템 단위 개발
+
+> **핵심**: Phase 단위가 아닌 **시스템 단위**로 구현 진행
+
+**각 시스템 작업 흐름**:
+```
+1. 스펙 문서 확인/작성 (Docs/Specs/)
+2. PROGRESS.md에 체크리스트 추가
+3. 구현 착수
+4. 완료 시 PROGRESS.md 업데이트
+```
+
+**원칙**:
+- 의존성 기반 순서로 진행
+- 스펙 문서화는 해당 시스템 구현 직전에 구체화
+- 리팩토링 필요 시 영향 범위 명시
+
+---
+
+### 시스템 구현 순서 (의존성 기반)
+
+#### Phase A: 기반 인프라 (독립)
+| # | 시스템 | 상태 | 의존성 | 스펙 문서 |
+|---|--------|------|--------|-----------|
+| 1 | Logging | ⬜ | 없음 | 작성 필요 |
+| 2 | ErrorHandling | ⬜ | 없음 | 작성 필요 |
+
+#### Phase B: 기반 인프라 (Phase A 의존)
+| # | 시스템 | 상태 | 의존성 | 스펙 문서 |
+|---|--------|------|--------|-----------|
+| 3 | SaveManager | ⬜ | Result<T> | 마일스톤 내 |
+| 4 | LoadingIndicator | ⬜ | Widget (있음) | 마일스톤 내 |
+
+#### Phase C: 공통 데이터/서비스 (독립)
+| # | 시스템 | 상태 | 의존성 | 스펙 문서 |
+|---|--------|------|--------|-----------|
+| 5 | Reward | ⬜ | 없음 | ✅ Common/Reward.md |
+| 6 | TimeService | ⬜ | 없음 | 마일스톤 내 |
+
+#### Phase D: 공통 UI (Phase C 의존)
+| # | 시스템 | 상태 | 의존성 | 스펙 문서 |
+|---|--------|------|--------|-----------|
+| 7 | SystemPopup | ⬜ | Widget (있음) | ✅ Common/Popups/SystemPopup.md |
+| 8 | RewardPopup | ⬜ | Reward | ✅ Common/Popups/RewardPopup.md |
+
+#### Phase E: 서버 분리 (리팩토링)
+| # | 시스템 | 상태 | 의존성 | 스펙 문서 |
+|---|--------|------|--------|-----------|
+| 9 | LocalServer | ⬜ | Reward, TimeService, SaveManager | 작성 필요 |
+
+#### Phase F: 컨텐츠 (순서 자유)
+| # | 시스템 | 상태 | 의존성 | 스펙 문서 |
+|---|--------|------|--------|-----------|
+| 10 | Shop | ⬜ | LocalServer, SystemPopup | ✅ Shop.md |
+| 11 | Stage | ⬜ | LocalServer, Reward | ✅ Stage.md |
+| 12 | LiveEvent | ⬜ | LocalServer, TimeService | ✅ LiveEvent.md |
+| 13 | GachaEnhancement | ⬜ | RewardPopup, LoadingIndicator | ✅ Gacha/Enhancement.md |
+| 14 | CharacterEnhancement | ⬜ | Reward, SystemPopup | ✅ Character/Enhancement.md |
+| 15 | NavigationEnhancement | ⬜ | 없음 | ✅ Common/NavigationEnhancement.md |
+
+---
+
+### 리팩토링 영향 범위
+
+| 시스템 | 영향받는 기존 코드 | 조치 |
+|--------|-------------------|------|
+| SaveManager | LocalApiService 저장 로직 | SaveManager로 이관 |
+| ErrorHandling | LocalApiService 에러 반환 | Result<T> 적용 |
+| LocalServer | LocalApiService 전체 | Sc.LocalServer Assembly 분리 |
+
+---
+
+### 이전 작업 (MVP 완료) ✅
+
 - MVP 화면 (Title, Lobby, Gacha, CharacterList, CharacterDetail)
 - CurrencyHUD, GachaResultPopup, ScreenHeader
 - DataManager 연동, NetworkManager 이벤트 기반
@@ -86,164 +151,28 @@ Navigation 테스트:
 ## 🎯 마일스톤: 아웃게임 아키텍처 1차 (OUTGAME-V1)
 
 > **상세 문서**: [Milestones/OUTGAME_ARCHITECTURE_V1.md](Milestones/OUTGAME_ARCHITECTURE_V1.md)
+> **구현 추적**: 상단 [시스템 구현 순서](#시스템-구현-순서-의존성-기반) 섹션 참조
 
 ### 목표
 아웃게임 핵심 기능(가챠, 상점, 캐릭터리스트, 스테이지진입, 이벤트진입) 기초 토대 완성
 
-### Phase 상세
+### Phase → 시스템 매핑
 
-#### Phase 0: Foundation ⬜
-> 기반 인프라: 로깅, 에러처리, 세이브, 로딩UI
+> 기존 Phase 기반 설계를 시스템 단위 구현으로 전환
 
-```
-로깅:
-- [ ] LogLevel.cs, Log.cs (Foundation/)
-- [ ] ILogOutput.cs, UnityLogOutput.cs (Foundation/)
-- [ ] LogConfig.cs (Foundation/)
+| Phase | 포함 시스템 | 상태 |
+|-------|------------|------|
+| 0 | Logging, ErrorHandling, SaveManager, LoadingIndicator | ⬜ |
+| 1 | Reward, TimeService, SystemPopup, RewardPopup, LocalServer | ⬜ |
+| 2 | Shop | ⬜ |
+| 3 | Stage | ⬜ |
+| 4 | LiveEvent | ⬜ |
+| 5 | GachaEnhancement, CharacterEnhancement, NavigationEnhancement | ⬜ |
 
-에러 처리:
-- [ ] ErrorCode.cs, ErrorMessages.cs (Foundation/)
-- [ ] Result.cs (Foundation/)
+### 상세 체크리스트
 
-세이브:
-- [ ] ISaveStorage.cs, FileSaveStorage.cs (Core/)
-- [ ] SaveManager.cs (Core/Managers/)
-- [ ] ISaveMigration.cs, SaveMigrator.cs (Core/)
-- [ ] UserSaveData Version 필드 추가
-
-로딩 UI:
-- [ ] LoadingIndicator.cs (Common/UI/)
-- [ ] LoadingWidget.cs (Common/UI/Widgets/)
-- [ ] Loading 프리팹 생성
-```
-
-#### Phase 1: 공통 모듈 ⬜
-> 스펙: [Reward.md](Specs/Common/Reward.md), [SystemPopup.md](Specs/Common/Popups/SystemPopup.md), [RewardPopup.md](Specs/Common/Popups/RewardPopup.md)
-
-```
-보상 시스템:
-- [ ] RewardType.cs, ItemCategory.cs (Data/Enums/)
-- [ ] RewardInfo.cs (Data/Structs/Common/)
-- [ ] RewardHelper.cs (Core/Utility/)
-
-서버/클라 분리:
-- [ ] Sc.LocalServer Assembly 생성
-- [ ] LocalGameServer.cs, RewardService.cs
-- [ ] ResponseValidator.cs (Core/)
-
-시간 처리:
-- [ ] ITimeService.cs, TimeService.cs (Core/)
-- [ ] ServerTimeService.cs (LocalServer/)
-- [ ] TimeHelper.cs (Core/Utility/)
-
-시스템 팝업:
-- [ ] SystemPopupBase.cs, ButtonStyle.cs
-- [ ] ConfirmPopup.cs, AlertPopup.cs
-- [ ] InputPopup.cs, CostConfirmPopup.cs
-
-보상 팝업:
-- [ ] RewardCard.cs, RewardPopup.cs
-- [ ] RewardFullViewPopup.cs
-```
-
-#### Phase 2: 상점 ⬜
-> 스펙: [Shop.md](Specs/Shop.md), [ShopProductData.md](Specs/Shop/ShopProductData.md)
-
-```
-마스터 데이터:
-- [ ] ProductType.cs, LimitType.cs (Data/Enums/)
-- [ ] CurrencyIds.cs (Data/Constants/)
-- [ ] ShopProductData.cs, ShopProductDatabase.cs (Data/ScriptableObjects/)
-- [ ] ShopProduct.json 샘플 데이터
-
-유저 데이터:
-- [ ] ShopPurchaseRecord 구조체
-- [ ] UserSaveData 버전 마이그레이션
-
-서버 로직 (Sc.LocalServer):
-- [ ] ShopHandler.cs (Handlers/)
-- [ ] ShopService.cs (Services/)
-- [ ] LocalGameServer에 등록
-
-UI:
-- [ ] ShopScreen.cs, ShopProductItem.cs
-- [ ] ShopTabGroup.cs
-- [ ] CostConfirmPopup 재사용 (Phase 1)
-```
-
-#### Phase 3: 스테이지 진입 ✅ 설계완료
-> 스펙: [Stage.md](Specs/Stage.md)
-
-```
-설계 완료:
-- [x] StageType.cs, UnlockConditionType.cs, StarConditionType.cs
-- [x] StageUnlockCondition, StarCondition 구조체
-- [x] StageData.cs 확장 (PresetGroupId, StarConditions 포함)
-- [x] PartyPreset 구조체 (PresetGroupId 기반)
-- [x] PresetGroupId 시스템 (컨텐츠별 프리셋 분리: daily_fire, boss_dragon 등)
-- [x] StageBattleRequest/Response, BattleInitialData, CharacterBattleData
-- [x] UI 설계: StageDashboardScreen, StageListScreen, PartySelectScreen
-
-구현 대기:
-- [ ] Enums 구현 (StageType, UnlockConditionType, StarConditionType)
-- [ ] 마스터 데이터 구현 (StageData 확장, Stage.json 업데이트)
-- [ ] 유저 데이터 구현 (PartyPreset, StageProgress)
-- [ ] Request/Response 구현
-- [ ] UI 구현 (Sc.Contents.Stage Assembly)
-```
-
-#### Phase 4: 라이브 이벤트 ✅ 설계완료
-> 스펙: [LiveEvent.md](Specs/LiveEvent.md)
-
-```
-설계 완료:
-- [x] EventType, EventSubContentType, MissionConditionType
-- [x] EventSubContent (모듈형 서브컨텐츠)
-- [x] EventCurrencyPolicy (유예 기간 + 범용 재화 전환)
-- [x] LiveEventData, EventMissionData, EventMissionGroup
-- [x] LiveEventProgress, EventMissionProgress
-- [x] Request/Response (GetActiveEvents, ClaimMission, VisitEvent)
-- [x] UI 설계 (LiveEventScreen, EventDetailScreen, 탭 구조)
-- [x] 에러 코드 (6001~6007)
-
-구현 대기:
-- [ ] Enums 구현 (EventType, EventSubContentType, MissionConditionType)
-- [ ] 마스터 데이터 구현 (LiveEventData, EventMissionData)
-- [ ] 유저 데이터 구현 (LiveEventProgress)
-- [ ] Request/Response 구현
-- [ ] LocalApiClient API 구현
-- [ ] UI 구현 (Sc.Contents.Event Assembly)
-```
-
-#### Phase 5: 기존 강화 ✅ 설계완료
-> 스펙: [Gacha/Enhancement.md](Specs/Gacha/Enhancement.md), [Character/Enhancement.md](Specs/Character/Enhancement.md), [Common/NavigationEnhancement.md](Specs/Common/NavigationEnhancement.md)
-
-```
-설계 완료:
-- [x] Phase 5.1 가챠 강화 설계
-  - [x] GachaPoolData 확장 (배너, 천장 필드)
-  - [x] GachaHistoryRecord 유저 데이터
-  - [x] GachaScreen 리팩토링 (배너 스크롤, 천장 표시)
-  - [x] GachaResultPopup → RewardPopup 교체
-  - [x] Phase 0 LoadingIndicator, Log 연동
-  - [x] Phase 1 CostConfirmPopup, RewardPopup 연동
-- [x] Phase 5.2 캐릭터 강화 설계
-  - [x] CharacterLevelData, CharacterAscensionData, ExpMaterialData
-  - [x] PowerCalculator (Phase 3 공식)
-  - [x] LevelUpRequest/Response, AscendRequest/Response
-  - [x] CharacterDetailScreen 레벨업/돌파 탭
-  - [x] 필터/정렬 시스템 (CharacterFilterState)
-- [x] Phase 5.3 Navigation 강화 설계
-  - [x] Shortcut API (Screen.Open 래핑)
-  - [x] DeepLink 시스템 (DeepLinkManager, DeepLinkParser)
-  - [x] TabGroupWidget (로비 탭 구조)
-  - [x] BadgeManager (알림 뱃지)
-
-구현 대기:
-- [ ] Phase 5.1 가챠 강화 구현
-- [ ] Phase 5.2 캐릭터 강화 구현
-- [ ] Phase 5.3 Navigation 강화 구현
-```
+각 시스템 구현 시 해당 시스템 섹션에 체크리스트 추가.
+Phase별 상세 설계는 [마일스톤 문서](Milestones/OUTGAME_ARCHITECTURE_V1.md) 참조.
 
 ---
 
@@ -583,6 +512,14 @@ Phase 4: 검증
 ---
 
 ## 작업 로그
+
+### 2026-01-18 (계속)
+- [x] 시스템 단위 구현 방식으로 전환
+  - [x] Phase 단위 → 시스템 단위 구현 순서 확정
+  - [x] PROGRESS.md 시스템 구현 순서 섹션 추가
+  - [x] 의존성 기반 구현 순서 정의 (Phase A~F)
+  - [x] 리팩토링 영향 범위 명시 (SaveManager, ErrorHandling, LocalServer)
+  - [x] 구현 원칙 문서화 (스펙 → 체크리스트 → 구현 → 업데이트)
 
 ### 2026-01-18
 - [x] 테스트 기초 인프라 1차 구축 완료

@@ -48,6 +48,27 @@
 
 ## 개발 원칙
 
+### 시스템 단위 구현
+
+> **핵심**: Phase 단위가 아닌 **시스템 단위**로 구현 진행
+> **진행 추적**: [PROGRESS.md](../PROGRESS.md) 시스템 구현 순서 섹션 참조
+
+**구현 흐름**:
+```
+1. 스펙 문서 확인/작성 (Docs/Specs/)
+2. PROGRESS.md에 체크리스트 추가
+3. 구현 착수
+4. 완료 시 PROGRESS.md 업데이트
+```
+
+**시스템 구현 순서** (의존성 기반):
+- Phase A: Logging, ErrorHandling (독립)
+- Phase B: SaveManager, LoadingIndicator (Phase A 의존)
+- Phase C: Reward, TimeService (독립)
+- Phase D: SystemPopup, RewardPopup (Phase C 의존)
+- Phase E: LocalServer (리팩토링)
+- Phase F: Shop, Stage, LiveEvent, 기능강화 (순서 자유)
+
 ### 테스트 가능 구조
 
 > **핵심**: 각 시스템을 독립적으로 테스트 가능하도록 설계
@@ -77,14 +98,17 @@ Services.Register<ITimeService>(new MockTimeService());
 
 ## Phase 구성
 
-| Phase | 이름 | 핵심 산출물 | 의존성 |
+> **구현 추적**: [PROGRESS.md](../PROGRESS.md) 시스템 구현 순서 섹션에서 실시간 상태 확인
+> **구현 방식**: Phase 단위가 아닌 시스템 단위로 진행 (상단 개발 원칙 참조)
+
+| Phase | 이름 | 포함 시스템 | 의존성 |
 |-------|------|-------------|--------|
-| **0** | Foundation | Log, ErrorCode, SaveManager, LoadingIndicator | - |
-| **1** | 공통 모듈 | RewardInfo, TimeService, SystemPopup, RewardPopup | Phase 0 |
-| **2** | 상점 | ShopScreen, PurchaseAsync | Phase 1 |
-| **3** | 스테이지 진입 | StageListScreen, PartySelectScreen | Phase 1 |
-| **4** | 라이브 이벤트 | EventDashboard, EventDetail | Phase 1, 2 |
-| **5** | 기존 기능 강화 | 가챠 연출, 캐릭터 필터/정렬 | Phase 1~4 |
+| **0** | Foundation | Logging, ErrorHandling, SaveManager, LoadingIndicator | - |
+| **1** | 공통 모듈 | Reward, TimeService, SystemPopup, RewardPopup, LocalServer | Phase 0 |
+| **2** | 상점 | Shop | Phase 1 |
+| **3** | 스테이지 진입 | Stage | Phase 1 |
+| **4** | 라이브 이벤트 | LiveEvent | Phase 1, 2 |
+| **5** | 기존 기능 강화 | GachaEnhancement, CharacterEnhancement, NavigationEnhancement | Phase 1~4 |
 
 ### 제외 항목 (별도 마일스톤)
 
