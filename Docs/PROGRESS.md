@@ -20,13 +20,64 @@
 | 2 | 상점 | ✅ 설계 완료 | ShopScreen, ShopHandler |
 | 3 | 스테이지 진입 | ✅ 설계 완료 | StageDashboardScreen, StageListScreen, PartySelectScreen |
 | 4 | 라이브 이벤트 | ✅ 설계 완료 | LiveEventScreen, EventDetailScreen, EventSubContent |
-| 5 | 기존 강화 | ⬜ 대기 | 가챠 연출, 캐릭터 필터 |
+| 5 | 기존 강화 | ✅ 설계 완료 | 가챠/캐릭터/Navigation Phase 0~4 연동 |
 
 **이전 작업 (MVP 완료)**: ✅
 - MVP 화면 (Title, Lobby, Gacha, CharacterList, CharacterDetail)
 - CurrencyHUD, GachaResultPopup, ScreenHeader
 - DataManager 연동, NetworkManager 이벤트 기반
 - Screen/Popup Transition 애니메이션
+
+---
+
+## 🧪 테스트 인프라 (마일스톤 독립)
+
+> **원칙**: Phase/마일스톤과 별개로 시스템 단위 테스트 환경 구축
+> **상세 문서**: [Specs/Testing/TestArchitecture.md](Specs/Testing/TestArchitecture.md)
+
+### 구축 상태
+
+| 단계 | 항목 | 상태 | 비고 |
+|------|------|------|------|
+| 1차 | 베이스 인프라 | ⬜ 대기 | Services, SystemTestRunner |
+| 1차 | Navigation 테스트 | ⬜ 대기 | 첫 번째 시스템 |
+| 2차 | 자동화 연동 | ⬜ 대기 | Unity Test Framework |
+| 3차 | 시스템 확장 | ⬜ 대기 | Loading, Popup, ... |
+
+### 1차 구축 체크리스트
+
+```
+베이스 인프라:
+- [ ] Services.cs (ServiceLocator)
+- [ ] SystemTestRunner.cs (베이스 클래스)
+- [ ] TestCanvasFactory.cs
+- [ ] TestUIBuilder.cs
+- [ ] TestResult.cs
+
+Mock:
+- [ ] MockTimeService.cs
+- [ ] MockSaveStorage.cs
+- [ ] MockApiClient.cs
+
+Navigation 테스트:
+- [ ] NavigationTestScenarios.cs
+- [ ] NavigationTestRunner.cs
+- [ ] SystemTestMenu.cs (에디터 메뉴)
+```
+
+### 시스템별 테스트 우선순위
+
+| 우선순위 | 시스템 | 의존성 | Mock 필요 |
+|----------|--------|--------|----------|
+| 1 | Navigation | 없음 | 없음 |
+| 2 | LoadingIndicator | 없음 | 없음 |
+| 3 | Result<T> | 없음 | 없음 |
+| 4 | SaveManager | ISaveStorage | MockSaveStorage |
+| 5 | TimeService | 없음 | 없음 |
+| 6 | RewardPopup | IRewardHelper | MockRewardHelper |
+| 7 | SystemPopups | 없음 | 없음 |
+| 8 | Gacha | IApiClient | MockApiClient |
+| 9 | Shop | IApiClient, ITimeService | Mock들 |
 
 ---
 
@@ -164,18 +215,34 @@ UI:
 - [ ] UI 구현 (Sc.Contents.Event Assembly)
 ```
 
-#### Phase 5: 기존 강화 ⬜
-> 마일스톤 문서 참조
+#### Phase 5: 기존 강화 ✅ 설계완료
+> 스펙: [Gacha/Enhancement.md](Specs/Gacha/Enhancement.md), [Character/Enhancement.md](Specs/Character/Enhancement.md), [Common/NavigationEnhancement.md](Specs/Common/NavigationEnhancement.md)
 
 ```
-가챠 강화:
-- [ ] 배너별 UI, 소환 연출, 히스토리 화면
+설계 완료:
+- [x] Phase 5.1 가챠 강화 설계
+  - [x] GachaPoolData 확장 (배너, 천장 필드)
+  - [x] GachaHistoryRecord 유저 데이터
+  - [x] GachaScreen 리팩토링 (배너 스크롤, 천장 표시)
+  - [x] GachaResultPopup → RewardPopup 교체
+  - [x] Phase 0 LoadingIndicator, Log 연동
+  - [x] Phase 1 CostConfirmPopup, RewardPopup 연동
+- [x] Phase 5.2 캐릭터 강화 설계
+  - [x] CharacterLevelData, CharacterAscensionData, ExpMaterialData
+  - [x] PowerCalculator (Phase 3 공식)
+  - [x] LevelUpRequest/Response, AscendRequest/Response
+  - [x] CharacterDetailScreen 레벨업/돌파 탭
+  - [x] 필터/정렬 시스템 (CharacterFilterState)
+- [x] Phase 5.3 Navigation 강화 설계
+  - [x] Shortcut API (Screen.Open 래핑)
+  - [x] DeepLink 시스템 (DeepLinkManager, DeepLinkParser)
+  - [x] TabGroupWidget (로비 탭 구조)
+  - [x] BadgeManager (알림 뱃지)
 
-캐릭터 강화:
-- [ ] 필터/정렬, 레벨업/돌파, 장비 장착
-
-Navigation 강화:
-- [ ] Shortcut, DeepLink, 탭 그룹
+구현 대기:
+- [ ] Phase 5.1 가챠 강화 구현
+- [ ] Phase 5.2 캐릭터 강화 구현
+- [ ] Phase 5.3 Navigation 강화 구현
 ```
 
 ---
@@ -518,6 +585,32 @@ Phase 4: 검증
 ## 작업 로그
 
 ### 2026-01-18
+- [x] Phase 5 기존 강화 상세 설계 완료
+  - [x] Phase 5.1 가챠 강화 스펙 작성 (Gacha/Enhancement.md)
+    - [x] GachaPoolData 확장 (배너, 천장, 픽업 필드)
+    - [x] GachaHistoryRecord 유저 데이터
+    - [x] GachaScreen 리팩토링 (BannerScrollView, PityProgress)
+    - [x] GachaBannerItem, GachaHistoryScreen UI 설계
+    - [x] Phase 0~4 시스템 연동 정의
+  - [x] Phase 5.2 캐릭터 강화 스펙 작성 (Character/Enhancement.md)
+    - [x] CharacterLevelData, CharacterAscensionData 마스터 데이터
+    - [x] ExpMaterialData 경험치 재료
+    - [x] PowerCalculator (Phase 3 전투력 공식)
+    - [x] LevelUpRequest/AscendRequest/Response
+    - [x] CharacterFilterState 필터/정렬 시스템
+    - [x] CharacterDetailScreen 탭 구조 (Info, LevelUp, Equipment)
+  - [x] Phase 5.3 Navigation 강화 스펙 작성 (Common/NavigationEnhancement.md)
+    - [x] Shortcut API (Screen.Open 래핑)
+    - [x] DeepLink 시스템 (projectsc://screen/{name}?{params})
+    - [x] TabGroupWidget (LobbyTabGroup)
+    - [x] BadgeManager (NotificationBadge, 메뉴 알림)
+  - [x] OUTGAME_ARCHITECTURE_V1.md Phase 5 섹션 업데이트
+- [x] 테스트 아키텍처 설계 완료
+  - [x] 시스템 단위 테스트 구조 설계 (Phase 독립)
+  - [x] 의존성 관리 패턴 결정 (SO + ServiceLocator 혼합)
+  - [x] TestArchitecture.md 문서 작성
+  - [x] PROGRESS.md 테스트 인프라 섹션 추가
+  - [x] OUTGAME_ARCHITECTURE_V1.md 개발 원칙 추가
 - [x] Phase 4 라이브 이벤트 시스템 설계 완료
   - [x] LiveEvent.md v2.0 구조 설계
     - [x] 모듈형 서브컨텐츠 (EventSubContent)

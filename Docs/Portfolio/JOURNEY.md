@@ -273,6 +273,53 @@
 
 ---
 
+## Phase 11: 테스트 아키텍처 설계
+
+### 테스트 인프라 설계
+
+**문서**: `Docs/Specs/Testing/TestArchitecture.md`
+- **문제**: Phase별 구현에 앞서 테스트 가능한 환경 필요
+- **핵심 원칙**: 테스트는 마일스톤 Phase가 아닌 시스템 단위로 구성
+- **상세**: [DECISIONS.md](DECISIONS.md#테스트-아키텍처-시스템-단위-테스트-설계) 참조
+
+**주요 결정**:
+| 항목 | 결정 |
+|------|------|
+| 의존성 관리 | SO + ServiceLocator 혼합 패턴 |
+| 테스트 구조 | 시스템 단위 (5계층: Foundation → Content) |
+| 자동화 시점 | 2차 구축 (수동 테스트 안정화 후) |
+| 첫 대상 | Navigation 시스템 |
+
+**설계된 구조**:
+```
+Assets/Scripts/
+├── Core/
+│   └── Services.cs              # ServiceLocator
+├── Tests/
+│   ├── Base/
+│   │   └── SystemTestRunner.cs  # 테스트 러너 기반 클래스
+│   ├── Mocks/
+│   │   ├── MockTimeService.cs
+│   │   └── MockSaveStorage.cs
+│   └── Runners/
+│       └── NavigationTestRunner.cs
+└── Data/TestData/               # 테스트용 SO
+```
+
+**5계층 시스템 분류**:
+- Foundation (Log, Error, Services) - 의존성 없음
+- Infrastructure (Time, Save, Loading) - Foundation만 의존
+- Data (Master, User, Network) - Infrastructure까지 의존
+- UI (Widget, Navigation, Popup) - Data까지 의존
+- Content (Gacha, Character, Stage) - 전체 의존 가능
+
+**배운 점**:
+- 테스트 구조는 마일스톤(What to build)이 아닌 아키텍처(How it's built)를 따라야 함
+- 수동 테스트 시나리오를 먼저 검증하고 자동화하면 안정적
+- ServiceLocator + SO 혼합 패턴이 Unity에서 실용적
+
+---
+
 ## 진행 중
 
 현재 진행 중인 작업은 [PROGRESS.md](../PROGRESS.md) 참조

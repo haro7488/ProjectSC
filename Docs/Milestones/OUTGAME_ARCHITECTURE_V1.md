@@ -46,6 +46,35 @@
 
 ---
 
+## 개발 원칙
+
+### 테스트 가능 구조
+
+> **핵심**: 각 시스템을 독립적으로 테스트 가능하도록 설계
+> **상세**: [Testing/TestArchitecture.md](../Specs/Testing/TestArchitecture.md)
+
+| 원칙 | 설명 |
+|------|------|
+| **시스템 단위 테스트** | Phase가 아닌 시스템 기준 (Navigation, Popup, Gacha 등) |
+| **의존성 주입** | SO + ServiceLocator 혼합, Mock 교체 가능 |
+| **에디터 테스트** | 각 기능 독립 테스트 환경 (SystemTestRunner) |
+| **자동화 연동** | 수동 테스트 시나리오를 Unity Test Framework와 공유 |
+
+### 의존성 관리 패턴
+
+```csharp
+// 1. 인터페이스 정의
+public interface ITimeService { ... }
+
+// 2. Inspector 할당 우선, 없으면 ServiceLocator 폴백
+_timeService = (_timeServiceAsset as ITimeService) ?? Services.Get<ITimeService>();
+
+// 3. 테스트 시 Mock 주입
+Services.Register<ITimeService>(new MockTimeService());
+```
+
+---
+
 ## Phase 구성
 
 | Phase | 이름 | 핵심 산출물 | 의존성 |
@@ -1323,47 +1352,666 @@ UI:
 
 ## Phase 5: 기존 기능 강화
 
-> **목표**: MVP 완성도 향상
+> **목표**: Phase 0~4 시스템과 연동하여 MVP 완성도 향상
+> **상태**: ✅ 설계 완료
+
+### 설계 원칙
+
+**핵심 방향**: 새로운 기능 추가보다 **Phase 0~4 시스템과의 연동**에 집중
+- Phase 0 인프라 적용: Log, Result<T>, SaveManager, LoadingIndicator
+- Phase 1 팝업 통합: CostConfirmPopup, RewardPopup, AlertPopup
+- Phase 3 공식 재사용: 전투력 계산 공식
+- Phase 4 패턴 참조: 배너 UI 패턴, 남은 시간 표시
+
+---
 
 ### 5.1 가챠 강화
 
+> **Phase 연계**: Phase 1 RewardPopup, Phase 4 배너 패턴
+
+#### 핵심 변경
+
+| 기능 | 현재 | 변경 | 연계 |
+|------|------|------|------|
+| 결과 표시 | GachaResultPopup | RewardPopup 사용 | Phase 1 |
+| 배너 UI | 단일 고정 | 다중 배너 스크롤 | Phase 4 EventBannerItem |
+| 천장 표시 | 없음 | 확률 + 남은 횟수 | Phase 2 TimeHelper |
+| 에러 처리 | 직접 처리 | AlertPopup + ErrorCode | Phase 0, 1 |
+
+#### 마스터 데이터 확장
+
+```csharp
+// GachaPoolData.cs 확장
+public class GachaPoolData : ScriptableObject
+{
+    // 기존 필드...
+
+    [Header("배너 정보")]
+    public string BannerImagePath;
+    public string BannerNameKey;
+    public DateTime StartTime;          // 기간 한정
+    public DateTime EndTime;
+    public bool IsPickup;               // 픽업 여부
+    public string[] PickupCharacterIds; // 픽업 캐릭터
+    public int DisplayOrder;            // 표시 순서
+
+    [Header("천장 정보")]
+    public int PityThreshold;           // 천장 횟수
+    public float PityRate;              // 천장 확률 보너스
+    public bool ShowPityProgress;       // UI에 천장 진행도 표시
+}
+```
+
+#### UI 구조
+
+```
+[GachaScreen] (리팩토링)
+├── ScreenHeader
+├── BannerScrollView (가로 스크롤)           ← Phase 4 패턴 참조
+│   └── GachaBannerItem[]
+│       ├── BannerImage
+│       ├── BannerName
+│       ├── RemainingTime (TimeHelper)      ← Phase 2 연계
+│       └── PickupCharacterIcons
+├── SelectedBannerInfo
+│   ├── PickupRates (확률 표시)
+│   ├── PityProgress (n/천장)               ← 신규
+│   └── CostDisplay
+├── ActionButtons
+│   ├── [1회 소환] → CostConfirmPopup       ← Phase 1 연계
+│   └── [10회 소환] → CostConfirmPopup
+└── [히스토리] 버튼 → GachaHistoryScreen
+```
+
+#### GachaHistoryScreen (신규)
+
+```
+[GachaHistoryScreen]
+├── ScreenHeader
+├── FilterTabs (전체/픽업/일반)
+├── HistoryScrollView
+│   └── GachaHistoryItem[]
+│       ├── Timestamp (TimeHelper)          ← Phase 2 연계
+│       ├── BannerName
+│       ├── ResultSummary (★5 x1, ★4 x3...)
+│       └── [상세] 버튼
+└── Pagination
+```
+
+#### 유저 데이터 확장
+
+```csharp
+// UserSaveData.cs에 추가
+public List<GachaHistoryRecord> GachaHistory;
+
+[Serializable]
+public struct GachaHistoryRecord
+{
+    public string PoolId;
+    public long Timestamp;
+    public GachaPullType PullType;      // Single, Multi
+    public List<GachaResultItem> Results;
+}
+```
+
+#### Request/Response 확장
+
+```csharp
+// GachaResponse 확장
+public struct GachaResponse : IGameActionResponse
+{
+    // 기존 필드...
+    public int CurrentPityCount;        // 현재 천장 카운트
+    public int PityThreshold;           // 천장 도달 횟수
+}
+```
+
 #### 체크리스트
+
 ```
-가챠 강화:
-- [ ] 배너별 UI (GachaBannerItem)
-- [ ] 소환 연출 애니메이션 (GachaAnimator)
-- [ ] 가챠 히스토리 화면 (GachaHistoryScreen)
-- [ ] 천장 카운트 표시
-- [ ] 픽업 캐릭터 표시
+가챠 강화 (Phase 5.1):
+
+마스터 데이터:
+- [ ] GachaPoolData.cs 확장 (배너, 천장 정보)
+- [ ] GachaPool.json 샘플 데이터 업데이트
+
+유저 데이터:
+- [ ] GachaHistoryRecord 구조체 추가
+- [ ] UserSaveData에 GachaHistory 필드 추가
+
+UI:
+- [ ] GachaBannerItem.cs 생성
+- [ ] GachaScreen 리팩토링 (배너 스크롤)
+- [ ] GachaHistoryScreen.cs 생성
+- [ ] GachaHistoryItem.cs 생성
+
+연동:
+- [ ] GachaResultPopup → RewardPopup 교체
+- [ ] 소환 버튼 → CostConfirmPopup 연동
+- [ ] 에러 → AlertPopup + ErrorCode 연동
+- [ ] 로딩 → LoadingIndicator 적용
+- [ ] 시간 표시 → TimeHelper 사용
 ```
+
+---
 
 ### 5.2 캐릭터 강화
 
+> **Phase 연계**: Phase 1 CostConfirmPopup/RewardPopup, Phase 3 전투력 공식
+
+#### 핵심 변경
+
+| 기능 | 현재 | 변경 | 연계 |
+|------|------|------|------|
+| 전투력 | 없음 | Phase 3 공식 사용 | Phase 3 |
+| 레벨업 | 없음 | 재료 소비 → 레벨업 | Phase 1 CostConfirmPopup |
+| 결과 표시 | 없음 | RewardPopup + 스탯 비교 | Phase 1 |
+| 장비 시스템 | 없음 | ItemCategory.Equipment 연동 | Phase 1 |
+
+#### 마스터 데이터 확장
+
+```csharp
+// CharacterLevelData.cs (신규)
+[CreateAssetMenu]
+public class CharacterLevelData : ScriptableObject
+{
+    public Rarity Rarity;
+    public LevelRequirement[] LevelRequirements;
+}
+
+[Serializable]
+public struct LevelRequirement
+{
+    public int Level;
+    public int RequiredExp;             // 필요 경험치
+    public int GoldCost;                // 골드 비용
+}
+
+// CharacterAscensionData.cs (신규)
+[CreateAssetMenu]
+public class CharacterAscensionData : ScriptableObject
+{
+    public Rarity Rarity;
+    public AscensionRequirement[] AscensionRequirements;
+}
+
+[Serializable]
+public struct AscensionRequirement
+{
+    public int AscensionLevel;          // 0→1, 1→2, ...
+    public int RequiredCharacterLevel;  // 필요 캐릭터 레벨
+    public List<RewardInfo> Materials;  // 필요 재료 (Phase 1 RewardInfo)
+    public int GoldCost;
+    public StatBonus StatBonus;         // 돌파 시 스탯 보너스
+}
+
+[Serializable]
+public struct StatBonus
+{
+    public int HP, ATK, DEF, SPD;
+    public float CritRate, CritDamage;
+}
+```
+
+#### UI 구조
+
+##### CharacterListScreen 강화
+
+```
+[CharacterListScreen] (리팩토링)
+├── ScreenHeader
+├── FilterBar
+│   ├── RarityFilter (★1~★5)
+│   ├── ClassFilter (Warrior/Mage/...)
+│   └── ElementFilter (Fire/Water/...)
+├── SortDropdown
+│   ├── 레벨순
+│   ├── 희귀도순
+│   ├── 전투력순                        ← Phase 3 공식
+│   └── 획득순
+├── CharacterGrid
+│   └── CharacterCard[]
+│       ├── CharacterIcon
+│       ├── Rarity Stars
+│       ├── Level
+│       ├── PowerDisplay                 ← Phase 3 공식
+│       └── Element Badge
+└── TotalInfo (보유: n/m)
+```
+
+##### CharacterDetailScreen 강화
+
+```
+[CharacterDetailScreen] (리팩토링)
+├── ScreenHeader
+├── CharacterVisual
+├── BasicInfo
+│   ├── Name, Rarity, Class, Element
+│   └── PowerDisplay                     ← Phase 3 공식
+├── TabGroup
+│   ├── [스탯] 탭
+│   │   ├── HP, ATK, DEF, SPD
+│   │   ├── CritRate, CritDamage
+│   │   └── PowerBreakdown
+│   ├── [스킬] 탭
+│   └── [장비] 탭
+│       └── EquipmentSlots (5개)         ← Phase 1 ItemCategory
+├── ActionButtons
+│   ├── [레벨업] → CharacterLevelUpPopup
+│   └── [돌파] → CharacterAscensionPopup
+```
+
+##### CharacterLevelUpPopup (신규)
+
+```
+[CharacterLevelUpPopup] (Popup)
+├── CurrentLevel → TargetLevel
+├── StatComparison
+│   ├── Before Stats
+│   └── After Stats (변화량 표시)
+├── MaterialSelector
+│   ├── ExpMaterialItem[] (보유량 표시)
+│   └── AutoSelect 버튼
+├── CostDisplay (골드)
+└── [레벨업] 버튼 → CostConfirmPopup    ← Phase 1 연계
+```
+
+##### CharacterAscensionPopup (신규)
+
+```
+[CharacterAscensionPopup] (Popup)
+├── CurrentAscension → NextAscension
+├── RequiredLevel 체크 (조건 미충족 시 잠금)
+├── MaterialList
+│   └── MaterialSlot[] (보유/필요)
+├── StatBonus Preview
+├── CostDisplay (골드)
+└── [돌파] 버튼 → CostConfirmPopup      ← Phase 1 연계
+```
+
+#### Request/Response
+
+```csharp
+// CharacterLevelUpRequest.cs
+[Serializable]
+public struct CharacterLevelUpRequest : IRequest
+{
+    public long Timestamp { get; set; }
+    public string CharacterInstanceId;
+    public Dictionary<string, int> MaterialUsage;  // ItemId → 사용량
+}
+
+// CharacterLevelUpResponse.cs
+[Serializable]
+public struct CharacterLevelUpResponse : IGameActionResponse
+{
+    public bool IsSuccess { get; set; }
+    public ErrorCode ErrorCode { get; set; }
+    public long ServerTime { get; set; }
+    public UserDataDelta Delta { get; set; }
+
+    public int PreviousLevel;
+    public int NewLevel;
+    public CharacterStats PreviousStats;
+    public CharacterStats NewStats;
+}
+
+// CharacterAscensionRequest.cs
+[Serializable]
+public struct CharacterAscensionRequest : IRequest
+{
+    public long Timestamp { get; set; }
+    public string CharacterInstanceId;
+}
+
+// CharacterAscensionResponse.cs
+[Serializable]
+public struct CharacterAscensionResponse : IGameActionResponse
+{
+    public bool IsSuccess { get; set; }
+    public ErrorCode ErrorCode { get; set; }
+    public long ServerTime { get; set; }
+    public UserDataDelta Delta { get; set; }
+
+    public int PreviousAscension;
+    public int NewAscension;
+    public CharacterStats PreviousStats;
+    public CharacterStats NewStats;
+}
+```
+
+#### 에러 코드
+
+| ErrorCode | 값 | 설명 |
+|-----------|-----|------|
+| `CharacterNotFound` | 7001 | 캐릭터 없음 |
+| `CharacterMaxLevel` | 7002 | 최대 레벨 도달 |
+| `CharacterInsufficientMaterial` | 7003 | 재료 부족 |
+| `CharacterInsufficientGold` | 7004 | 골드 부족 |
+| `CharacterLevelRequirementNotMet` | 7005 | 돌파 레벨 요구사항 미충족 |
+| `CharacterMaxAscension` | 7006 | 최대 돌파 도달 |
+
 #### 체크리스트
+
 ```
-캐릭터 강화:
-- [ ] 필터링 시스템 (희귀도, 클래스, 속성)
-- [ ] 정렬 시스템 (레벨, 획득일, 희귀도, 전투력)
-- [ ] 캐릭터 레벨업 화면 (CharacterLevelUpScreen)
-- [ ] 캐릭터 돌파 화면 (CharacterAscensionScreen)
-- [ ] 장비 장착 화면 (CharacterEquipScreen)
+캐릭터 강화 (Phase 5.2):
+
+마스터 데이터:
+- [ ] CharacterLevelData.cs 생성
+- [ ] CharacterAscensionData.cs 생성
+- [ ] CharacterLevel.json 샘플 데이터
+- [ ] CharacterAscension.json 샘플 데이터
+- [ ] MasterDataImporter에 추가
+
+유저 데이터:
+- [ ] OwnedCharacter.cs 확장 (CurrentExp 추가)
+
+Request/Response:
+- [ ] CharacterLevelUpRequest.cs
+- [ ] CharacterLevelUpResponse.cs
+- [ ] CharacterAscensionRequest.cs
+- [ ] CharacterAscensionResponse.cs
+
+이벤트:
+- [ ] CharacterEvents.cs
+  - [ ] CharacterLevelUpEvent
+  - [ ] CharacterAscensionEvent
+
+API:
+- [ ] LocalApiClient.LevelUpCharacterAsync 구현
+- [ ] LocalApiClient.AscendCharacterAsync 구현
+
+UI:
+- [ ] CharacterListScreen 리팩토링 (필터/정렬)
+- [ ] CharacterDetailScreen 리팩토링 (탭, 액션)
+- [ ] CharacterLevelUpPopup.cs 생성
+- [ ] CharacterAscensionPopup.cs 생성
+- [ ] CharacterFilterBar.cs 생성
+- [ ] CharacterSortDropdown.cs 생성
+
+연동:
+- [ ] 전투력 계산 → Phase 3 공식 사용
+- [ ] 레벨업/돌파 → CostConfirmPopup 연동
+- [ ] 결과 → RewardPopup 연동 (스탯 변화)
+- [ ] 에러 → AlertPopup + ErrorCode 연동
+- [ ] 로딩 → LoadingIndicator 적용
 ```
 
-### 5.3 NavigationManager 강화
+---
+
+### 5.3 Navigation 강화
+
+> **Phase 연계**: Phase 3 StageDashboard 탭 패턴, Phase 4 알림 배지
+
+#### 핵심 변경
+
+| 기능 | 현재 | 변경 | 연계 |
+|------|------|------|------|
+| Shortcut | 설계만 | API 구현 | - |
+| DeepLink | 없음 | URL 파싱 → 화면 이동 | - |
+| 탭 그룹 | 없음 | 로비 하단 탭 | Phase 3 패턴 |
+| 알림 배지 | 없음 | 각 메뉴 알림 | Phase 4 HasClaimableReward |
+
+#### Shortcut API 구현
+
+```csharp
+// NavigationManager.cs 확장
+public class NavigationManager
+{
+    // 기존 메서드...
+
+    /// <summary>
+    /// 특정 화면으로 바로 이동 (스택에 추가)
+    /// </summary>
+    public async UniTask ShortcutAsync<T>(object state = null) where T : ScreenWidget
+    {
+        var context = CreateContext<T>(state);
+        await PushAsync(context);
+    }
+
+    /// <summary>
+    /// DeepLink URL 처리
+    /// </summary>
+    public async UniTask HandleDeepLinkAsync(string url)
+    {
+        var route = DeepLinkParser.Parse(url);
+        if (route == null) return;
+
+        await ShortcutAsync(route.ScreenType, route.State);
+    }
+}
+```
+
+#### DeepLink 시스템
+
+```csharp
+// DeepLinkParser.cs (신규)
+public static class DeepLinkParser
+{
+    // URL 형식: projectsc://screen/gacha?poolId=xxx
+    //           projectsc://screen/character/detail?id=xxx
+    //           projectsc://screen/event?eventId=xxx
+
+    public static DeepLinkRoute Parse(string url)
+    {
+        // URL 파싱 로직
+    }
+}
+
+public struct DeepLinkRoute
+{
+    public Type ScreenType;
+    public object State;
+}
+```
+
+#### 탭 그룹 시스템
+
+```csharp
+// TabGroupWidget.cs (신규)
+public class TabGroupWidget : Widget
+{
+    [SerializeField] private TabButton[] _tabs;
+    [SerializeField] private GameObject[] _contentPanels;
+
+    public event Action<int> OnTabChanged;
+
+    public int CurrentTabIndex { get; private set; }
+
+    public void SelectTab(int index);
+    public void SetBadge(int tabIndex, bool show);
+    public void SetBadgeCount(int tabIndex, int count);
+}
+
+// LobbyScreen 리팩토링
+[LobbyScreen]
+├── ScreenHeader (optional)
+├── CurrencyHUD
+├── TabContentArea (중앙)
+│   ├── HomeTab
+│   ├── CharacterTab
+│   ├── GachaTab
+│   └── SettingsTab
+└── TabBar (하단)
+    ├── [홈] 탭 (배지: 보상 가능)
+    ├── [캐릭터] 탭
+    ├── [가챠] 탭 (배지: 무료 가챠)
+    └── [설정] 탭
+```
+
+#### 알림 배지 시스템
+
+```csharp
+// BadgeManager.cs (신규)
+public class BadgeManager : Singleton<BadgeManager>
+{
+    public event Action<string, int> OnBadgeChanged;
+
+    // 배지 카운트 조회
+    public int GetBadgeCount(BadgeType type);
+
+    // 배지 갱신 (서버 응답 후 호출)
+    public void RefreshBadges(UserSaveData data);
+}
+
+public enum BadgeType
+{
+    Home,           // 출석 보상, 우편함
+    Character,      // 레벨업 가능
+    Gacha,          // 무료 가챠 가능
+    Shop,           // 무료 상품
+    Event,          // 수령 가능 보상 (Phase 4 연계)
+    Stage,          // 클리어 가능 스테이지
+}
+```
 
 #### 체크리스트
+
 ```
-Navigation 강화:
-- [ ] Shortcut API (직접 특정 화면 이동)
-- [ ] DeepLink 지원 (외부 링크 → 특정 화면)
-- [ ] 탭 그룹 관리 (로비 내 탭 전환)
-- [ ] 화면 히스토리 관리 개선
+Navigation 강화 (Phase 5.3):
+
+Core:
+- [ ] NavigationManager.ShortcutAsync 구현
+- [ ] NavigationManager.HandleDeepLinkAsync 구현
+- [ ] DeepLinkParser.cs 생성
+- [ ] DeepLinkRoute.cs 생성
+
+배지 시스템:
+- [ ] BadgeManager.cs 생성
+- [ ] BadgeType.cs 생성
+
+UI:
+- [ ] TabGroupWidget.cs 생성
+- [ ] TabButton.cs 생성
+- [ ] LobbyScreen 리팩토링 (탭 구조)
+- [ ] 각 탭에 배지 표시
+
+연동:
+- [ ] Phase 4 HasClaimableReward → Event 배지
+- [ ] 무료 가챠 → Gacha 배지
+- [ ] 출석 보상 → Home 배지
 ```
 
-### 5.4 상세 스펙 문서
-- [GachaEnhancement.md](../Specs/Gacha/Enhancement.md)
-- [CharacterEnhancement.md](../Specs/Character/Enhancement.md)
-- [NavigationEnhancement.md](../Specs/Common/NavigationEnhancement.md)
+---
+
+### 5.4 공통 UI 연동
+
+> **Phase 연계**: Phase 0 인프라, Phase 1 팝업
+
+#### LoadingIndicator 적용
+
+모든 네트워크 요청에 LoadingIndicator 적용:
+
+```csharp
+// 적용 대상
+- GachaScreen.OnPullButtonClicked()
+- ShopScreen.OnPurchaseButtonClicked()
+- CharacterLevelUpPopup.OnLevelUpClicked()
+- CharacterAscensionPopup.OnAscendClicked()
+- StageScreen.OnBattleStartClicked()
+- EventDetailScreen.OnClaimMissionClicked()
+```
+
+#### SystemPopup 통합
+
+기존 직접 구현 팝업을 Phase 1 팝업으로 교체:
+
+| 기존 | Phase 1 교체 |
+|------|-------------|
+| 확인 다이얼로그 직접 구현 | ConfirmPopup |
+| 알림 다이얼로그 직접 구현 | AlertPopup |
+| 재화 소비 확인 직접 구현 | CostConfirmPopup |
+| 보상 결과 직접 구현 | RewardPopup |
+
+#### Result<T> 패턴 적용
+
+LocalApiClient 반환 타입을 Result<T>로 통일:
+
+```csharp
+// Before
+public async UniTask<GachaResponse> GachaAsync(GachaRequest request)
+
+// After
+public async UniTask<Result<GachaResponse>> GachaAsync(GachaRequest request)
+```
+
+#### Log 적용
+
+주요 액션에 Log 호출 추가:
+
+```csharp
+Log.Info("Gacha", $"Pull requested: PoolId={request.PoolId}, Type={request.PullType}");
+Log.Error("Gacha", $"Pull failed: {response.ErrorCode}");
+```
+
+#### 체크리스트
+
+```
+공통 UI 연동 (Phase 5.4):
+
+LoadingIndicator:
+- [ ] GachaScreen 적용
+- [ ] ShopScreen 적용
+- [ ] CharacterLevelUpPopup 적용
+- [ ] CharacterAscensionPopup 적용
+- [ ] StageScreen 적용
+- [ ] EventDetailScreen 적용
+
+SystemPopup 교체:
+- [ ] GachaResultPopup → RewardPopup
+- [ ] 기존 확인창 → ConfirmPopup
+- [ ] 기존 알림창 → AlertPopup
+- [ ] 재화 소비 확인 → CostConfirmPopup
+
+Result<T> 적용:
+- [ ] LocalApiClient 반환 타입 변경
+- [ ] 호출부 Result 처리 추가
+
+Log 적용:
+- [ ] Gacha 관련 로그
+- [ ] Shop 관련 로그
+- [ ] Character 관련 로그
+- [ ] Stage 관련 로그
+- [ ] Event 관련 로그
+```
+
+---
+
+### 5.5 검증 시나리오
+
+#### 시나리오 4: 가챠 강화 흐름
+```
+1. 로비 → [가챠] 탭 또는 버튼
+2. GachaScreen (배너 스크롤) 표시
+3. 배너 선택 → 상세 정보 + 천장 진행도
+4. [10회 소환] 클릭
+5. CostConfirmPopup 표시 (Phase 1)
+6. [확인] 클릭 → LoadingIndicator 표시 (Phase 0)
+7. 응답 수신 → RewardPopup 표시 (Phase 1)
+8. 천장 카운트 갱신
+```
+
+#### 시나리오 5: 캐릭터 레벨업 흐름
+```
+1. 캐릭터 리스트 (필터/정렬 적용)
+2. 캐릭터 선택 → CharacterDetailScreen
+3. 전투력 표시 확인 (Phase 3 공식)
+4. [레벨업] 버튼 클릭
+5. CharacterLevelUpPopup 표시
+6. 재료 선택 → 스탯 변화 미리보기
+7. [레벨업] 클릭 → CostConfirmPopup (Phase 1)
+8. [확인] 클릭 → LoadingIndicator (Phase 0)
+9. 응답 수신 → RewardPopup (스탯 변화)
+10. 전투력 갱신 확인
+```
+
+---
+
+### 5.6 상세 스펙 문서
+- [Gacha/Enhancement.md](../Specs/Gacha/Enhancement.md)
+- [Character/Enhancement.md](../Specs/Character/Enhancement.md)
+- [Common/NavigationEnhancement.md](../Specs/Common/NavigationEnhancement.md)
+- [Common/LoadingIntegration.md](../Specs/Common/LoadingIntegration.md)
 
 ---
 

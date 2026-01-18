@@ -1079,6 +1079,106 @@ public struct EventCurrencyPolicy
 
 ---
 
+## 테스트 아키텍처: 시스템 단위 테스트 설계
+
+**일자**: 2026-01-18
+**상태**: 결정됨
+**관련 커밋**: (테스트 인프라 구현 시 추가)
+
+### 컨텍스트
+- OUTGAME-V1 마일스톤 구현 전 테스트 인프라 필요성 논의
+- Unity 에디터에서 각 기능을 독립적으로 테스트할 수 있는 환경 필요
+- Mock/Stub 패턴과 의존성 관리 방식 결정 필요
+- 테스트가 마일스톤 Phase에 귀속되지 않아야 한다는 원칙 설정
+
+### 선택지
+
+**Q1. 의존성 관리 패턴**
+1. **A: Service Locator만**
+   - 장점: 단순, 어디서든 접근 가능
+   - 단점: 숨겨진 의존성, 테스트 시 전역 상태 관리 필요
+
+2. **B: ScriptableObject 기반 DI**
+   - 장점: Unity 친화적, Inspector 편집 가능, 테스트 데이터 교체 용이
+   - 단점: 복잡한 서비스 주입 어려움, SO 파일 관리 필요
+
+3. **C: SO + ServiceLocator 혼합**
+   - 장점: 데이터는 SO, 서비스는 ServiceLocator로 역할 분리
+   - 단점: 두 패턴 모두 이해 필요
+
+4. **D: DI 프레임워크 (Zenject)**
+   - 장점: 강력한 DI, 테스트 지원 우수
+   - 단점: 학습 곡선, 외부 의존성 추가
+
+**Q2. 테스트 구조**
+1. **Phase 기반 테스트**
+   - 장점: 마일스톤 진행과 일치
+   - 단점: Phase 변경 시 테스트도 재구성 필요, 시스템 간 테스트 어려움
+
+2. **시스템 단위 테스트**
+   - 장점: 마일스톤 독립, 재사용 가능, 시스템별 명확한 경계
+   - 단점: 초기 구조 설계 비용
+
+**Q3. 자동화 테스트 시점**
+1. **동시 구축**
+   - 장점: 처음부터 자동화
+   - 단점: 초기 오버헤드 큼
+
+2. **2차 구축 (수동 테스트 안정화 후)**
+   - 장점: 테스트 시나리오가 검증된 후 자동화
+   - 단점: 리그레션 리스크
+
+### 결정
+- **Q1**: **C: SO + ServiceLocator 혼합** 선택
+- **Q2**: **시스템 단위 테스트** 선택
+- **Q3**: **2차 구축** 선택
+
+**의존성 구조**:
+```csharp
+// ServiceLocator (간단한 서비스 레지스트리)
+public static class Services
+{
+    private static readonly Dictionary<Type, object> _services = new();
+    public static void Register<T>(T service) where T : class
+        => _services[typeof(T)] = service;
+    public static T Get<T>() where T : class
+        => _services.TryGetValue(typeof(T), out var s) ? (T)s : null;
+    public static void Clear() => _services.Clear();
+}
+
+// 사용 예시 (테스트 시 Mock 교체)
+Services.Register<ITimeService>(new MockTimeService());
+Services.Register<ISaveStorage>(new MockSaveStorage());
+```
+
+**시스템 분류 (5계층)**:
+| 계층 | 시스템 | 의존성 |
+|------|--------|--------|
+| Foundation | Log, Error, Services | 없음 |
+| Infrastructure | Time, Save, Loading | Foundation |
+| Data | Master, User, Network | Infrastructure |
+| UI | Widget, Navigation, Popup | Data |
+| Content | Gacha, Character, Stage, Shop | UI |
+
+**이유**:
+- SO는 데이터/설정에 적합, 런타임 서비스는 ServiceLocator가 더 유연
+- 시스템 단위 테스트는 마일스톤 변경과 무관하게 유지 가능
+- 수동 테스트로 시나리오 검증 후 자동화하면 안정적
+
+### 결과
+- `Sc.Core.Services` 클래스로 간단한 ServiceLocator 구현
+- `SystemTestRunner` 기반 클래스로 수동 테스트 환경 제공
+- `Assets/Scripts/Tests/Mocks/` 폴더에 Mock 서비스 배치
+- `Assets/Data/TestData/` 폴더에 테스트용 SO 데이터 배치
+- Unity Test Framework는 2차에서 도입 (수동 테스트 시나리오 재사용)
+
+### 회고
+- 초기에는 Phase별 테스트를 고려했으나, 마일스톤 구조 변경 시 테스트도 재구성해야 하는 문제 인식
+- 시스템 단위로 분리하면 각 시스템이 독립적으로 발전 가능
+- **배운 점**: 테스트 구조는 구현 구조가 아닌 아키텍처 구조를 따라야 함
+
+---
+
 ## [템플릿] 새 의사결정
 
 **일자**: YYYY-MM-DD
