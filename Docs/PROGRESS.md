@@ -113,7 +113,8 @@
 | 2차 | Core 테스트 | ✅ 완료 | SaveStorage, SaveMigrator, MockSaveStorage (36개) |
 | 3차 | Common 테스트 | ✅ 완료 | LoadingService, LoadingConfig (16개) |
 | 3차 | Reward 테스트 | ✅ 완료 | RewardInfo, RewardProcessor, RewardHelper (61개) |
-| 4차 | 시스템 확장 | ⬜ 대기 | Popup, ... |
+| 4차 | **PlayMode 테스트 인프라** | ✅ 완료 | TestRunner 기반 PlayMode 환경 |
+| 5차 | 시스템 확장 | ⬜ 대기 | Popup, ... |
 
 ### 1차 구축 체크리스트
 
@@ -134,6 +135,29 @@ Navigation 테스트:
 - [x] NavigationTestScenarios.cs
 - [x] NavigationTestRunner.cs
 - [x] SystemTestMenu.cs (에디터 메뉴)
+```
+
+### 4차 PlayMode 테스트 체크리스트
+
+```
+PlayMode 테스트 인프라:
+- [x] PlayModeTestBase.cs (Addressables 초기화, TestCanvas, 자동 정리)
+- [x] PrefabTestHelper.cs (프리팹 로드/인스턴스 관리)
+- [x] PlayModeAssert.cs (Unity 오브젝트 어서션 헬퍼)
+
+샘플 테스트:
+- [x] NavigationPlayModeTests.cs (기존 시나리오 NUnit 래핑)
+- [x] PrefabLoadPlayModeTests.cs (Addressables 프리팹 로드 검증)
+
+Editor 도구:
+- [x] PlayModeTestSetup.cs (SC Tools/PlayMode Tests 메뉴)
+  - [x] Create All Test Prefabs
+  - [x] Create Simple Screen/Popup Prefabs
+  - [x] Verify Test Scene
+  - [x] Delete All Test Prefabs
+
+Assembly 수정:
+- [x] Sc.Tests.asmdef - UnityEngine.TestRunner, UnityEditor.TestRunner 참조 추가
 ```
 
 ### 시스템별 테스트 우선순위
@@ -633,6 +657,24 @@ Popup 구현:
 ---
 
 ## 작업 로그
+
+### 2026-01-19 (PlayMode 테스트 인프라 구축)
+- [x] PlayMode 테스트 환경 재구성
+  - [x] 요구사항 분석 및 아키텍처 설계
+  - [x] 3가지 접근법 비교 (최소 변경, 클린 아키텍처, 실용적 균형)
+  - [x] 실용적 균형 방식 선택 (기존 헬퍼 재사용 + 새 PlayMode 인프라)
+- [x] PlayMode 테스트 인프라 구현
+  - [x] PlayModeTestBase.cs (Addressables 초기화, TestCanvas, 자동 정리)
+  - [x] PrefabTestHelper.cs (Addressables 프리팹 로드/인스턴스 관리)
+  - [x] PlayModeAssert.cs (Unity 오브젝트 전용 어서션 헬퍼)
+- [x] 샘플 테스트 작성
+  - [x] NavigationPlayModeTests.cs (기존 NavigationTestScenarios NUnit 래핑)
+  - [x] PrefabLoadPlayModeTests.cs (Addressables 프리팹 로드 검증)
+- [x] Editor 도구 구현
+  - [x] PlayModeTestSetup.cs (SC Tools/PlayMode Tests 메뉴)
+- [x] Assembly 설정
+  - [x] Sc.Tests.asmdef에 UnityEngine.TestRunner, UnityEditor.TestRunner 참조 추가
+- [x] PROGRESS.md 업데이트
 
 ### 2026-01-19 (RewardPopup 구현)
 - [x] RewardPopup 아키텍처 설계
