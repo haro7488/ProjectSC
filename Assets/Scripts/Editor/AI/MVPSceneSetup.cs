@@ -9,6 +9,7 @@ namespace Sc.Editor.AI
 {
     /// <summary>
     /// MVP 화면 테스트용 씬/프리팹 자동 생성 도구.
+    /// Bootstrap: Full (모든 매니저 생성 - NavigationManager, DataManager, NetworkManager, GameBootstrap, GameFlowController)
     /// </summary>
     public static class MVPSceneSetup
     {
@@ -17,7 +18,7 @@ namespace Sc.Editor.AI
 
         #region Menu Items
 
-        [MenuItem("SC Tools/MVP/Rebuild All (Full Reset)", priority = 99)]
+        [MenuItem("SC Tools/Setup/Scenes/MVP/Rebuild All (Full Reset)", priority = 220)]
         public static void RebuildAll()
         {
             Debug.Log("[MVPSceneSetup] ========== Full Rebuild Start ==========");
@@ -37,7 +38,7 @@ namespace Sc.Editor.AI
             Debug.Log("[MVPSceneSetup] ========== Full Rebuild Complete ==========");
         }
 
-        [MenuItem("SC Tools/MVP/Setup MVP Scene", priority = 100)]
+        [MenuItem("SC Tools/Setup/Scenes/Setup MVP Scene", priority = 221)]
         public static void SetupMVPScene()
         {
             EnsureFolders();
@@ -93,7 +94,7 @@ namespace Sc.Editor.AI
             Debug.Log("[MVPSceneSetup] MVP Scene setup complete!");
         }
 
-        [MenuItem("SC Tools/MVP/Create All Prefabs", priority = 101)]
+        [MenuItem("SC Tools/Setup/Prefabs/Create MVP Prefabs", priority = 130)]
         public static void CreateAllPrefabs()
         {
             EnsureFolders();
@@ -113,7 +114,7 @@ namespace Sc.Editor.AI
             Debug.Log("[MVPSceneSetup] All MVP prefabs created!");
         }
 
-        [MenuItem("SC Tools/MVP/Recreate All Prefabs (Force)", priority = 102)]
+        [MenuItem("SC Tools/Setup/Prefabs/MVP/Recreate Prefabs (Force)", priority = 131)]
         public static void RecreateAllPrefabs()
         {
             EnsureFolders();
@@ -137,7 +138,7 @@ namespace Sc.Editor.AI
             Debug.Log("[MVPSceneSetup] All MVP prefabs recreated with current settings!");
         }
 
-        [MenuItem("SC Tools/MVP/Delete All Prefabs", priority = 103)]
+        [MenuItem("SC Tools/Setup/Prefabs/Delete MVP Prefabs", priority = 191)]
         public static void DeleteAllPrefabs()
         {
             var prefabFiles = new[]
@@ -167,7 +168,7 @@ namespace Sc.Editor.AI
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("SC Tools/MVP/Generate Master Data", priority = 104)]
+        [MenuItem("SC Tools/Setup/Master Data/Generate All", priority = 300)]
         public static void GenerateMasterData()
         {
             const string jsonPath = "Assets/Data/MasterData/";
@@ -178,7 +179,7 @@ namespace Sc.Editor.AI
             Debug.Log("[MVPSceneSetup] Master Data generation complete!");
         }
 
-        [MenuItem("SC Tools/MVP/Clear MVP Objects", priority = 200)]
+        [MenuItem("SC Tools/Setup/Scenes/Clear MVP Objects", priority = 292)]
         public static void ClearMVPObjects()
         {
             var canvas = GameObject.Find("MVPCanvas");
@@ -237,12 +238,7 @@ namespace Sc.Editor.AI
 
         private static void CreateEventSystem()
         {
-            var existing = Object.FindObjectOfType<EventSystem>();
-            if (existing != null) return;
-
-            var go = new GameObject("EventSystem");
-            go.AddComponent<EventSystem>();
-            go.AddComponent<StandaloneInputModule>();
+            EditorUIHelpers.EnsureEventSystem();
         }
 
         private static void CreateNavigationManager()
@@ -1451,14 +1447,7 @@ namespace Sc.Editor.AI
 
         private static void EnsureFolders()
         {
-            if (!AssetDatabase.IsValidFolder("Assets/Prefabs"))
-                AssetDatabase.CreateFolder("Assets", "Prefabs");
-
-            if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))
-                AssetDatabase.CreateFolder("Assets/Prefabs", "UI");
-
-            if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI/MVP"))
-                AssetDatabase.CreateFolder("Assets/Prefabs/UI", "MVP");
+            EditorUIHelpers.EnsureFolder(PrefabPath);
         }
 
         #endregion

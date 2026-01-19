@@ -8,6 +8,7 @@ namespace Sc.Editor.AI
 {
     /// <summary>
     /// UI 시스템 테스트용 씬/프리팹 자동 생성 도구.
+    /// Bootstrap: Partial (NavigationManager + EventSystem 생성)
     /// </summary>
     public static class UITestSceneSetup
     {
@@ -16,7 +17,7 @@ namespace Sc.Editor.AI
 
         #region Menu Items
 
-        [MenuItem("SC Tools/UI Test/Setup Test Scene", priority = 100)]
+        [MenuItem("SC Tools/Setup/Scenes/Setup Test Scene", priority = 200)]
         public static void SetupTestScene()
         {
             EnsureFolders();
@@ -54,7 +55,7 @@ namespace Sc.Editor.AI
             Debug.Log("[UITestSceneSetup] Test scene setup complete!");
         }
 
-        [MenuItem("SC Tools/UI Test/Create Test Prefabs Only", priority = 101)]
+        [MenuItem("SC Tools/Setup/Prefabs/Test/Create UI Test Prefabs", priority = 113)]
         public static void CreateTestPrefabsOnly()
         {
             EnsureFolders();
@@ -66,7 +67,7 @@ namespace Sc.Editor.AI
             Debug.Log("[UITestSceneSetup] Test prefabs created!");
         }
 
-        [MenuItem("SC Tools/UI Test/Clear Test Objects", priority = 200)]
+        [MenuItem("SC Tools/Setup/Scenes/Clear Test Objects", priority = 290)]
         public static void ClearTestObjects()
         {
             var canvas = GameObject.Find("TestCanvas");
@@ -107,14 +108,7 @@ namespace Sc.Editor.AI
 
         private static void CreateEventSystem()
         {
-            var existing = Object.FindObjectOfType<EventSystem>();
-            if (existing != null) return;
-
-            var go = new GameObject("EventSystem");
-            go.AddComponent<EventSystem>();
-            go.AddComponent<StandaloneInputModule>();
-
-            Debug.Log("[UITestSceneSetup] EventSystem created");
+            EditorUIHelpers.EnsureEventSystem();
         }
 
         private static void CreateNavigationManager()
@@ -525,14 +519,7 @@ namespace Sc.Editor.AI
 
         private static void EnsureFolders()
         {
-            if (!AssetDatabase.IsValidFolder("Assets/Prefabs"))
-                AssetDatabase.CreateFolder("Assets", "Prefabs");
-
-            if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI"))
-                AssetDatabase.CreateFolder("Assets/Prefabs", "UI");
-
-            if (!AssetDatabase.IsValidFolder("Assets/Prefabs/UI/Tests"))
-                AssetDatabase.CreateFolder("Assets/Prefabs/UI", "Tests");
+            EditorUIHelpers.EnsureFolder(PrefabPath);
         }
 
         #endregion
