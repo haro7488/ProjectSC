@@ -57,7 +57,9 @@ namespace Sc.Common.UI
                 .SetUpdate(true) // TimeScale 무시
                 .ToUniTask();
 
-            OutScreen.Hide();
+            // Tween 완료 후 객체가 파괴되었을 수 있음 (테스트 환경 등)
+            if (OutScreen != null)
+                OutScreen.Hide();
         }
 
         public override async UniTask In()
@@ -111,8 +113,12 @@ namespace Sc.Common.UI
                 .SetUpdate(true)
                 .ToUniTask();
 
-            OutScreen.Hide();
-            rectTransform.anchoredPosition = startPos; // 위치 복원
+            // Tween 완료 후 객체가 파괴되었을 수 있음 (테스트 환경 등)
+            if (OutScreen != null)
+            {
+                OutScreen.Hide();
+                rectTransform.anchoredPosition = startPos; // 위치 복원
+            }
         }
 
         public override async UniTask In()
