@@ -2,16 +2,30 @@
 type: architecture
 category: Testing
 status: approved
-version: "1.0"
+version: "1.1"
 created: 2026-01-18
-updated: 2026-01-18
+updated: 2026-01-19
 ---
 
 # 테스트 아키텍처
 
 ## 개요
 
-시스템 단위 테스트 가능한 구조 설계. 마일스톤/Phase와 독립적으로 각 시스템별 테스트 환경 제공.
+시스템 단위 테스트 가능한 구조. 마일스톤/Phase와 독립적으로 각 시스템별 테스트 환경 제공.
+
+**현재 상태**: 4차 구축 완료 (NUnit 149개+, PlayMode 인프라)
+
+---
+
+## 구축 현황
+
+| 단계 | 내용 | 상태 |
+|------|------|------|
+| 1차 | 베이스 인프라 + 수동 테스트 | ✅ 완료 |
+| 2차 | NUnit 단위 테스트 (Foundation, Core) | ✅ 완료 |
+| 3차 | 시스템 확장 (Common, Reward) | ✅ 완료 |
+| 4차 | PlayMode 테스트 인프라 | ✅ 완료 |
+| 5차 | 컨텐츠 시스템 테스트 | ⬜ 대기 |
 
 ---
 
@@ -51,53 +65,379 @@ updated: 2026-01-18
 
 ---
 
-## 시스템 분류
+## 테스트 매트릭스
 
-### 계층 구조
+### 시스템별 구현 상태
+
+| 시스템 | NUnit | 시나리오 러너 | PlayMode | Mock 필요 |
+|--------|-------|--------------|----------|-----------|
+| **Foundation** |
+| Log | ✅ 11개 | - | - | 없음 |
+| Result<T> | ✅ 14개 | - | - | 없음 |
+| ErrorMessages | ✅ 11개 | - | - | 없음 |
+| **Core** |
+| SaveStorage | ✅ 17개 | ✅ | - | ISaveStorage |
+| SaveMigrator | ✅ 완료 | ✅ | - | 없음 |
+| TimeService | ✅ 25개 | - | - | 없음 |
+| TimeHelper | ✅ 20개 | - | - | 없음 |
+| AssetManager | ✅ 완료 | ✅ | - | 없음 |
+| **Common** |
+| LoadingService | ✅ 완료 | - | - | 없음 |
+| LoadingConfig | ✅ 완료 | - | - | 없음 |
+| RewardInfo | ✅ 16개 | - | - | 없음 |
+| RewardProcessor | ✅ 28개 | - | - | 없음 |
+| RewardHelper | ✅ 17개 | - | - | 없음 |
+| ConfirmState | ✅ 12개 | - | - | 없음 |
+| CostConfirmState | ✅ 22개 | - | - | 없음 |
+| RewardPopupState | ✅ 13개 | - | - | 없음 |
+| SimpleItemSpawner | ✅ 12개 | - | - | 없음 |
+| IPopupState | ✅ 8개 | - | - | 없음 |
+| **UI** |
+| Navigation | - | ✅ | ✅ | 없음 |
+| **Contents** |
+| Gacha | ⬜ | ⬜ | ⬜ | IApiClient |
+| Shop | ⬜ | ⬜ | ⬜ | IApiClient, ITimeService |
+
+**총계**: NUnit 149개+, 시나리오 러너 3개, PlayMode 샘플 2개
+
+---
+
+## 폴더 구조
+
+### 실제 구현된 구조
 
 ```
-Foundation Systems (의존성 없음)
-├── Log System
-├── Result<T> System
-└── EventManager System
-
-Infrastructure Systems (Foundation 의존)
-├── Save System (ISaveStorage)
-├── Time System (ITimeService)
-└── Loading System (LoadingIndicator)
-
-Data Systems (Infrastructure 의존)
-├── MasterData System
-├── UserData System
-└── Network System (IApiClient)
-
-UI Systems (Data 의존)
-├── Navigation System
-├── Popup System (SystemPopup, RewardPopup)
-└── Widget System
-
-Content Systems (UI + Data 의존)
-├── Gacha System
-├── Shop System
-├── Character System
-├── Stage System
-└── LiveEvent System
+Assets/Scripts/
+├── Tests/                              # 런타임 테스트 (Sc.Tests)
+│   ├── Sc.Tests.asmdef
+│   │
+│   ├── Helpers/                        # 테스트 유틸리티
+│   │   ├── TestCanvasFactory.cs        # Canvas 동적 생성
+│   │   ├── TestResult.cs               # 테스트 결과 구조체
+│   │   └── TestUIBuilder.cs            # UI 동적 생성
+│   │
+│   ├── Mocks/                          # Mock 구현체
+│   │   ├── ITestInterfaces.cs          # 테스트용 인터페이스
+│   │   ├── MockTimeService.cs
+│   │   ├── MockSaveStorage.cs
+│   │   └── MockApiClient.cs
+│   │
+│   ├── Scenarios/                      # 테스트 시나리오 (NUnit과 공유)
+│   │   ├── NavigationTestScenarios.cs
+│   │   ├── SaveManagerTestScenarios.cs
+│   │   └── AssetManagerTestScenarios.cs
+│   │
+│   ├── Runners/                        # 수동 테스트 러너
+│   │   ├── SystemTestRunner.cs         # 베이스 클래스
+│   │   ├── NavigationTestRunner.cs
+│   │   ├── SaveManagerTestRunner.cs
+│   │   └── AssetManagerTestRunner.cs
+│   │
+│   ├── TestWidgets/                    # 테스트용 위젯
+│   │   ├── SimpleTestScreen.cs
+│   │   └── SimpleTestPopup.cs
+│   │
+│   └── PlayMode/                       # PlayMode 테스트 인프라
+│       ├── PlayModeTestBase.cs         # 베이스 클래스
+│       ├── Helpers/
+│       │   ├── PlayModeAssert.cs       # Unity 오브젝트 어서션
+│       │   └── PrefabTestHelper.cs     # Addressables 프리팹 로드
+│       └── Samples/
+│           ├── NavigationPlayModeTests.cs
+│           └── PrefabLoadPlayModeTests.cs
+│
+├── Editor/
+│   ├── AI/
+│   │   └── PlayModeTestSetup.cs        # SC Tools/PlayMode Tests 메뉴
+│   │
+│   └── Tests/                          # NUnit 단위 테스트 (Sc.Editor.Tests)
+│       ├── Sc.Editor.Tests.asmdef
+│       ├── SystemTestMenu.cs           # SC Tools/System Tests 메뉴
+│       │
+│       ├── Foundation/                 # 36개 테스트
+│       │   ├── LogTests.cs
+│       │   ├── ResultTests.cs
+│       │   └── ErrorMessagesTests.cs
+│       │
+│       ├── Core/                       # 36개+ 테스트
+│       │   ├── SaveStorageTests.cs
+│       │   ├── SaveMigratorTests.cs
+│       │   ├── MockSaveStorageTests.cs
+│       │   ├── TimeServiceTests.cs
+│       │   └── TimeHelperTests.cs
+│       │
+│       └── Common/                     # 77개+ 테스트
+│           ├── LoadingServiceTests.cs
+│           ├── LoadingConfigTests.cs
+│           ├── RewardInfoTests.cs
+│           ├── RewardProcessorTests.cs
+│           ├── RewardHelperTests.cs
+│           ├── ConfirmStateTests.cs
+│           ├── CostConfirmStateTests.cs
+│           ├── RewardPopupStateTests.cs
+│           ├── SimpleItemSpawnerTests.cs
+│           └── IPopupStateTests.cs
 ```
 
-### 테스트 매트릭스
+### 에디터 메뉴 구조
 
-| 시스템 | 독립 테스트 | 필요 Mock | 우선순위 |
-|--------|------------|-----------|---------|
-| Log | ✅ | 없음 | 중간 |
-| Result<T> | ✅ | 없음 | 높음 |
-| EventManager | ✅ | 없음 | 중간 |
-| Save | ✅ | ISaveStorage | 높음 |
-| Time | ✅ | 없음 | 높음 |
-| Loading | ✅ | 없음 | 높음 |
-| Navigation | ✅ | 없음 | **최우선** |
-| Popup | ⚠️ | IRewardHelper | 높음 |
-| Gacha | ⚠️ | IApiClient | 중간 |
-| Shop | ⚠️ | IApiClient, ITimeService | 중간 |
+```
+SC Tools/
+├── System Tests/
+│   ├── Navigation/
+│   │   └── Run Navigation Test
+│   ├── SaveManager/
+│   │   └── Run SaveManager Test
+│   └── AssetManager/
+│       └── Run AssetManager Test
+│
+└── PlayMode Tests/
+    ├── Create All Test Prefabs
+    ├── Create Simple Screen/Popup Prefabs
+    ├── Verify Test Scene
+    └── Delete All Test Prefabs
+```
+
+---
+
+## NUnit 단위 테스트
+
+### Assembly 구성
+
+**Sc.Editor.Tests.asmdef**
+- 위치: `Assets/Scripts/Editor/Tests/`
+- 참조: Sc.Foundation, Sc.Core, Sc.Common, Sc.Data, NUnit
+
+### 테스트 파일 목록
+
+#### Foundation (3개 파일, 36개 테스트)
+
+| 파일 | 테스트 수 | 검증 내용 |
+|------|----------|----------|
+| LogTests.cs | 11개 | Log 레벨, 카테고리, Output 관리 |
+| ResultTests.cs | 14개 | Success/Failure, OnSuccess/OnFailure, Map |
+| ErrorMessagesTests.cs | 11개 | GetKey, GetMessage, LocalizeFunc |
+
+#### Core (5개 파일, 36개+ 테스트)
+
+| 파일 | 테스트 수 | 검증 내용 |
+|------|----------|----------|
+| SaveStorageTests.cs | 17개 | FileSaveStorage CRUD, 경로 처리 |
+| SaveMigratorTests.cs | - | NeedsMigration, Migrate, Register |
+| MockSaveStorageTests.cs | - | Mock 인터페이스 동작 |
+| TimeServiceTests.cs | 25개 | ServerTimeUtc, SyncServerTime, GetNextResetTime |
+| TimeHelperTests.cs | 20개 | FormatRemainingTime, FormatRelativeTime |
+
+#### Common (10개 파일, 77개+ 테스트)
+
+| 파일 | 테스트 수 | 검증 내용 |
+|------|----------|----------|
+| LoadingServiceTests.cs | - | 레퍼런스 카운팅, 상태 전환 |
+| LoadingConfigTests.cs | - | 기본값 검증 |
+| RewardInfoTests.cs | 16개 | 생성자, 팩토리 메서드, ToString |
+| RewardProcessorTests.cs | 28개 | CreateDelta, ValidateRewards, CanApplyRewards |
+| RewardHelperTests.cs | 17개 | FormatText, GetIconPath, GetRarityColor |
+| ConfirmStateTests.cs | 12개 | 기본값, 검증, 콜백 |
+| CostConfirmStateTests.cs | 22개 | 재화 검증, IsInsufficient |
+| RewardPopupStateTests.cs | 13개 | 기본값, 검증, 콜백 |
+| SimpleItemSpawnerTests.cs | 12개 | Spawn, Despawn, DespawnAll |
+| IPopupStateTests.cs | 8개 | 기본값, 오버라이드, 호환성 |
+
+---
+
+## PlayMode 테스트 인프라
+
+### 핵심 클래스
+
+#### PlayModeTestBase
+
+Addressables 초기화, TestCanvas 생성, 자동 정리를 담당하는 베이스 클래스.
+
+```csharp
+public abstract class PlayModeTestBase
+{
+    protected Canvas TestCanvas { get; private set; }
+    protected PrefabTestHelper PrefabHelper { get; private set; }
+
+    [UnitySetUp]
+    public IEnumerator SetUp()
+    {
+        // Addressables 초기화
+        yield return Addressables.InitializeAsync();
+        
+        // TestCanvas 생성
+        TestCanvas = CreateTestCanvas();
+        PrefabHelper = new PrefabTestHelper();
+        
+        yield return OnSetUp();
+    }
+
+    [UnityTearDown]
+    public IEnumerator TearDown()
+    {
+        yield return OnTearDown();
+        
+        // 자동 정리
+        PrefabHelper.ReleaseAll();
+        if (TestCanvas != null)
+            Object.Destroy(TestCanvas.gameObject);
+    }
+
+    protected virtual IEnumerator OnSetUp() { yield break; }
+    protected virtual IEnumerator OnTearDown() { yield break; }
+}
+```
+
+#### PrefabTestHelper
+
+Addressables 프리팹 로드 및 인스턴스 관리.
+
+```csharp
+public class PrefabTestHelper
+{
+    private List<AsyncOperationHandle> _handles = new();
+    private List<GameObject> _instances = new();
+
+    public async UniTask<T> LoadPrefabAsync<T>(string address) where T : Object
+    {
+        var handle = Addressables.LoadAssetAsync<T>(address);
+        _handles.Add(handle);
+        return await handle;
+    }
+
+    public async UniTask<T> InstantiateAsync<T>(string address, Transform parent = null) 
+        where T : Component
+    {
+        var handle = Addressables.InstantiateAsync(address, parent);
+        _handles.Add(handle);
+        var go = await handle;
+        _instances.Add(go);
+        return go.GetComponent<T>();
+    }
+
+    public void ReleaseAll()
+    {
+        foreach (var instance in _instances)
+            if (instance != null) Addressables.ReleaseInstance(instance);
+        foreach (var handle in _handles)
+            if (handle.IsValid()) Addressables.Release(handle);
+        _instances.Clear();
+        _handles.Clear();
+    }
+}
+```
+
+#### PlayModeAssert
+
+Unity 오브젝트 전용 어서션 헬퍼.
+
+```csharp
+public static class PlayModeAssert
+{
+    public static void IsActive(GameObject go, string message = null)
+        => Assert.IsTrue(go.activeInHierarchy, message ?? $"{go.name} should be active");
+
+    public static void IsInactive(GameObject go, string message = null)
+        => Assert.IsFalse(go.activeInHierarchy, message ?? $"{go.name} should be inactive");
+
+    public static void HasComponent<T>(GameObject go) where T : Component
+        => Assert.IsNotNull(go.GetComponent<T>(), $"{go.name} should have {typeof(T).Name}");
+
+    public static void ChildCount(Transform t, int expected)
+        => Assert.AreEqual(expected, t.childCount, $"Expected {expected} children");
+}
+```
+
+### 샘플 테스트
+
+#### NavigationPlayModeTests
+
+기존 NavigationTestScenarios를 NUnit으로 래핑.
+
+```csharp
+[TestFixture]
+public class NavigationPlayModeTests : PlayModeTestBase
+{
+    private NavigationTestScenarios _scenarios;
+
+    protected override IEnumerator OnSetUp()
+    {
+        // NavigationManager 생성 및 시나리오 초기화
+        _scenarios = new NavigationTestScenarios(NavigationManager.Instance);
+        yield break;
+    }
+
+    [UnityTest]
+    public IEnumerator PushPopAll_ShouldWork()
+    {
+        var result = default(TestResult);
+        yield return _scenarios.RunPushPopAllScenario().ToCoroutine(r => result = r);
+        Assert.IsTrue(result.Success, result.Message);
+    }
+}
+```
+
+#### PrefabLoadPlayModeTests
+
+Addressables 프리팹 로드 검증.
+
+```csharp
+[TestFixture]
+public class PrefabLoadPlayModeTests : PlayModeTestBase
+{
+    [UnityTest]
+    public IEnumerator LoadScreenPrefab_ShouldSucceed()
+    {
+        ScreenWidget screen = null;
+        yield return PrefabHelper.InstantiateAsync<ScreenWidget>(
+            "Assets/Prefabs/Screens/TestScreen.prefab", 
+            TestCanvas.transform
+        ).ToCoroutine(s => screen = s);
+
+        Assert.IsNotNull(screen);
+        PlayModeAssert.IsActive(screen.gameObject);
+    }
+}
+```
+
+---
+
+## 시나리오 러너 (수동 테스트)
+
+### SystemTestRunner 베이스
+
+```csharp
+public abstract class SystemTestRunner : MonoBehaviour
+{
+    protected GameObject _testRoot;
+    protected TestCanvas _testCanvas;
+
+    public virtual void SetupTest()
+    {
+        _testRoot = new GameObject($"[TEST] {GetSystemName()}");
+        _testCanvas = TestCanvasFactory.Create(_testRoot.transform);
+        OnSetup();
+    }
+
+    public virtual void TeardownTest()
+    {
+        OnTeardown();
+        if (_testRoot != null) DestroyImmediate(_testRoot);
+    }
+
+    protected abstract string GetSystemName();
+    protected abstract void OnSetup();
+    protected abstract void OnTeardown();
+}
+```
+
+### 구현된 러너
+
+| 러너 | 시스템 | 시나리오 |
+|------|--------|----------|
+| NavigationTestRunner | Navigation | Push/Pop, Visibility, Back |
+| SaveManagerTestRunner | SaveManager | Save/Load, Migration |
+| AssetManagerTestRunner | AssetManager | Load/Unload, Scope |
 
 ---
 
@@ -113,15 +453,7 @@ public interface ITimeService
     DateTime ServerDateTime { get; }
 }
 
-// 2. 실제 구현 (ScriptableObject)
-[CreateAssetMenu(menuName = "SC/Services/TimeService")]
-public class TimeServiceAsset : ScriptableObject, ITimeService
-{
-    public long ServerTimeUtc => DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-    public DateTime ServerDateTime => DateTime.UtcNow;
-}
-
-// 3. Mock 구현 (테스트용)
+// 2. Mock 구현 (테스트용)
 public class MockTimeService : ITimeService
 {
     public long FixedTime { get; set; } = 1700000000;
@@ -129,31 +461,13 @@ public class MockTimeService : ITimeService
     public DateTime ServerDateTime => DateTimeOffset.FromUnixTimeSeconds(FixedTime).DateTime;
 }
 
-// 4. ServiceLocator (런타임 폴백)
+// 3. ServiceLocator
 public static class Services
 {
     private static readonly Dictionary<Type, object> _services = new();
-
-    public static void Register<T>(T service) where T : class
-        => _services[typeof(T)] = service;
-
-    public static T Get<T>() where T : class
-        => _services.TryGetValue(typeof(T), out var s) ? (T)s : null;
-
+    public static void Register<T>(T service) where T : class => _services[typeof(T)] = service;
+    public static T Get<T>() where T : class => _services.TryGetValue(typeof(T), out var s) ? (T)s : null;
     public static void Clear() => _services.Clear();
-}
-
-// 5. 사용처 (Inspector 우선, 없으면 ServiceLocator)
-public class ShopScreen : ScreenWidget
-{
-    [SerializeField] private ScriptableObject _timeServiceAsset;
-    private ITimeService _timeService;
-
-    protected override void OnInitialize()
-    {
-        _timeService = (_timeServiceAsset as ITimeService)
-                       ?? Services.Get<ITimeService>();
-    }
 }
 ```
 
@@ -162,610 +476,11 @@ public class ShopScreen : ScreenWidget
 - Inspector에서 Mock 교체 가능
 - 테스트 시 Services.Register로 Mock 주입
 - 기존 Singleton 코드와 공존 가능
-- 별도 DI 프레임워크 불필요
-
----
-
-## 폴더 구조
-
-```
-Assets/
-├── Scripts/
-│   ├── Tests/                          # 런타임 (빌드 포함)
-│   │   ├── Mocks/
-│   │   │   ├── MockTimeService.cs
-│   │   │   ├── MockSaveStorage.cs
-│   │   │   └── MockApiClient.cs
-│   │   ├── Scenarios/                  # 테스트 시나리오 (공유)
-│   │   │   ├── NavigationTestScenarios.cs
-│   │   │   ├── PopupTestScenarios.cs
-│   │   │   └── GachaTestScenarios.cs
-│   │   ├── Runners/                    # 수동 테스트 러너
-│   │   │   ├── SystemTestRunner.cs     # 베이스
-│   │   │   ├── NavigationTestRunner.cs
-│   │   │   └── PopupTestRunner.cs
-│   │   └── Helpers/
-│   │       ├── TestEnvironment.cs
-│   │       ├── TestCanvasFactory.cs
-│   │       └── MockDataFactory.cs
-│   │
-│   └── Editor/
-│       └── Tests/
-│           ├── SystemTestMenu.cs       # 메뉴 등록
-│           └── SystemTestWindow.cs     # 통합 윈도우 (선택)
-│
-├── Data/
-│   └── TestData/                       # 테스트용 SO, JSON
-│       ├── MockCharacterDatabase.asset
-│       └── MockRewards.json
-│
-└── Tests/                              # Unity Test Framework (빌드 제외)
-    ├── EditMode/
-    │   ├── EditMode.asmdef
-    │   └── ResultTests.cs
-    └── PlayMode/
-        ├── PlayMode.asmdef
-        └── NavigationTests.cs
-```
-
----
-
-## 에디터 도구 구조
-
-### 기본 개념
-
-```
-┌────────────────────────────────────────────────────────────┐
-│                        씬 구조                              │
-├────────────────────────────────────────────────────────────┤
-│                                                            │
-│   [기본 게임 씬] Game.unity                                 │
-│   ├── 전체 시스템 통합                                      │
-│   ├── 실제 게임과 동일하게 동작                              │
-│   └── MVPSceneSetup으로 구성                               │
-│                                                            │
-│   [시스템 테스트]                                           │
-│   ├── 현재 씬 유지 (Game.unity에서도 실행 가능)              │
-│   ├── 테스트 오브젝트 동적 생성                              │
-│   ├── 기존 씬 오브젝트 비활성화 (선택적 격리)                 │
-│   └── 테스트 완료 후 정리                                   │
-│                                                            │
-└────────────────────────────────────────────────────────────┘
-```
-
-### 메뉴 구조
-
-```
-SC Tools/
-├── Game Scene/
-│   ├── Setup Full Game Scene       # 전체 게임 씬 구성
-│   └── Clear Scene                 # 정리
-│
-└── System Tests/
-    ├── Foundation/
-    │   ├── Test Log System
-    │   ├── Test Result Pattern
-    │   └── Test EventManager
-    │
-    ├── Infrastructure/
-    │   ├── Test Save System
-    │   ├── Test Time System
-    │   └── Test Loading System
-    │
-    ├── UI/
-    │   ├── Test Navigation         # 첫 번째
-    │   ├── Test SystemPopups
-    │   ├── Test RewardPopup
-    │   └── Test Widgets
-    │
-    └── Contents/
-        ├── Test Gacha System
-        ├── Test Shop System
-        ├── Test Character System
-        ├── Test Stage System
-        └── Test Event System
-```
-
----
-
-## 핵심 클래스 설계
-
-### Services (ServiceLocator)
-
-```csharp
-// Scripts/Foundation/Services.cs
-public static class Services
-{
-    private static readonly Dictionary<Type, object> _services = new();
-
-    public static void Register<T>(T service) where T : class
-    {
-        _services[typeof(T)] = service;
-    }
-
-    public static T Get<T>() where T : class
-    {
-        return _services.TryGetValue(typeof(T), out var service)
-            ? (T)service
-            : null;
-    }
-
-    public static bool TryGet<T>(out T service) where T : class
-    {
-        service = Get<T>();
-        return service != null;
-    }
-
-    public static void Unregister<T>() where T : class
-    {
-        _services.Remove(typeof(T));
-    }
-
-    public static void Clear()
-    {
-        _services.Clear();
-    }
-}
-```
-
-### SystemTestRunner (베이스)
-
-```csharp
-// Scripts/Tests/Runners/SystemTestRunner.cs
-public abstract class SystemTestRunner : MonoBehaviour
-{
-    [Header("Test Configuration")]
-    [SerializeField] protected bool _useMockServices = true;
-    [SerializeField] protected bool _isolateFromScene = false;
-
-    protected GameObject _testRoot;
-    protected Canvas _testCanvas;
-    protected GameObject _controlPanel;
-
-    private List<GameObject> _disabledObjects = new();
-
-    public virtual void SetupTest()
-    {
-        // 1. 테스트 루트 생성
-        _testRoot = new GameObject($"[TEST] {GetSystemName()}");
-
-        // 2. 기존 씬 격리 (선택적)
-        if (_isolateFromScene)
-            DisableSceneObjects();
-
-        // 3. Mock 서비스 등록
-        if (_useMockServices)
-            RegisterMockServices();
-
-        // 4. 테스트 Canvas 생성
-        _testCanvas = TestCanvasFactory.Create(_testRoot.transform);
-
-        // 5. 컨트롤 패널 생성
-        CreateControlPanel();
-
-        // 6. 시스템별 셋업
-        OnSetup();
-
-        Debug.Log($"[SystemTest] {GetSystemName()} 테스트 시작");
-    }
-
-    public virtual void TeardownTest()
-    {
-        OnTeardown();
-        Services.Clear();
-        RestoreSceneObjects();
-
-        if (_testRoot != null)
-            DestroyImmediate(_testRoot);
-
-        Debug.Log($"[SystemTest] {GetSystemName()} 테스트 종료");
-    }
-
-    protected abstract string GetSystemName();
-    protected abstract void OnSetup();
-    protected abstract void OnTeardown();
-    protected virtual void RegisterMockServices() { }
-    protected abstract void CreateControlPanel();
-
-    private void DisableSceneObjects()
-    {
-        foreach (var go in FindObjectsOfType<GameObject>())
-        {
-            if (go.activeInHierarchy && go != gameObject && go.transform.parent == null)
-            {
-                go.SetActive(false);
-                _disabledObjects.Add(go);
-            }
-        }
-    }
-
-    private void RestoreSceneObjects()
-    {
-        foreach (var go in _disabledObjects)
-        {
-            if (go != null)
-                go.SetActive(true);
-        }
-        _disabledObjects.Clear();
-    }
-}
-```
-
-### TestCanvasFactory
-
-```csharp
-// Scripts/Tests/Helpers/TestCanvasFactory.cs
-public static class TestCanvasFactory
-{
-    public static TestCanvas Create(Transform parent)
-    {
-        // Canvas
-        var canvasGO = new GameObject("TestCanvas");
-        canvasGO.transform.SetParent(parent);
-
-        var canvas = canvasGO.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 1000;  // 최상위
-
-        canvasGO.AddComponent<CanvasScaler>();
-        canvasGO.AddComponent<GraphicRaycaster>();
-
-        // Containers
-        var screenContainer = CreateContainer(canvasGO.transform, "ScreenContainer", 0);
-        var popupContainer = CreateContainer(canvasGO.transform, "PopupContainer", 100);
-        var controlContainer = CreateContainer(canvasGO.transform, "ControlContainer", 200);
-
-        return new TestCanvas
-        {
-            Canvas = canvas,
-            ScreenContainer = screenContainer,
-            PopupContainer = popupContainer,
-            ControlContainer = controlContainer
-        };
-    }
-
-    private static RectTransform CreateContainer(Transform parent, string name, int sortingOrder)
-    {
-        var go = new GameObject(name);
-        go.transform.SetParent(parent);
-
-        var rect = go.AddComponent<RectTransform>();
-        rect.anchorMin = Vector2.zero;
-        rect.anchorMax = Vector2.one;
-        rect.sizeDelta = Vector2.zero;
-
-        var canvas = go.AddComponent<Canvas>();
-        canvas.overrideSorting = true;
-        canvas.sortingOrder = sortingOrder;
-
-        go.AddComponent<GraphicRaycaster>();
-
-        return rect;
-    }
-}
-
-public struct TestCanvas
-{
-    public Canvas Canvas;
-    public RectTransform ScreenContainer;
-    public RectTransform PopupContainer;
-    public RectTransform ControlContainer;
-}
-```
-
-### TestEnvironment (자동화 테스트용)
-
-```csharp
-// Scripts/Tests/Helpers/TestEnvironment.cs
-public static class TestEnvironment
-{
-    private static GameObject _testRoot;
-
-    public static IEnumerator SetupMinimal<T>() where T : SystemTestRunner
-    {
-        _testRoot = new GameObject("[TestEnvironment]");
-        Object.DontDestroyOnLoad(_testRoot);
-
-        var runner = _testRoot.AddComponent<T>();
-        runner.SetupTest();
-
-        yield return null;
-    }
-
-    public static IEnumerator SetupWithMockServices()
-    {
-        Services.Clear();
-        Services.Register<ITimeService>(new MockTimeService());
-        Services.Register<ISaveStorage>(new MockSaveStorage());
-        Services.Register<IApiClient>(new MockApiClient());
-
-        yield return null;
-    }
-
-    public static IEnumerator Cleanup()
-    {
-        Services.Clear();
-
-        if (_testRoot != null)
-        {
-            var runner = _testRoot.GetComponent<SystemTestRunner>();
-            runner?.TeardownTest();
-            Object.DestroyImmediate(_testRoot);
-            _testRoot = null;
-        }
-
-        yield return null;
-    }
-}
-```
-
----
-
-## 예시: NavigationTestRunner
-
-```csharp
-// Scripts/Tests/Runners/NavigationTestRunner.cs
-public class NavigationTestRunner : SystemTestRunner
-{
-    private NavigationManager _navigation;
-    private NavigationTestScenarios _scenarios;
-
-    protected override string GetSystemName() => "Navigation";
-
-    protected override void OnSetup()
-    {
-        // NavigationManager 생성
-        var navGO = new GameObject("NavigationManager");
-        navGO.transform.SetParent(_testRoot.transform);
-        _navigation = navGO.AddComponent<NavigationManager>();
-
-        // 컨테이너 연결
-        // _navigation.Initialize(_testCanvas.ScreenContainer, _testCanvas.PopupContainer);
-
-        // 시나리오 생성
-        _scenarios = new NavigationTestScenarios(_navigation);
-    }
-
-    protected override void OnTeardown()
-    {
-        _navigation = null;
-        _scenarios = null;
-    }
-
-    protected override void CreateControlPanel()
-    {
-        var panel = TestUIBuilder.CreatePanel(_testCanvas.ControlContainer, "NavigationTestPanel");
-
-        TestUIBuilder.AddButton(panel, "Push Screen", OnPushScreenClicked);
-        TestUIBuilder.AddButton(panel, "Push Popup", OnPushPopupClicked);
-        TestUIBuilder.AddButton(panel, "Pop", OnPopClicked);
-        TestUIBuilder.AddButton(panel, "Pop All", OnPopAllClicked);
-
-        TestUIBuilder.AddSeparator(panel);
-        TestUIBuilder.AddLabel(panel, "Scenarios:");
-        TestUIBuilder.AddButton(panel, "Run: Push 3 → Pop All", OnScenarioPushPopAll);
-        TestUIBuilder.AddButton(panel, "Run: Visibility Check", OnScenarioVisibility);
-
-        TestUIBuilder.AddSeparator(panel);
-        TestUIBuilder.AddButton(panel, "Exit Test", () => TeardownTest());
-
-        _controlPanel = panel;
-    }
-
-    // 액션들
-    private async void OnPushScreenClicked()
-    {
-        await _navigation.PushAsync<TestScreen>();
-        LogState();
-    }
-
-    private async void OnPopClicked()
-    {
-        await _navigation.PopAsync();
-        LogState();
-    }
-
-    private async void OnScenarioPushPopAll()
-    {
-        var result = await _scenarios.RunPushPopAllScenario();
-        Debug.Log($"[Scenario] PushPopAll: {(result.Success ? "PASS" : "FAIL")} - {result.Message}");
-    }
-
-    private void LogState()
-    {
-        Debug.Log($"[Navigation] Screens: {_navigation.ScreenCount}, Popups: {_navigation.PopupCount}");
-    }
-}
-```
-
-### NavigationTestScenarios (공유)
-
-```csharp
-// Scripts/Tests/Scenarios/NavigationTestScenarios.cs
-public class NavigationTestScenarios
-{
-    private readonly NavigationManager _navigation;
-
-    public NavigationTestScenarios(NavigationManager navigation)
-    {
-        _navigation = navigation;
-    }
-
-    public async UniTask<TestResult> RunPushPopAllScenario()
-    {
-        // Push 3개
-        await _navigation.PushAsync<TestScreenA>();
-        await _navigation.PushAsync<TestScreenB>();
-        await _navigation.PushAsync<TestScreenC>();
-
-        var countAfterPush = _navigation.ScreenCount;
-
-        // Pop All
-        await _navigation.PopAllAsync();
-
-        var countAfterPop = _navigation.ScreenCount;
-
-        return new TestResult
-        {
-            Success = countAfterPush == 3 && countAfterPop == 0,
-            Message = $"PushCount={countAfterPush}, AfterPopAll={countAfterPop}"
-        };
-    }
-
-    public async UniTask<TestResult> RunVisibilityScenario()
-    {
-        await _navigation.PushAsync<TestScreenA>();
-        await _navigation.PushAsync<TestScreenB>();
-
-        var screenA = _navigation.GetScreen<TestScreenA>();
-        var screenB = _navigation.GetScreen<TestScreenB>();
-
-        var aHidden = !screenA.IsVisible;
-        var bVisible = screenB.IsVisible;
-
-        return new TestResult
-        {
-            Success = aHidden && bVisible,
-            Message = $"ScreenA.Visible={screenA.IsVisible}, ScreenB.Visible={screenB.IsVisible}"
-        };
-    }
-}
-
-public struct TestResult
-{
-    public bool Success;
-    public string Message;
-}
-```
-
----
-
-## 구축 순서
-
-### 1차: 베이스 + 수동 테스트
-
-```
-필수 (베이스):
-├── Services.cs
-├── SystemTestRunner.cs
-├── TestCanvasFactory.cs
-├── TestUIBuilder.cs
-└── TestResult.cs
-
-Mock:
-├── MockTimeService.cs
-├── MockSaveStorage.cs
-└── MockApiClient.cs
-
-첫 번째 시스템:
-├── NavigationTestScenarios.cs
-├── NavigationTestRunner.cs
-└── SystemTestMenu.cs (메뉴 등록)
-```
-
-### 2차: 자동화 테스트 연동
-
-```
-추가:
-├── TestEnvironment.cs
-├── Tests/EditMode/
-│   ├── EditMode.asmdef
-│   └── ResultTests.cs
-└── Tests/PlayMode/
-    ├── PlayMode.asmdef
-    └── NavigationTests.cs
-```
-
-### 3차: 시스템 확장
-
-```
-Infrastructure:
-├── LoadingTestRunner.cs
-├── SaveTestRunner.cs
-└── TimeTestRunner.cs
-
-UI:
-├── PopupTestRunner.cs
-├── PopupTestScenarios.cs
-└── ...
-
-Contents:
-├── GachaTestRunner.cs
-└── ...
-```
-
----
-
-## 자동화 테스트 연동 (2차)
-
-### Edit Mode Test 예시
-
-```csharp
-// Tests/EditMode/ResultTests.cs
-using NUnit.Framework;
-
-[TestFixture]
-public class ResultTests
-{
-    [Test]
-    public void Success_ShouldContainValue()
-    {
-        var result = Result<int>.Success(42);
-
-        Assert.IsTrue(result.IsSuccess);
-        Assert.AreEqual(42, result.Value);
-    }
-
-    [Test]
-    public void Failure_ShouldContainErrorCode()
-    {
-        var result = Result<int>.Failure("ERR_001");
-
-        Assert.IsTrue(result.IsFailure);
-        Assert.AreEqual("ERR_001", result.ErrorCode);
-    }
-}
-```
-
-### Play Mode Test 예시
-
-```csharp
-// Tests/PlayMode/NavigationTests.cs
-using System.Collections;
-using NUnit.Framework;
-using UnityEngine.TestTools;
-
-[TestFixture]
-public class NavigationPlayModeTests
-{
-    private NavigationTestScenarios _scenarios;
-
-    [UnitySetUp]
-    public IEnumerator Setup()
-    {
-        yield return TestEnvironment.SetupMinimal<NavigationTestRunner>();
-        _scenarios = new NavigationTestScenarios(NavigationManager.Instance);
-    }
-
-    [UnityTearDown]
-    public IEnumerator Teardown()
-    {
-        yield return TestEnvironment.Cleanup();
-    }
-
-    [UnityTest]
-    public IEnumerator Scenario_PushPopAll_ShouldPass()
-    {
-        yield return _scenarios.RunPushPopAllScenario().ToCoroutine(out var result);
-        Assert.IsTrue(result.Success, result.Message);
-    }
-}
-```
 
 ---
 
 ## 관련 문서
 
-- [AITools.md](../Editor/AITools.md) - 기존 에디터 도구
+- [AITools.md](../Editor/AITools.md) - 에디터 도구
 - [UISystem.md](../Common/UISystem.md) - UI 시스템
 - [Navigation.md](../Navigation.md) - Navigation 시스템
