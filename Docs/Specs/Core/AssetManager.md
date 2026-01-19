@@ -3,7 +3,7 @@ type: spec
 assembly: Sc.Core
 class: AssetManager
 category: Manager
-status: draft
+status: implemented
 version: "1.0"
 dependencies: [Singleton, Result, Log, ErrorCode, UniTask, Addressables]
 created: 2026-01-19
@@ -229,6 +229,6 @@ Assets/Scripts/Core/
 
 | 분류 | 상태 |
 |------|------|
-| 스펙 | ✅ draft |
-| 구현 | ⬜ 대기 |
+| 스펙 | ✅ v1.0 |
+| 구현 | ✅ 완료 |
 | 테스트 | ⬜ 대기 |

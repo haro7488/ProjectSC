@@ -38,7 +38,7 @@
 #### Phase A: 기반 인프라 (독립)
 | # | 시스템 | 상태 | 의존성 | 스펙 문서 |
 |---|--------|------|--------|-----------|
-| 0 | **AssetManager** | 📝 | Singleton, UniTask, Addressables | ✅ Core/AssetManager.md |
+| 0 | **AssetManager** | ✅ | Singleton, UniTask, Addressables | ✅ Core/AssetManager.md |
 | 1 | Logging | ✅ | 없음 | ✅ Foundation/Logging.md |
 | 2 | ErrorHandling | ✅ | 없음 | ✅ Foundation/Error.md |
 
@@ -81,7 +81,7 @@
 
 | 시스템 | 영향받는 기존 코드 | 조치 |
 |--------|-------------------|------|
-| **AssetManager** | RewardIconCache | AssetManager로 대체 |
+| **AssetManager** | RewardIconCache | ✅ AssetManager로 대체 완료 |
 | SaveManager | LocalApiService 저장 로직 | SaveManager로 이관 |
 | ErrorHandling | LocalApiService 에러 반환 | Result<T> 적용 |
 | LocalServer | LocalApiService 전체 | Sc.LocalServer Assembly 분리 |
@@ -687,6 +687,31 @@ Popup 구현:
 ---
 
 ## 작업 로그
+
+### 2026-01-19 (AssetManager 테스트)
+- [x] AssetManager 테스트 구현
+  - [x] AssetHandleTests.cs 업데이트 (IAssetHandle 인터페이스 테스트 6개 추가)
+  - [x] AssetScopeTests.cs 업데이트 (IAssetHandle 기반 ForceRelease 테스트)
+  - [x] AssetCacheManagerTests.cs 신규 작성 (14개 테스트)
+    - 캐시 등록/조회/제거
+    - RefCount 관리
+    - LRU 트리밍
+    - IsReleasable 리셋 검증
+
+### 2026-01-19 (AssetManager 통합)
+- [x] AssetManager 코드 리뷰 및 개선
+  - [x] IAssetHandle 인터페이스 추가 (Reflection 제거)
+  - [x] AssetCacheManager/Scope에서 인터페이스 기반 호출로 변경
+  - [x] IsReleasable 플래그 리셋 누락 수정
+  - [x] Debug.Log → Log 시스템 전환 (전체 6개 파일)
+- [x] GameBootstrap 통합
+  - [x] AssetManager.Initialize() 호출 추가 (초기화 순서 1번)
+- [x] RewardIconCache → AssetManager 대체
+  - [x] RewardPopup에 AssetScope 기반 아이콘 로딩 구현
+  - [x] PreloadIconsAsync, GetCachedIcon 메서드 추가
+  - [x] RewardIconCache.cs 삭제 (127줄)
+- [x] 문서 업데이트
+  - [x] PROGRESS.md AssetManager 상태 ✅로 변경
 
 ### 2026-01-19 (에디터 도구 코드 정리)
 - [x] 공용 유틸리티 생성
