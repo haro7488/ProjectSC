@@ -75,8 +75,18 @@ namespace Sc.Core
         {
             Debug.Log("========== 게임 초기화 시작 ==========");
 
-            // 1. NetworkManager 초기화
-            Debug.Log("[1/3] NetworkManager 초기화...");
+            // 1. AssetManager 초기화 (최우선)
+            Debug.Log("[1/4] AssetManager 초기화...");
+            var assetSuccess = AssetManager.Instance.Initialize();
+            if (!assetSuccess)
+            {
+                Debug.LogError("AssetManager 초기화 실패!");
+                return false;
+            }
+            Debug.Log("AssetManager 초기화 성공");
+
+            // 2. NetworkManager 초기화
+            Debug.Log("[2/4] NetworkManager 초기화...");
             var networkSuccess = await NetworkManager.Instance.InitializeAsync();
             if (!networkSuccess)
             {
@@ -85,8 +95,8 @@ namespace Sc.Core
             }
             Debug.Log("NetworkManager 초기화 성공");
 
-            // 2. DataManager 초기화 (마스터 데이터만)
-            Debug.Log("[2/3] DataManager 초기화...");
+            // 3. DataManager 초기화 (마스터 데이터만)
+            Debug.Log("[3/4] DataManager 초기화...");
             var dataSuccess = DataManager.Instance.Initialize();
             if (!dataSuccess)
             {
@@ -95,8 +105,8 @@ namespace Sc.Core
             }
             Debug.Log("DataManager 초기화 성공");
 
-            // 3. 로그인
-            Debug.Log("[3/3] 로그인 시도...");
+            // 5. 로그인
+            Debug.Log("[5/5] 로그인 시도...");
             _loginCompletionSource = new UniTaskCompletionSource<bool>();
 
             var loginRequest = LoginRequest.CreateGuest(
