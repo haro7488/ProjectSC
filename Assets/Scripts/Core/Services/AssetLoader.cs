@@ -30,7 +30,7 @@ namespace Sc.Core
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"[AssetLoader] Addressables 로드 실패: {key}, {e.Message}");
+                Log.Warning($"[AssetLoader] Addressables 로드 실패: {key}, {e.Message}", LogCategory.System);
             }
 
             // 2. Resources 폴백
@@ -44,7 +44,7 @@ namespace Sc.Core
             }
             catch (Exception e)
             {
-                Debug.LogWarning($"[AssetLoader] Resources 로드 실패: {key}, {e.Message}");
+                Log.Warning($"[AssetLoader] Resources 로드 실패: {key}, {e.Message}", LogCategory.System);
             }
 
             // 3. 둘 다 실패

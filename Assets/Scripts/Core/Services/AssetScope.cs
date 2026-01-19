@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sc.Foundation;
 using UnityEngine;
 
 namespace Sc.Core
@@ -38,7 +39,7 @@ namespace Sc.Core
         {
             if (_isReleased)
             {
-                Debug.LogWarning($"[AssetScope] 이미 해제된 Scope에 핸들 등록 시도: {_name}");
+                Log.Warning($"[AssetScope] 이미 해제된 Scope에 핸들 등록 시도: {_name}", LogCategory.System);
                 return;
             }
 
@@ -63,7 +64,7 @@ namespace Sc.Core
         {
             if (_isReleased)
             {
-                Debug.LogWarning($"[AssetScope] 이미 해제된 Scope: {_name}");
+                Log.Warning($"[AssetScope] 이미 해제된 Scope: {_name}", LogCategory.System);
                 return;
             }
 
@@ -78,14 +79,13 @@ namespace Sc.Core
             _handles.Clear();
             _onRelease?.Invoke(this);
 
-            Debug.Log($"[AssetScope] Scope 해제: {_name}");
+            Log.Debug($"[AssetScope] Scope 해제: {_name}", LogCategory.System);
         }
 
         private void ReleaseHandle(object handle)
         {
-            // Reflection 없이 타입별 처리
-            var releaseMethod = handle.GetType().GetMethod("Release");
-            releaseMethod?.Invoke(handle, null);
+            // IAssetHandle 인터페이스 활용
+            (handle as IAssetHandle)?.Release();
         }
     }
 }

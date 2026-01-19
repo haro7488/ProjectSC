@@ -35,7 +35,7 @@ namespace Sc.Core
         {
             if (_isInitialized)
             {
-                Debug.LogWarning("[AssetManager] 이미 초기화됨");
+                Log.Warning("[AssetManager] 이미 초기화됨", LogCategory.System);
                 return true;
             }
 
@@ -44,7 +44,7 @@ namespace Sc.Core
             _loader = new AssetLoader();
 
             _isInitialized = true;
-            Debug.Log("[AssetManager] 초기화 완료");
+            Log.Info("[AssetManager] 초기화 완료", LogCategory.System);
             return true;
         }
 
@@ -57,7 +57,7 @@ namespace Sc.Core
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[AssetManager] 초기화되지 않음");
+                Log.Error("[AssetManager] 초기화되지 않음", LogCategory.System);
                 return null;
             }
 
@@ -104,13 +104,13 @@ namespace Sc.Core
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[AssetManager] 초기화되지 않음");
+                Log.Error("[AssetManager] 초기화되지 않음", LogCategory.System);
                 return Result<AssetHandle<T>>.Failure(ErrorCode.SystemInitFailed);
             }
 
             if (string.IsNullOrEmpty(key))
             {
-                Debug.LogError("[AssetManager] 에셋 키가 비어있음");
+                Log.Error("[AssetManager] 에셋 키가 비어있음", LogCategory.System);
                 return Result<AssetHandle<T>>.Failure(ErrorCode.AssetNotFound);
             }
 
@@ -129,7 +129,7 @@ namespace Sc.Core
 
             if (!loadResult.IsSuccess)
             {
-                Debug.LogWarning($"[AssetManager] 에셋 로드 실패: {key}");
+                Log.Warning($"[AssetManager] 에셋 로드 실패: {key}", LogCategory.System);
                 return Result<AssetHandle<T>>.Failure(loadResult.Error);
             }
 

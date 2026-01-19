@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Sc.Foundation;
 using UnityEngine;
 
 namespace Sc.Core
@@ -19,7 +20,7 @@ namespace Sc.Core
             {
                 if (!existing.IsReleased)
                 {
-                    Debug.LogWarning($"[AssetScopeManager] 이미 존재하는 Scope: {name}");
+                    Log.Warning($"[AssetScopeManager] 이미 존재하는 Scope: {name}", LogCategory.System);
                     return existing;
                 }
                 // 이미 해제된 Scope면 새로 생성
@@ -28,7 +29,7 @@ namespace Sc.Core
 
             var scope = new AssetScope(name, OnScopeReleased);
             _scopes[name] = scope;
-            Debug.Log($"[AssetScopeManager] Scope 생성: {name}");
+            Log.Debug($"[AssetScopeManager] Scope 생성: {name}", LogCategory.System);
             return scope;
         }
 

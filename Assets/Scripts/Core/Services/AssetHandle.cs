@@ -1,4 +1,5 @@
 using System;
+using Sc.Foundation;
 using UnityEngine;
 
 namespace Sc.Core
@@ -7,7 +8,7 @@ namespace Sc.Core
     /// 에셋 레퍼런스 카운팅 래퍼.
     /// Load 시 RefCount++, Release 시 RefCount--.
     /// </summary>
-    public class AssetHandle<T> where T : UnityEngine.Object
+    public class AssetHandle<T> : IAssetHandle where T : UnityEngine.Object
     {
         private readonly string _key;
         private readonly T _asset;
@@ -43,7 +44,7 @@ namespace Sc.Core
         {
             if (_isReleased)
             {
-                Debug.LogWarning($"[AssetHandle] 이미 해제된 에셋에 AddRef 시도: {_key}");
+                Log.Warning($"[AssetHandle] 이미 해제된 에셋에 AddRef 시도: {_key}", LogCategory.System);
                 return;
             }
             _refCount++;
@@ -56,7 +57,7 @@ namespace Sc.Core
         {
             if (_isReleased)
             {
-                Debug.LogWarning($"[AssetHandle] 이미 해제된 에셋에 Release 시도: {_key}");
+                Log.Warning($"[AssetHandle] 이미 해제된 에셋에 Release 시도: {_key}", LogCategory.System);
                 return;
             }
 
@@ -72,7 +73,7 @@ namespace Sc.Core
         /// <summary>
         /// 강제 해제 (내부용)
         /// </summary>
-        internal void ForceRelease()
+        void IAssetHandle.ForceRelease()
         {
             _isReleased = true;
             _refCount = 0;

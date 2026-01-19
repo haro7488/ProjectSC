@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Sc.Foundation;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -10,7 +11,7 @@ namespace Sc.Core
     /// LRU 캐시 관리.
     /// RefCount == 0인 에셋만 해제 대상.
     /// </summary>
-    internal class AssetCacheManager
+    public class AssetCacheManager
     {
         private readonly Dictionary<string, CacheEntry> _cache = new();
         private readonly LinkedList<string> _lruOrder = new();
@@ -34,6 +35,7 @@ namespace Sc.Core
             if (_cache.TryGetValue(key, out var entry) && entry.Handle is AssetHandle<T> typedHandle)
             {
                 typedHandle.AddRef();
+                entry.IsReleasable = false; // RefCount 증가 시 해제 불가 상태로 전환
                 UpdateLruOrder(key);
                 handle = typedHandle;
                 return true;
@@ -126,7 +128,7 @@ namespace Sc.Core
                     ReleaseEntry(entry);
                     _cache.Remove(oldestKey);
                     _lruOrder.RemoveLast();
-                    Debug.Log($"[AssetCacheManager] LRU 해제: {oldestKey}");
+                    Log.Debug($"[AssetCacheManager] LRU 해제: {oldestKey}", LogCategory.System);
                 }
                 else
                 {
@@ -138,10 +140,8 @@ namespace Sc.Core
 
         private void ReleaseEntry(CacheEntry entry)
         {
-            // AssetHandle 강제 해제
-            var forceReleaseMethod = entry.Handle?.GetType().GetMethod("ForceRelease",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            forceReleaseMethod?.Invoke(entry.Handle, null);
+            // AssetHandle 강제 해제 (IAssetHandle 인터페이스 활용)
+            (entry.Handle as IAssetHandle)?.ForceRelease();
 
             // Addressables 핸들 해제
             if (entry.AddressableHandle.HasValue && entry.AddressableHandle.Value.IsValid())
