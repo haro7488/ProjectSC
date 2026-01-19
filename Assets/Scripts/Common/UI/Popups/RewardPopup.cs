@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Sc.Core;
 using Sc.Data;
@@ -74,13 +75,17 @@ namespace Sc.Common.UI
         [SerializeField] private Vector2 _mediumCellSize = new Vector2(80, 100);
         [SerializeField] private Vector2 _smallCellSize = new Vector2(60, 80);
 
+        [Header("Fallback")]
+        [SerializeField] private Sprite _fallbackIcon;
+
         #endregion
 
         #region Private Fields
 
         private State _currentState;
         private IItemSpawner<RewardItem> _itemSpawner;
-        private RewardIconCache _iconCache;
+        private AssetScope _iconScope;
+        private readonly Dictionary<string, AssetHandle<Sprite>> _iconHandles = new();
 
         #endregion
 
@@ -105,8 +110,11 @@ namespace Sc.Common.UI
                 _itemSpawner = new SimpleItemSpawner<RewardItem>(_rewardItemPrefab);
             }
 
-            // 아이콘 캐시 초기화
-            _iconCache = new RewardIconCache();
+            // AssetScope 생성
+            if (AssetManager.HasInstance && AssetManager.Instance.IsInitialized)
+            {
+                _iconScope = AssetManager.Instance.CreateScope("RewardPopup");
+            }
         }
 
         protected override void OnBind(State state)
@@ -131,8 +139,13 @@ namespace Sc.Common.UI
             // 아이템 정리
             _itemSpawner?.DespawnAll();
 
-            // 아이콘 캐시 해제
-            _iconCache?.Release();
+            // AssetScope 해제 (등록된 모든 아이콘 자동 해제)
+            if (_iconScope != null)
+            {
+                AssetManager.Instance?.ReleaseScope(_iconScope);
+                _iconScope = null;
+            }
+            _iconHandles.Clear();
 
             _currentState = null;
         }
@@ -155,11 +168,8 @@ namespace Sc.Common.UI
             // 3. 레이아웃 설정
             ConfigureLayout(_currentState.Rewards.Length);
 
-            // 4. 아이콘 프리로드
-            if (_iconCache != null)
-            {
-                await _iconCache.PreloadAsync(_currentState.Rewards);
-            }
+            // 4. 아이콘 프리로드 (AssetManager 사용)
+            await PreloadIconsAsync(_currentState.Rewards);
 
             // 5. 보상 아이템 생성
             SpawnRewardItems();
@@ -201,12 +211,86 @@ namespace Sc.Common.UI
                 var item = _itemSpawner.Spawn(_rewardContainer);
                 if (item == null) continue;
 
-                // 아이콘 조회 (캐시에서)
-                var icon = _iconCache?.GetIcon(reward);
+                // 캐시된 아이콘 조회
+                var icon = GetCachedIcon(reward);
 
                 // 바인딩
                 item.Bind(reward, icon);
             }
+        }
+
+        #endregion
+
+        #region Icon Loading (AssetManager)
+
+        private async UniTask PreloadIconsAsync(RewardInfo[] rewards)
+        {
+            if (rewards == null || rewards.Length == 0) return;
+
+            // AssetManager 미초기화 시 스킵
+            if (!AssetManager.HasInstance || !AssetManager.Instance.IsInitialized)
+            {
+                Debug.LogWarning("[RewardPopup] AssetManager 미초기화, 폴백 아이콘 사용");
+                return;
+            }
+
+            // Scope 재생성 (재사용 시)
+            if (_iconScope == null || _iconScope.IsReleased)
+            {
+                _iconScope = AssetManager.Instance.CreateScope("RewardPopup");
+            }
+
+            // 고유 경로 수집
+            var paths = new HashSet<string>();
+            foreach (var reward in rewards)
+            {
+                var path = RewardHelper.GetIconPath(reward);
+                if (!string.IsNullOrEmpty(path) && !_iconHandles.ContainsKey(path))
+                {
+                    paths.Add(path);
+                }
+            }
+
+            if (paths.Count == 0) return;
+
+            // 병렬 로드
+            var tasks = new List<UniTask>();
+            foreach (var path in paths)
+            {
+                tasks.Add(LoadIconAsync(path));
+            }
+
+            await UniTask.WhenAll(tasks);
+        }
+
+        private async UniTask LoadIconAsync(string path)
+        {
+            var result = await AssetManager.Instance.LoadAsync<Sprite>(path, _iconScope);
+
+            if (result.IsSuccess)
+            {
+                _iconHandles[path] = result.Value;
+            }
+            else
+            {
+                Debug.LogWarning($"[RewardPopup] 아이콘 로드 실패: {path}, Error: {result.Error}");
+                // 폴백은 GetCachedIcon()에서 처리
+            }
+        }
+
+        private Sprite GetCachedIcon(RewardInfo reward)
+        {
+            var path = RewardHelper.GetIconPath(reward);
+            return GetCachedIcon(path);
+        }
+
+        private Sprite GetCachedIcon(string path)
+        {
+            if (_iconHandles.TryGetValue(path, out var handle) && handle.IsValid)
+            {
+                return handle.Asset;
+            }
+            return _fallbackIcon;
         }
 
         #endregion
