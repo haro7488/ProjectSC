@@ -9,7 +9,10 @@
         "UniTask",
         "Unity.TextMeshPro",
         "DOTween.Modules",
-        "UniTask.DOTween"
+        "UniTask.DOTween",
+        "Unity.Addressables",
+        "UniTask.Addressables",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
