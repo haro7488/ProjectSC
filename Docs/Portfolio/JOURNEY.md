@@ -54,7 +54,7 @@
 **커밋**: `6792d60` Refactor UI architecture: MVP → Widget System
 - **중요 결정**: MVP 패턴에서 Widget 기반 시스템으로 전환
 - **이유**: Unity UI의 특성에 맞는 더 유연한 구조 필요
-- **상세**: [DECISIONS.md](DECISIONS.md#ui-아키텍처-mvp--widget) 참조
+- **상세**: [DECISIONS.md - UI 아키텍처: MVP → Widget](DECISIONS.md) 참조
 
 ### UI 구현
 
@@ -106,7 +106,7 @@
 **커밋**: `8b6aae0` (리셋 기준점)
 - **문제**: v1.0 로컬 중심 설계로는 라이브 서비스 대응 불가
 - **결정**: 서버 중심(Server Authority) 아키텍처로 재설계
-- **상세**: [DECISIONS.md](DECISIONS.md#데이터-아키텍처-로컬-중심--서버-중심) 참조
+- **상세**: [DECISIONS.md - 데이터 아키텍처: 로컬 중심 → 서버 중심](DECISIONS.md) 참조
 
 ### 마스터 데이터 파이프라인
 
@@ -150,7 +150,7 @@
 - Unity 기본 UI 컴포넌트를 Widget 시스템에 통합
 - **목적**: MVP 화면 구현 전 일관된 UI 패턴 확립
 - **결정**: Widget 래퍼로 라이프사이클 통합
-- **상세**: [DECISIONS.md](DECISIONS.md#unity-기본-컴포넌트-widget화) 참조
+- **상세**: [DECISIONS.md - Unity 기본 컴포넌트 Widget화](DECISIONS.md) 참조
 
 구현된 Widget:
 | Widget | 역할 |
@@ -178,7 +178,7 @@
 **커밋**: `87b25d6` Add MVP Editor tools
 - MVPSceneSetup: SC Tools/MVP 메뉴로 씬/프리팹 자동 생성
 - ProjectEditorSettings: 에디터 공통 설정 (기본 폰트 등)
-- **상세**: [DECISIONS.md](DECISIONS.md#에디터-설정-scriptableobject-도입) 참조
+- **상세**: [DECISIONS.md - 에디터 설정 ScriptableObject 도입](DECISIONS.md) 참조
 
 ### 게임 초기화 흐름
 
@@ -197,7 +197,7 @@
 - **Navigation API 간소화**
   - `Screen.Open(state)` / `Popup.Open(state)` 패턴 도입
   - 기존 장황한 형식에서 간결한 형식으로 개선
-  - **상세**: [DECISIONS.md](DECISIONS.md#navigation-api-간소화-open-패턴) 참조
+  - **상세**: [DECISIONS.md - Navigation API 간소화: Open() 패턴](DECISIONS.md) 참조
 
 - **ScrollView 개선**
   - RectMask2D 사용 (Image+Mask보다 효율적)
@@ -212,7 +212,7 @@
 **커밋**: `45ae44e` 등 8개
 - Screen/Popup 전환 시 애니메이션 지원
 - DOTween 기반 구현
-- **상세**: [DECISIONS.md](DECISIONS.md#screenpopup-transition-애니메이션-설계) 참조
+- **상세**: [DECISIONS.md - Screen/Popup Transition 애니메이션 설계](DECISIONS.md) 참조
 
 **구현 내용**:
 | 클래스 | 역할 |
@@ -252,7 +252,7 @@
   - StageDashboardScreen: 파티편성 + 스테이지 정보 통합
   - PresetGroupId: 컨텐츠별 파티 프리셋 그룹핑
   - 3-Star 시스템: 스테이지별 커스텀 조건
-- **상세**: [DECISIONS.md](DECISIONS.md#presetgroupid-기반-파티-프리셋) 참조
+- **상세**: [DECISIONS.md - PresetGroupId 기반 파티 프리셋](DECISIONS.md) 참조
 
 ### LiveEvent 설계 (Phase 4)
 
@@ -269,7 +269,7 @@
 - 16가지 MissionConditionType 정의
 - Request/Response 패턴 설계
 - Error 코드 6001-6007 범위 할당
-- **상세**: [DECISIONS.md](DECISIONS.md#모듈형-이벤트-서브컨텐츠-eventsubcontent) 참조
+- **상세**: [DECISIONS.md - 모듈형 이벤트 서브컨텐츠 (EventSubContent)](DECISIONS.md) 참조
 
 ---
 
@@ -280,7 +280,7 @@
 **문서**: `Docs/Specs/Testing/TestArchitecture.md`
 - **문제**: Phase별 구현에 앞서 테스트 가능한 환경 필요
 - **핵심 원칙**: 테스트는 마일스톤 Phase가 아닌 시스템 단위로 구성
-- **상세**: [DECISIONS.md](DECISIONS.md#테스트-아키텍처-시스템-단위-테스트-설계) 참조
+- **상세**: [DECISIONS.md - 테스트 아키텍처: 시스템 단위 테스트 설계](DECISIONS.md) 참조
 
 **주요 결정**:
 | 항목 | 결정 |
@@ -339,7 +339,7 @@ Assets/Scripts/
 - **Log 시스템**: Log, LogLevel, LogCategory (Unity Debug.Log 래퍼)
 - **Error 시스템**: ErrorCode, Result<T> 패턴
 - **SaveManager**: 저장 추상화, 버전 마이그레이션
-- **상세**: [DECISIONS.md](DECISIONS.md#savemanager-저장소-추상화-isavestorage) 참조
+- **상세**: [DECISIONS.md - SaveManager 저장소 추상화 (ISaveStorage)](DECISIONS.md) 참조
 
 **핵심 구현**:
 | 컴포넌트 | 역할 | 위치 |
@@ -400,7 +400,7 @@ Assets/Scripts/
 **커밋**: `924eb88` Add Reward system with unit tests
 - **중요 결정**: 처리 방식 기준 분류 (RewardType 4개 + ItemCategory 6개)
 - 수집형 RPG 표준 패턴 분석 (블루아카, FGO 등) 기반 설계
-- **상세**: [DECISIONS.md](DECISIONS.md#보상-시스템-rewardtype-설계) 참조
+- **상세**: [DECISIONS.md - 보상 시스템 (RewardType) 설계](DECISIONS.md) 참조
 
 **핵심 구현**:
 | 컴포넌트 | 역할 | 위치 |
@@ -421,6 +421,286 @@ Assets/Scripts/
 - ItemCategory: UI 표시용 세분화 (6개)
 - 장비: 인벤토리=수량 기반, 장착=인스턴스 기반
 - 스킨: 별도 캐릭터로 처리 (CharacterData.BaseCharacterId)
+
+---
+
+## Phase 15: TimeService 시스템 구현
+
+### 시간 서비스 구현
+
+**커밋**: `924eb88` 이후 작업
+- **중요 결정**: 서버 전환 비용 최소화 설계
+- 인터페이스에 SyncServerTime, TimeOffset 미리 포함
+- 로컬 구현에서도 서버와 동일한 인터페이스 사용
+- **상세**: [DECISIONS.md - TimeService 서버 전환 비용 최소화 설계](DECISIONS.md) 참조
+
+**핵심 구현**:
+| 컴포넌트 | 역할 | 위치 |
+|----------|------|------|
+| LimitType | 제한 타입 (Daily, Weekly, Monthly, Permanent, EventPeriod) | Data/Enums |
+| ITimeService | 시간 서비스 인터페이스 (서버 동기화 고려) | Core/Interfaces |
+| TimeService | 로컬 구현 (UTC 기반, Offset 지원) | Core/Services |
+| TimeHelper | UI 표시 헬퍼 (FormatRemainingTime, FormatRelativeTime) | Core/Utility |
+
+**테스트 인프라** (45개 테스트):
+- TimeServiceTests.cs (25개) - ServerTimeUtc, SyncServerTime, GetNextResetTime, HasResetOccurred
+- TimeHelperTests.cs (20개) - FormatRemainingTime, FormatRelativeTime, GetLimitTypeDisplayName
+
+**설계 결정**:
+- 서버 전환 시 구현체만 교체하면 됨 (인터페이스/호출부 변경 없음)
+- UTC 0시 기준 리셋 (Daily, Weekly, Monthly)
+- MockTimeService로 테스트 시 시간 조작 가능
+
+---
+
+## Phase 16: SystemPopup 구현
+
+### 시스템 팝업 구현
+
+**커밋**: 여러 커밋 통합
+- **중요 결정**: 하이브리드 구조 (기존 패턴 + State.Validate())
+- GachaResultPopup과 동일한 PopupWidget<TPopup, TState> 패턴 유지
+- Alert 모드: ShowCancelButton = false로 처리 (별도 AlertPopup 없음)
+- **상세**: [DECISIONS.md - SystemPopup 하이브리드 구조 (v2)](DECISIONS.md) 참조
+
+**핵심 구현**:
+| 컴포넌트 | 역할 | 위치 |
+|----------|------|------|
+| ConfirmState | 확인/취소 팝업 상태 (ShowCancelButton, Alert 모드) | Common/Popups |
+| CostConfirmState | 재화 소비 확인 상태 (CostType, IsInsufficient) | Common/Popups |
+| ConfirmPopup | 확인/취소 팝업 (배경터치=취소) | Common/Popups |
+| CostConfirmPopup | 재화 아이콘+수량 표시 팝업 | Common/Popups |
+
+**테스트 인프라** (34개 테스트):
+- ConfirmStateTests.cs (12개) - 기본값, 검증, 콜백
+- CostConfirmStateTests.cs (22개) - 재화 검증, IsInsufficient
+
+**에디터 도구**:
+- SystemPopupSetup.cs (프리팹 자동 생성, SC Tools/Setup/Prefabs/Dialog/)
+- SystemPopupTestController.cs (런타임 테스트, 키보드 1~7)
+
+**배운 점**:
+- 클린 아키텍처의 모든 것을 적용하기보다 핵심 개념(검증 로직)만 흡수
+- 기존 패턴과의 일관성이 팀 생산성에 중요
+
+---
+
+## Phase 17: RewardPopup 구현
+
+### 보상 팝업 구현
+
+**커밋**: 여러 커밋 통합
+- **중요 결정**: IItemSpawner 추상화로 풀링 준비
+- **중요 결정**: RewardIconCache 프리로드 방식으로 UI 튀는 현상 방지
+- **상세**: [DECISIONS.md - RewardPopup 동적 아이템 관리 설계](DECISIONS.md) 참조
+
+**핵심 구현**:
+| 컴포넌트 | 역할 | 위치 |
+|----------|------|------|
+| IItemSpawner<T> | 동적 아이템 생성 인터페이스 | Common/Interfaces |
+| SimpleItemSpawner<T> | Instantiate/Destroy 기반 구현 | Common/Services |
+| RewardIconCache | Addressables 비동기 아이콘 프리로드 | Common/Services |
+| RewardItem | 개별 보상 표시 위젯 | Common/Widgets |
+| RewardPopup | 보상 목록 팝업 (State nested class) | Common/Popups |
+
+**테스트 인프라** (33개 테스트):
+- RewardPopupStateTests.cs (13개) - 기본값, 검증, 콜백
+- SimpleItemSpawnerTests.cs (12개) - Spawn, Despawn, DespawnAll
+- IPopupStateTests.cs (8개) - 기본값, 오버라이드, 호환성
+
+**설계 결정**:
+- IItemSpawner로 추상화하여 풀링 도입 시 구현체만 교체
+- 프리로드 캐시로 팝업 열기 전 아이콘 미리 로드
+- ConfigureLayout으로 보상 개수에 따른 레이아웃 동적 변경
+
+**배운 점**:
+- "구현은 단순하게, 인터페이스는 확장 가능하게"
+- YAGNI 원칙을 따르면서도 확장성 확보 가능
+
+---
+
+## Phase 18: PlayMode 테스트 인프라 구축
+
+### PlayMode 테스트 환경 재구성
+
+**커밋**: 여러 커밋 통합
+- **중요 결정**: 실용적 균형 방식 선택 (기존 헬퍼 재사용 + 새 PlayMode 인프라)
+- 3가지 접근법 비교 (최소 변경, 클린 아키텍처, 실용적 균형)
+- **상세**: [DECISIONS.md - PlayMode 테스트 인프라 설계 결정](DECISIONS.md) 참조
+
+**핵심 구현**:
+| 컴포넌트 | 역할 | 위치 |
+|----------|------|------|
+| PlayModeTestBase | Addressables 초기화, TestCanvas, 자동 정리 | Tests/PlayMode |
+| PrefabTestHelper | Addressables 프리팹 로드/인스턴스 관리 | Tests/PlayMode |
+| PlayModeAssert | Unity 오브젝트 전용 어서션 헬퍼 | Tests/PlayMode |
+
+**샘플 테스트**:
+- NavigationPlayModeTests.cs (기존 시나리오 NUnit 래핑)
+- PrefabLoadPlayModeTests.cs (Addressables 프리팹 로드 검증)
+
+**에디터 도구**:
+- PlayModeTestSetup.cs (SC Tools/Setup/Prefabs/ 메뉴)
+  - Create All Test Prefabs
+  - Create Simple Screen/Popup Prefabs
+  - Verify Test Scene
+  - Delete All Test Prefabs
+
+**Assembly 설정**:
+- Sc.Tests.asmdef에 UnityEngine.TestRunner, UnityEditor.TestRunner 참조 추가
+
+**배운 점**:
+- 기존 수동 테스트 시나리오를 NUnit으로 래핑하면 자동화 테스트로 전환 용이
+- PlayModeTestBase로 Addressables 초기화 패턴 표준화
+
+---
+
+## Phase 19: 에디터 도구 리팩토링
+
+### SC Tools 메뉴 재구성
+
+**커밋**: 여러 커밋 통합
+- **중요 결정**: Bootstrap 레벨 체계화 (None/Partial/Full)
+- 기존 SC Tools 메뉴 구조 개선 (6개 카테고리 → 기능별 통합)
+- 미완성/중복 코드 제거
+- **상세**: [DECISIONS.md - 에디터 도구 Bootstrap 레벨 체계화](DECISIONS.md) 참조
+
+**핵심 변경**:
+| 작업 | 내용 |
+|------|------|
+| 파일 삭제 | SystemTestMenu.cs, SaveManagerTestRunner/Scenarios, AssetManagerTestRunner/Scenarios |
+| 메뉴 이동 | PlayModeTestSetup → SC Tools/Setup/Prefabs/, SystemPopupSetup → SC Tools/Setup/Prefabs/Dialog/ |
+| 신규 생성 | EditorUIHelpers.cs (공용 UI 생성 헬퍼) |
+| 문서 대체 | AITools.md → EditorTools.md v2.1 |
+
+**Bootstrap 레벨 체계**:
+| 레벨 | 설명 | 도구 예시 |
+|------|------|----------|
+| None | 프리팹 생성 전용, 씬 오브젝트 없음 | PlayModeTestSetup, SystemPopupSetup |
+| Partial | EventSystem + 일부 매니저 | UITestSceneSetup, LoadingSetup |
+| Full | 모든 매니저 생성 | MVPSceneSetup |
+
+**EditorUIHelpers 기능**:
+- CreateCanvas, CreatePanel, CreateText, CreateButton
+- CreateEventSystem, EnsureFolder
+
+**배운 점**:
+- 에디터 도구도 일관된 패턴과 공용 헬퍼로 중복 제거 가능
+- Bootstrap 레벨 명시로 각 도구의 역할 명확화
+
+---
+
+## Phase 20: AssetManager 통합
+
+### AssetManager 코드 개선 및 통합
+
+**커밋**: `c7acadc`, `0d8f399`
+- **중요 결정**: IAssetHandle 인터페이스 추가 (Reflection 제거)
+- RewardIconCache → AssetManager Scope 기반 로딩으로 대체
+- 127줄 코드 제거
+- **상세**: [DECISIONS.md - AssetManager RewardIconCache 대체 결정](DECISIONS.md) 참조
+
+**핵심 변경**:
+| 작업 | 내용 |
+|------|------|
+| IAssetHandle | RefCount, IsReleasable 등 인터페이스화 (Reflection 제거) |
+| Debug.Log → Log | 전체 6개 파일 로그 시스템 전환 |
+| GameBootstrap | AssetManager.Initialize() 호출 추가 (초기화 순서 1번) |
+| RewardPopup | AssetScope 기반 아이콘 로딩 구현 |
+| RewardIconCache.cs | 삭제 (127줄) |
+
+**GameBootstrap 초기화 순서**:
+```
+1. AssetManager.Initialize()
+2. NetworkManager 생성
+3. DataManager 생성
+4. Login
+```
+
+**배운 점**:
+- Reflection 대신 인터페이스로 타입 안전성 확보
+- 중앙 집중화된 에셋 관리로 개별 캐시 클래스 제거 가능
+
+---
+
+## Phase 21: AssetManager 테스트 구현
+
+### AssetManager 단위 테스트 작성
+
+**커밋**: `c45e3d1`
+- IAssetHandle 인터페이스 기반 테스트
+- AssetCacheManager LRU 트리밍 검증
+- IsReleasable 플래그 리셋 누락 수정
+
+**테스트 구현**:
+| 테스트 파일 | 테스트 수 | 검증 대상 |
+|------------|----------|----------|
+| AssetHandleTests.cs | 6개 추가 | IAssetHandle 인터페이스 동작 |
+| AssetScopeTests.cs | 업데이트 | IAssetHandle 기반 ForceRelease |
+| AssetCacheManagerTests.cs | 14개 신규 | 캐시 등록/조회/제거, RefCount, LRU 트리밍, IsReleasable 리셋 |
+
+**버그 수정**:
+- IsReleasable 플래그가 리셋되지 않는 문제 발견 및 수정
+- 테스트 작성 과정에서 엣지 케이스 발견
+
+**배운 점**:
+- 테스트 작성이 버그 발견에 효과적
+- 인터페이스 기반 설계가 테스트 작성을 용이하게 함
+
+---
+
+## Phase 22: LocalServer 분리
+
+### 서버 로직 Assembly 분리
+
+**커밋**: 여러 커밋 통합
+- **중요 결정**: LocalApiClient에서 서버 로직을 Sc.LocalServer Assembly로 분리
+- 354줄 → 157줄로 56% 코드 감소
+- Handler/Service/Validator 계층 분리로 확장성 확보
+- **상세**: [DECISIONS.md - LocalServer 서버 로직 분리 설계](DECISIONS.md) 참조
+
+**핵심 구현**:
+| 컴포넌트 | 역할 | 위치 |
+|----------|------|------|
+| LocalGameServer | 요청 라우팅 진입점 | LocalServer/ |
+| IRequestHandler<TReq, TRes> | 핸들러 인터페이스 | LocalServer/Handlers/ |
+| LoginHandler | 로그인/신규 유저 생성 | LocalServer/Handlers/ |
+| GachaHandler | 가챠 확률, 천장 시스템 | LocalServer/Handlers/ |
+| ShopHandler | 상점 구매 처리 | LocalServer/Handlers/ |
+| ServerValidator | 서버측 재화/조건 검증 | LocalServer/Validators/ |
+| ServerTimeService | 서버 시간 관리 | LocalServer/Services/ |
+| GachaService | 가챠 확률 계산 | LocalServer/Services/ |
+| RewardService | Delta 생성, 보상 적용 | LocalServer/Services/ |
+| ResponseValidator | 클라이언트측 2차 검증 | Core/Validation/ |
+
+**아키텍처 개선**:
+```
+Before:
+LocalApiClient (354줄)
+├── 저장/로드 로직
+├── 로그인 로직
+├── 가챠 로직 (확률, 천장)
+└── 상점 로직
+
+After:
+LocalApiClient (157줄)              Sc.LocalServer Assembly
+├── IApiClient 구현          →      LocalGameServer
+├── 저장/로드                       ├── LoginHandler
+└── 지연 시뮬레이션                  ├── GachaHandler
+                                    ├── ShopHandler
+                                    ├── ServerValidator
+                                    └── Services (Time, Gacha, Reward)
+```
+
+**ResponseValidator (클라이언트측 2차 검증)**:
+- 요청-응답 일관성 검증 (ProductId 일치, 결과 개수 등)
+- Delta 유효성 검증 (음수 재화 체크)
+- Core Assembly에 배치 (순환 참조 방지)
+
+**배운 점**:
+- 서버 로직 분리로 "서버 교체 시 어디를 바꿔야 하는가?" 명확해짐
+- Handler/Service/Validator 계층 분리로 단일 책임 원칙 적용
+- 클라이언트측 2차 검증으로 비정상 응답 탐지 가능
 
 ---
 

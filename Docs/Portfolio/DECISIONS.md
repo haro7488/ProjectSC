@@ -1525,6 +1525,299 @@ AssetManager (Singleton)
 
 ---
 
+## PlayMode 테스트 인프라 설계 결정
+
+**일자**: 2026-01-19
+**상태**: 결정됨
+**관련 커밋**: (PlayMode 테스트 구현 시)
+
+### 컨텍스트
+- 기존 수동 테스트 시나리오(NavigationTestScenarios)를 자동화 테스트로 전환 필요
+- Unity Test Framework(NUnit) 기반 PlayMode 테스트 환경 구축 필요
+- Addressables 초기화, TestCanvas 생성 등 공통 설정 패턴 필요
+- 기존 테스트 헬퍼(TestCanvasFactory, TestUIBuilder)와의 통합 고려
+
+### 선택지
+1. **최소 변경 (기존 코드 직접 사용)**
+   - 장점: 추가 코드 없음, 즉시 사용 가능
+   - 단점: PlayMode 테스트 특화 기능 부족, Addressables 초기화 패턴 없음
+
+2. **클린 아키텍처 (완전 새 인프라)**
+   - 장점: 테스트 전용 최적화, 명확한 분리
+   - 단점: 기존 헬퍼 중복, 구현 비용 높음
+
+3. **실용적 균형 (기존 헬퍼 + PlayMode 인프라)**
+   - 장점: 기존 헬퍼 재사용, PlayMode 전용 기능 추가
+   - 단점: 두 계층 이해 필요
+
+### 결정
+**실용적 균형 (선택지 3)** 선택
+
+**구조**:
+```
+Tests/
+├── Base/
+│   └── SystemTestRunner.cs      # 기존 수동 테스트 러너
+├── Helpers/
+│   ├── TestCanvasFactory.cs     # 기존 Canvas 생성
+│   └── TestUIBuilder.cs         # 기존 UI 빌더
+└── PlayMode/
+    ├── PlayModeTestBase.cs      # [신규] NUnit 베이스 클래스
+    ├── PrefabTestHelper.cs      # [신규] Addressables 프리팹 로드
+    └── PlayModeAssert.cs        # [신규] Unity 오브젝트 어서션
+```
+
+**이유**:
+- 기존 TestCanvasFactory, TestUIBuilder는 검증된 헬퍼 → 재사용
+- PlayModeTestBase로 Addressables 초기화 + SetUp/TearDown 패턴 표준화
+- 기존 NavigationTestScenarios를 NUnit [Test] 메서드로 래핑하여 자동화
+
+### 결과
+- PlayModeTestBase: [OneTimeSetUp]에서 Addressables.InitializeAsync(), [TearDown]에서 TestCanvas 정리
+- PrefabTestHelper: Addressables.LoadAssetAsync + Instantiate 래퍼
+- PlayModeAssert: Assert.IsNotNull + UnityEngine.Object 특화 어서션
+- NavigationPlayModeTests: 기존 시나리오 NUnit 래핑 (7개 테스트)
+- PrefabLoadPlayModeTests: Addressables 프리팹 로드 검증 (3개 테스트)
+
+### 회고
+- 기존 수동 테스트 시나리오가 있어 NUnit 래핑만으로 자동화 가능
+- PlayModeTestBase로 Addressables 초기화 보일러플레이트 제거
+- **배운 점**: 기존 검증된 코드를 버리지 않고 확장하는 것이 효율적
+
+---
+
+## 에디터 도구 Bootstrap 레벨 체계화
+
+**일자**: 2026-01-19
+**상태**: 결정됨
+**관련 커밋**: (에디터 도구 리팩토링 시)
+
+### 컨텍스트
+- 여러 에디터 도구(MVPSceneSetup, UITestSceneSetup, PlayModeTestSetup 등)가 각각 다른 수준의 씬 오브젝트 생성
+- 어떤 도구가 무엇을 생성하는지 명확하지 않음
+- 도구 간 중복 코드 발생 (Canvas 생성, EventSystem 생성 등)
+
+### 선택지
+1. **현행 유지 (개별 구현)**
+   - 장점: 각 도구 독립적
+   - 단점: 중복 코드, 일관성 부족, 역할 불명확
+
+2. **모든 도구 통합 (단일 Setup)**
+   - 장점: 코드 중앙화
+   - 단점: 거대한 단일 클래스, 유연성 부족
+
+3. **Bootstrap 레벨 체계화 + 공용 헬퍼**
+   - 장점: 역할 명확화, 중복 제거, 일관성
+   - 단점: 레벨 정의 및 문서화 필요
+
+### 결정
+**Bootstrap 레벨 체계화 + 공용 헬퍼 (선택지 3)** 선택
+
+**Bootstrap 레벨 정의**:
+| 레벨 | 설명 | 생성 오브젝트 |
+|------|------|--------------|
+| None | 프리팹 생성 전용 | 없음 (프리팹 파일만) |
+| Partial | EventSystem + 일부 매니저 | EventSystem, NavigationManager |
+| Full | 모든 매니저 생성 | EventSystem, NetworkManager, DataManager, NavigationManager |
+
+**도구별 레벨 할당**:
+| 도구 | Bootstrap 레벨 | 역할 |
+|------|---------------|------|
+| PlayModeTestSetup | None | 테스트 프리팹 생성 |
+| SystemPopupSetup | None | SystemPopup 프리팹 생성 |
+| UITestSceneSetup | Partial | UI 테스트 씬 |
+| LoadingSetup | Partial | 로딩 테스트 씬 |
+| MVPSceneSetup | Full | MVP 전체 씬 |
+
+**이유**:
+- 각 도구의 역할이 명확해짐 (프리팹 생성 vs 씬 구성)
+- EditorUIHelpers로 공용 UI 생성 코드 중앙화
+- 메뉴 경로 재구성으로 발견성 향상 (SC Tools/Setup/...)
+
+### 결과
+- EditorUIHelpers.cs 생성 (CreateCanvas, CreatePanel, CreateText, CreateButton 등)
+- 기존 5개 Setup 파일 리팩토링 (공용 헬퍼 사용, 중복 제거)
+- 메뉴 경로 변경: PlayModeTestSetup → SC Tools/Setup/Prefabs/
+- EditorTools.md v2.1 업데이트 (Bootstrap 레벨 섹션 추가)
+- AITools.md 삭제 (EditorTools.md로 통합)
+
+### 회고
+- 에디터 도구도 아키텍처 원칙(중복 제거, 역할 분리) 적용 가능
+- Bootstrap 레벨 명시로 "이 도구를 실행하면 무엇이 생성되나?" 명확
+- **배운 점**: 문서화(레벨 정의)가 코드 정리만큼 중요
+
+---
+
+## AssetManager RewardIconCache 대체 결정
+
+**일자**: 2026-01-19
+**상태**: 결정됨
+**관련 커밋**: `0d8f399`
+
+### 컨텍스트
+- RewardIconCache: RewardPopup 전용 아이콘 프리로드/캐시 클래스 (127줄)
+- AssetManager: 프로젝트 전역 에셋 관리 시스템 (Scope 기반 로딩)
+- 기능 중복: 둘 다 Addressables 비동기 로드 + 캐싱 수행
+- AssetManager가 더 범용적이고 체계적인 관리 제공
+
+### 선택지
+1. **둘 다 유지 (공존)**
+   - 장점: 기존 코드 변경 없음
+   - 단점: 기능 중복, 두 가지 에셋 관리 방식 혼재
+
+2. **RewardIconCache를 AssetManager로 대체**
+   - 장점: 일관된 에셋 관리, 코드 감소, Scope 기반 자동 정리
+   - 단점: RewardPopup 수정 필요
+
+3. **AssetManager가 RewardIconCache 내부 사용**
+   - 장점: 외부 인터페이스 유지
+   - 단점: 불필요한 래퍼 레이어
+
+### 결정
+**RewardIconCache를 AssetManager로 대체 (선택지 2)** 선택
+
+**변경 내용**:
+```csharp
+// Before (RewardIconCache)
+private RewardIconCache _iconCache;
+
+public override async UniTask OnBind(State state)
+{
+    await _iconCache.PreloadAsync(state.Rewards);
+    // ...
+    rewardItem.SetIcon(_iconCache.GetIcon(reward));
+}
+
+// After (AssetManager)
+private AssetScope _assetScope;
+
+public override async UniTask OnBind(State state)
+{
+    _assetScope = AssetManager.Instance.CreateScope("RewardPopup");
+    await PreloadIconsAsync(state.Rewards);
+    // ...
+    rewardItem.SetIcon(GetCachedIcon(reward));
+}
+```
+
+**이유**:
+- AssetManager의 Scope 기반 관리가 더 체계적 (자동 정리, RefCount)
+- 프로젝트 전역에서 동일한 에셋 관리 패턴 사용
+- RewardIconCache 127줄 제거로 코드베이스 단순화
+- 향후 다른 팝업에서도 동일 패턴 적용 가능
+
+### 결과
+- RewardPopup에 AssetScope 기반 아이콘 로딩 구현
+- PreloadIconsAsync, GetCachedIcon 메서드 추가
+- RewardIconCache.cs 삭제 (127줄)
+- 테스트: 기존 동작과 동일하게 작동 확인
+
+### 회고
+- 범용 시스템(AssetManager)이 있으면 특화 클래스(RewardIconCache)는 불필요
+- 코드 삭제가 기능 추가보다 가치 있을 때가 있음
+- **배운 점**: "이미 있는 시스템으로 해결할 수 있는가?" 먼저 검토
+
+---
+
+## LocalServer 서버 로직 분리 설계
+
+**일자**: 2026-01-19
+**상태**: 결정됨
+**관련 커밋**: (LocalServer 분리 시)
+
+### 컨텍스트
+- LocalApiClient가 354줄로 비대화 (저장/로드 + 로그인 + 가챠 + 상점 로직 혼재)
+- 서버 교체 시 영향 범위가 불명확 ("어디를 바꿔야 하는가?")
+- 가챠/상점 로직 확장 시 LocalApiClient 수정 필요 (단일 책임 원칙 위반)
+- OUTGAME_ARCHITECTURE_V1.md에서 Sc.LocalServer Assembly 분리 설계됨
+
+### 선택지
+1. **현행 유지 (LocalApiClient 내 모든 로직)**
+   - 장점: 파일 하나에 모든 것, 간단한 구조
+   - 단점: 354줄 거대 클래스, 서버 교체 시 전체 수정, 테스트 어려움
+
+2. **메서드만 분리 (같은 파일 내 partial class)**
+   - 장점: 최소 변경
+   - 단점: 여전히 단일 파일, 의존성 관리 불가
+
+3. **Sc.LocalServer Assembly 분리 (Handler/Service/Validator)**
+   - 장점: 명확한 책임 분리, 서버 교체 용이, 테스트 가능
+   - 단점: 파일 수 증가, Assembly 참조 관리 필요
+
+### 결정
+**Sc.LocalServer Assembly 분리 (선택지 3)** 선택
+
+**아키텍처 설계**:
+```
+Sc.LocalServer/
+├── LocalGameServer.cs           # 요청 라우팅 진입점
+├── Handlers/
+│   ├── IRequestHandler.cs       # 핸들러 인터페이스
+│   ├── LoginHandler.cs          # 로그인 처리
+│   ├── GachaHandler.cs          # 가챠 처리
+│   └── ShopHandler.cs           # 상점 처리
+├── Validators/
+│   └── ServerValidator.cs       # 재화/조건 검증
+└── Services/
+    ├── ServerTimeService.cs     # 시간 서비스
+    ├── GachaService.cs          # 확률 계산
+    └── RewardService.cs         # Delta 생성
+```
+
+**클라이언트측 검증 (Core/Validation)**:
+```
+Core/Validation/
+└── ResponseValidator.cs         # 요청-응답 일관성 2차 검증
+```
+
+**이유**:
+- **서버 교체 명확화**: Sc.LocalServer만 실제 서버 구현체로 교체하면 됨
+- **단일 책임 원칙**: 각 Handler는 하나의 요청 타입만 처리
+- **테스트 용이성**: Handler/Service 개별 단위 테스트 가능
+- **확장성**: 새 요청 타입 추가 시 Handler만 추가
+
+### 결과
+- LocalApiClient: 354줄 → 157줄 (56% 감소)
+- Sc.LocalServer Assembly 신규 생성 (10개 파일)
+- ResponseValidator 추가 (Core/Validation, 4개 검증 메서드)
+- Sc.Packet.asmdef에 Sc.LocalServer 참조 추가
+- Phase 1 (기반 레이어) 완료
+
+**코드 변경 예시**:
+```csharp
+// Before: LocalApiClient 내부에서 모든 로직 처리
+public async UniTask<IResponse> SendAsync(IRequest request)
+{
+    await UniTask.Delay(_simulatedLatencyMs);
+
+    if (request is LoginRequest loginReq)
+    {
+        // 60줄 로그인 로직...
+    }
+    else if (request is GachaRequest gachaReq)
+    {
+        // 100줄 가챠 로직...
+    }
+    // ...
+}
+
+// After: LocalGameServer로 위임
+public async UniTask<IResponse> SendAsync(IRequest request)
+{
+    await UniTask.Delay(_simulatedLatencyMs);
+    var response = _server.HandleRequest(request, ref _userData);
+    SaveUserData();
+    return response;
+}
+```
+
+### 회고
+- 마일스톤 문서(OUTGAME_ARCHITECTURE_V1.md)에 설계가 미리 되어 있어 구현이 수월
+- Handler 패턴이 새 요청 타입 추가에 효과적 (switch 문 대신 다형성)
+- **배운 점**: "서버 교체 시 어디를 바꾸는가?"를 Assembly 경계로 명확히 정의
+
+---
+
 ## [템플릿] 새 의사결정
 
 **일자**: YYYY-MM-DD

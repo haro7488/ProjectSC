@@ -63,7 +63,7 @@
 #### Phase E: 서버 분리 (리팩토링)
 | # | 시스템 | 상태 | 의존성 | 스펙 문서 |
 |---|--------|------|--------|-----------|
-| 9 | LocalServer | ⬜ | Reward, TimeService, SaveManager | 작성 필요 |
+| 9 | LocalServer | ✅ | Reward, TimeService, SaveManager | 마일스톤 내 |
 
 #### Phase F: 컨텐츠 (순서 자유)
 | # | 시스템 | 상태 | 의존성 | 스펙 문서 |
@@ -82,9 +82,9 @@
 | 시스템 | 영향받는 기존 코드 | 조치 |
 |--------|-------------------|------|
 | **AssetManager** | RewardIconCache | ✅ AssetManager로 대체 완료 |
-| SaveManager | LocalApiService 저장 로직 | SaveManager로 이관 |
-| ErrorHandling | LocalApiService 에러 반환 | Result<T> 적용 |
-| LocalServer | LocalApiService 전체 | Sc.LocalServer Assembly 분리 |
+| SaveManager | LocalApiService 저장 로직 | ✅ SaveManager로 이관 완료 |
+| ErrorHandling | LocalApiService 에러 반환 | ✅ Result<T> 적용 완료 |
+| **LocalServer** | LocalApiClient 전체 | ✅ Sc.LocalServer Assembly 분리 완료 |
 
 ---
 
@@ -113,6 +113,7 @@
 | 2차 | Core 테스트 | ✅ 완료 | SaveStorage, SaveMigrator, MockSaveStorage (36개) |
 | 3차 | Common 테스트 | ✅ 완료 | LoadingService, LoadingConfig (16개) |
 | 3차 | Reward 테스트 | ✅ 완료 | RewardInfo, RewardProcessor, RewardHelper (61개) |
+| 3.5차 | **LocalServer 테스트** | ✅ 완료 | RewardService, ServerValidator, LoginHandler, GachaService (40개) |
 | 4차 | **PlayMode 테스트 인프라** | ✅ 완료 | TestRunner 기반 PlayMode 환경 |
 | 4.5차 | **에디터 도구 리팩토링** | ✅ 완료 | SC Tools 메뉴 재구성 |
 | 5차 | 시스템 확장 | ⬜ 대기 | Popup, ... |
@@ -223,7 +224,7 @@ Assembly 수정:
 | Phase | 포함 시스템 | 상태 |
 |-------|------------|------|
 | 0 | Logging, ErrorHandling, SaveManager, LoadingIndicator | ✅ |
-| 1 | Reward, TimeService, SystemPopup, RewardPopup, LocalServer | 🔨 |
+| 1 | Reward, TimeService, SystemPopup, RewardPopup, LocalServer | ✅ |
 | 2 | Shop | ⬜ |
 | 3 | Stage | ⬜ |
 | 4 | LiveEvent | ⬜ |
@@ -687,6 +688,41 @@ Popup 구현:
 ---
 
 ## 작업 로그
+
+### 2026-01-20 (LocalServer 테스트)
+- [x] LocalServer 단위 테스트 구현 (40개)
+  - [x] RewardServiceTests.cs (18개 테스트) - Delta 생성, 재화 차감 로직
+  - [x] ServerValidatorTests.cs (11개 테스트) - 재화/캐릭터 보유 검증
+  - [x] LoginHandlerTests.cs (6개 테스트) - 신규/기존 유저 로그인 처리
+  - [x] GachaServiceTests.cs (5개 테스트) - 비용 계산, 횟수, 천장 확정
+- [x] Sc.Editor.Tests.asmdef에 Sc.LocalServer 참조 추가
+- [x] Request/Response 타입을 Sc.Data로 이동
+  - [x] IRequest/IResponse → Sc.Data.Interfaces
+  - [x] LoginRequest, GachaRequest, ShopPurchaseRequest → Sc.Data.Requests
+  - [x] LoginResponse, GachaResponse, ShopPurchaseResponse → Sc.Data.Responses
+  - [x] UserDataDelta → Sc.Data.Structs
+- [x] ResponseValidator.cs 추가 (Core/Validation/)
+
+### 2026-01-19 (LocalServer 분리)
+- [x] Sc.LocalServer Assembly 분리 구현
+  - [x] Sc.LocalServer.asmdef 신규 생성
+  - [x] LocalGameServer.cs (요청 라우팅 진입점)
+  - [x] IRequestHandler.cs (핸들러 인터페이스)
+  - [x] LoginHandler.cs (로그인 요청 처리)
+  - [x] GachaHandler.cs (가챠 요청 처리)
+  - [x] ShopHandler.cs (상점 구매 요청 처리)
+  - [x] ServerValidator.cs (서버측 검증 유틸리티)
+  - [x] ServerTimeService.cs (서버 시간 서비스)
+  - [x] GachaService.cs (가챠 확률 계산)
+  - [x] RewardService.cs (Delta 생성, 보상 적용)
+- [x] LocalApiClient 리팩토링
+  - [x] 354줄 → 157줄로 대폭 간소화
+  - [x] 서버 로직 LocalGameServer로 위임
+  - [x] IApiClient 인터페이스 구현 및 저장/로드만 담당
+- [x] ResponseValidator.cs 추가 (Core/Validation/)
+  - [x] 클라이언트측 2차 검증 (요청-응답 일관성)
+- [x] Sc.Packet.asmdef에 Sc.LocalServer 참조 추가
+- [x] PROGRESS.md Phase E 완료 표시
 
 ### 2026-01-19 (AssetManager 테스트)
 - [x] AssetManager 테스트 구현
