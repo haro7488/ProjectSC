@@ -65,6 +65,16 @@ namespace Sc.Data
         public Dictionary<string, ShopPurchaseRecord> ShopPurchaseRecords;
 
         /// <summary>
+        /// 스테이지 입장 기록 (Key: StageId)
+        /// </summary>
+        public Dictionary<string, StageEntryRecord> StageEntryRecords;
+
+        /// <summary>
+        /// 전투 세션 목록 (Key: SessionId)
+        /// </summary>
+        public Dictionary<string, BattleSessionData> BattleSessions;
+
+        /// <summary>
         /// 마지막 동기화 시간 (Unix Timestamp)
         /// </summary>
         public long LastSyncAt;
@@ -72,7 +82,7 @@ namespace Sc.Data
         /// <summary>
         /// 현재 데이터 버전
         /// </summary>
-        public const int CurrentVersion = 4;
+        public const int CurrentVersion = 5;
 
         /// <summary>
         /// 신규 유저 데이터 생성
@@ -92,6 +102,8 @@ namespace Sc.Data
                 EventCurrency = EventCurrencyData.CreateDefault(),
                 EventProgresses = new Dictionary<string, LiveEventProgress>(),
                 ShopPurchaseRecords = new Dictionary<string, ShopPurchaseRecord>(),
+                StageEntryRecords = new Dictionary<string, StageEntryRecord>(),
+                BattleSessions = new Dictionary<string, BattleSessionData>(),
                 LastSyncAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
         }
@@ -133,6 +145,22 @@ namespace Sc.Data
                 }
 
                 data.Version = 4;
+            }
+
+            // Version 4 → 5: StageEntryRecords, BattleSessions 필드 추가
+            if (data.Version < 5)
+            {
+                if (data.StageEntryRecords == null)
+                {
+                    data.StageEntryRecords = new Dictionary<string, StageEntryRecord>();
+                }
+
+                if (data.BattleSessions == null)
+                {
+                    data.BattleSessions = new Dictionary<string, BattleSessionData>();
+                }
+
+                data.Version = 5;
             }
 
             return data;
@@ -302,6 +330,92 @@ namespace Sc.Data
         {
             var record = FindShopPurchaseRecord(productId);
             return record?.PurchaseCount ?? 0;
+        }
+
+        #endregion
+
+        #region Stage Entry Helpers
+
+        /// <summary>
+        /// 스테이지 입장 기록 조회
+        /// </summary>
+        public StageEntryRecord? FindStageEntryRecord(string stageId)
+        {
+            if (StageEntryRecords == null) return null;
+            return StageEntryRecords.TryGetValue(stageId, out var record) ? record : null;
+        }
+
+        /// <summary>
+        /// 스테이지 입장 기록 업데이트
+        /// </summary>
+        public void UpdateStageEntryRecord(string stageId, StageEntryRecord record)
+        {
+            StageEntryRecords ??= new Dictionary<string, StageEntryRecord>();
+            StageEntryRecords[stageId] = record;
+        }
+
+        /// <summary>
+        /// 스테이지 입장 횟수 조회
+        /// </summary>
+        public int GetStageEntryCount(string stageId)
+        {
+            var record = FindStageEntryRecord(stageId);
+            return record?.EntryCount ?? 0;
+        }
+
+        #endregion
+
+        #region Battle Session Helpers
+
+        /// <summary>
+        /// 전투 세션 조회
+        /// </summary>
+        public BattleSessionData? FindBattleSession(string sessionId)
+        {
+            if (BattleSessions == null) return null;
+            return BattleSessions.TryGetValue(sessionId, out var session) ? session : null;
+        }
+
+        /// <summary>
+        /// 전투 세션 생성 및 저장
+        /// </summary>
+        public void CreateBattleSession(BattleSessionData session)
+        {
+            BattleSessions ??= new Dictionary<string, BattleSessionData>();
+            BattleSessions[session.SessionId] = session;
+        }
+
+        /// <summary>
+        /// 전투 세션 비활성화 (클리어/종료 시)
+        /// </summary>
+        public void DeactivateBattleSession(string sessionId)
+        {
+            if (BattleSessions != null && BattleSessions.TryGetValue(sessionId, out var session))
+            {
+                BattleSessions[sessionId] = session.Deactivate();
+            }
+        }
+
+        /// <summary>
+        /// 만료된 전투 세션 정리
+        /// </summary>
+        public void CleanupExpiredSessions(long currentTime)
+        {
+            if (BattleSessions == null) return;
+
+            var expiredIds = new List<string>();
+            foreach (var kvp in BattleSessions)
+            {
+                if (!kvp.Value.IsActive || kvp.Value.IsExpired(currentTime))
+                {
+                    expiredIds.Add(kvp.Key);
+                }
+            }
+
+            foreach (var id in expiredIds)
+            {
+                BattleSessions.Remove(id);
+            }
         }
 
         #endregion

@@ -25,9 +25,14 @@ namespace Sc.Data
         public int Stars;
 
         /// <summary>
-        /// 최고 기록 (데미지, 턴 수 등)
+        /// 개별 별 달성 여부 [star1, star2, star3]
         /// </summary>
-        public int BestScore;
+        public bool[] StarAchieved;
+
+        /// <summary>
+        /// 최고 턴 수 기록 (낮을수록 좋음)
+        /// </summary>
+        public int BestTurnCount;
 
         /// <summary>
         /// 클리어 횟수
@@ -38,6 +43,76 @@ namespace Sc.Data
         /// 첫 클리어 시간 (Unix Timestamp)
         /// </summary>
         public long FirstClearedAt;
+
+        /// <summary>
+        /// 마지막 클리어 시간 (Unix Timestamp)
+        /// </summary>
+        public long LastClearedAt;
+
+        /// <summary>
+        /// 기본값 생성
+        /// </summary>
+        public static StageClearInfo CreateDefault(string stageId)
+        {
+            return new StageClearInfo
+            {
+                StageId = stageId,
+                IsCleared = false,
+                Stars = 0,
+                StarAchieved = new bool[3],
+                BestTurnCount = int.MaxValue,
+                ClearCount = 0,
+                FirstClearedAt = 0,
+                LastClearedAt = 0
+            };
+        }
+
+        /// <summary>
+        /// 클리어 정보 업데이트
+        /// </summary>
+        public StageClearInfo UpdateWithClear(
+            bool[] newStarAchieved,
+            int turnCount,
+            long clearedAt)
+        {
+            var info = this;
+
+            // 첫 클리어 처리
+            if (!info.IsCleared)
+            {
+                info.IsCleared = true;
+                info.FirstClearedAt = clearedAt;
+            }
+
+            // 클리어 횟수 증가
+            info.ClearCount++;
+            info.LastClearedAt = clearedAt;
+
+            // 최고 턴 수 갱신
+            if (turnCount < info.BestTurnCount)
+            {
+                info.BestTurnCount = turnCount;
+            }
+
+            // 별 달성 병합 (한번 달성하면 유지)
+            info.StarAchieved ??= new bool[3];
+            for (int i = 0; i < 3 && i < newStarAchieved.Length; i++)
+            {
+                if (newStarAchieved[i])
+                {
+                    info.StarAchieved[i] = true;
+                }
+            }
+
+            // 별 개수 계산
+            info.Stars = 0;
+            foreach (var achieved in info.StarAchieved)
+            {
+                if (achieved) info.Stars++;
+            }
+
+            return info;
+        }
     }
 
     /// <summary>
@@ -87,6 +162,40 @@ namespace Sc.Data
                     return info.Stars;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// 스테이지 클리어 정보 조회
+        /// </summary>
+        public StageClearInfo? FindClearInfo(string stageId)
+        {
+            if (ClearedStages == null) return null;
+            foreach (var info in ClearedStages)
+            {
+                if (info.StageId == stageId)
+                    return info;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 스테이지 클리어 정보 업데이트 또는 추가
+        /// </summary>
+        public void UpdateClearInfo(string stageId, StageClearInfo clearInfo)
+        {
+            ClearedStages ??= new List<StageClearInfo>();
+
+            for (int i = 0; i < ClearedStages.Count; i++)
+            {
+                if (ClearedStages[i].StageId == stageId)
+                {
+                    ClearedStages[i] = clearInfo;
+                    return;
+                }
+            }
+
+            // 새 기록 추가
+            ClearedStages.Add(clearInfo);
         }
 
         /// <summary>
