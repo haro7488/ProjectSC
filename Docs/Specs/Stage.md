@@ -577,47 +577,47 @@ Assets/Scripts/Contents/OutGame/Stage/
 
 ```
 Phase A: Data Foundation
-- [ ] InGameContentType.cs
+- [x] InGameContentType.cs
 - [ ] StageType.cs (확장)
-- [ ] StarConditionType.cs
-- [ ] StarCondition.cs
-- [ ] StageData.cs
-- [ ] StageDatabase.cs
+- [x] StarConditionType.cs
+- [x] StarCondition.cs
+- [x] StageData.cs (기존, 확장 필요)
+- [x] StageDatabase.cs (기존, 확장 필요)
 - [ ] DungeonData.cs
 - [ ] DungeonDatabase.cs
-- [ ] StageClearInfo 확장 (StarAchieved[])
-- [ ] StageEntryRecord.cs
+- [x] StageClearInfo 확장 (StarAchieved[])
+- [x] StageEntryRecord.cs
 - [ ] PartyPreset.cs
 - [ ] UserSaveData v5 마이그레이션
 - [ ] Stage.json 샘플 데이터
 
 Phase B: Request/Response
-- [ ] EnterStageRequest.cs
-- [ ] EnterStageResponse.cs
-- [ ] ClearStageRequest.cs
-- [ ] ClearStageResponse.cs
+- [x] EnterStageRequest.cs
+- [x] EnterStageResponse.cs
+- [x] ClearStageRequest.cs
+- [x] ClearStageResponse.cs
 
 Phase C: Events
-- [ ] StageEvents.cs
+- [x] StageEvents.cs
 
 Phase D: LocalServer
-- [ ] StageEntryValidator.cs
-- [ ] StageHandler.cs
-- [ ] LocalGameServer.cs 연동
+- [x] StageEntryValidator.cs
+- [x] StageHandler.cs
+- [x] LocalGameServer.cs 연동
 
 Phase E: UI Screens
-- [ ] InGameContentDashboard.cs
-- [ ] StageDashboard.cs
-- [ ] StageSelectScreen.cs
-- [ ] PartySelectScreen.cs
+- [x] InGameContentDashboard.cs
+- [x] StageDashboard.cs
+- [x] StageSelectScreen.cs
+- [x] PartySelectScreen.cs (플레이스홀더)
 
 Phase F: UI Panels/Widgets
-- [ ] StageListPanel.cs
-- [ ] StageItemWidget.cs
-- [ ] ContentCategoryItem.cs
+- [x] StageListPanel.cs
+- [x] StageItemWidget.cs
+- [x] ContentCategoryItem.cs
 
 Phase G: Content Modules
-- [ ] IStageContentModule.cs
+- [x] IStageContentModule.cs (인터페이스만)
 - [ ] MainStoryContentModule.cs
 - [ ] ElementDungeonContentModule.cs
 - [ ] ExpDungeonContentModule.cs
@@ -627,12 +627,12 @@ Phase G: Content Modules
 
 Phase H: Popups/States
 - [ ] StageInfoPopup.cs
-- [ ] StageSelectState.cs
-- [ ] StageDashboardState.cs
-- [ ] PartySelectState.cs
+- [x] StageSelectState.cs (Screen 내부 클래스)
+- [x] StageDashboardState.cs (Screen 내부 클래스)
+- [x] PartySelectState.cs (Screen 내부 클래스)
 
 Phase I: Integration
-- [ ] LobbyScreen에 [던전] 버튼 추가
+- [x] LobbyScreen에 [던전] 버튼 추가
 - [ ] EventDetailScreen Stage 탭 연동
 - [ ] DataManager StageDatabase 로드
 

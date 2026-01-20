@@ -20,7 +20,7 @@
 | E | LocalServer 분리 | ✅ | 마일스톤 내 |
 | F | **LiveEvent** | ✅ | LiveEvent.md |
 | F | **Shop** | ✅ | Shop.md |
-| F | Stage | 🔨 | Stage.md (v3.0 설계 완료) |
+| F | Stage | 🔨 | Stage.md (v3.0, Phase E~F 완료) |
 | F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
 | F | CharacterEnhancement | ⬜ | Character/Enhancement.md |
 | F | NavigationEnhancement | ⬜ | Common/NavigationEnhancement.md |
@@ -102,6 +102,20 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-20
+- [x] **Stage 시스템 Phase E~F 구현** (9개 파일)
+  - Assembly: Sc.Contents.Stage.asmdef
+  - Phase E (Screens):
+    - InGameContentDashboard.cs - 컨텐츠 종류 선택
+    - StageDashboard.cs - 세부 분류 선택 (속성/난이도)
+    - StageSelectScreen.cs - 스테이지 목록 + 상세
+    - PartySelectScreen.cs - 파티 편성 (플레이스홀더)
+  - Phase F (Panels/Widgets):
+    - StageListPanel.cs - 스테이지 목록 패널
+    - StageItemWidget.cs - 개별 스테이지 아이템
+    - ContentCategoryItem.cs - 컨텐츠 카테고리 아이템
+  - Module 인터페이스:
+    - IStageContentModule.cs (플레이스홀더)
+  - LobbyScreen 연동 (_stageButton 추가)
 - [x] **Stage 시스템 설계 완료** (Stage.md v3.0)
   - 컴포지션 패턴 확정: StageSelectScreen + IStageContentModule
   - 화면 계층 구조 정립:
