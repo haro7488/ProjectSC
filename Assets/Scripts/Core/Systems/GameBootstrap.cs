@@ -1,9 +1,9 @@
 using Cysharp.Threading.Tasks;
-using Sc.Common.UI;
 using Sc.Core.Initialization;
 using Sc.Core.Initialization.Steps;
 using Sc.Data;
 using Sc.Event.OutGame;
+using Sc.Event.UI;
 using Sc.Foundation;
 using Sc.Packet;
 using UnityEngine;
@@ -123,7 +123,7 @@ namespace Sc.Core
         }
 
         /// <summary>
-        /// 초기화 실패 시 재시도 팝업 표시
+        /// 초기화 실패 시 재시도 팝업 표시 (이벤트로 전달)
         /// </summary>
         private async UniTask ShowInitFailurePopup(ErrorCode errorCode, string message)
         {
@@ -134,28 +134,30 @@ namespace Sc.Core
                 ? $"{message}\n\n다시 시도하시겠습니까? (재시도 {_retryCount}/{_maxRetryCount})"
                 : $"{message}\n\n재시도 횟수를 초과했습니다.";
 
-            var state = new ConfirmState
+            // 확인 팝업 요청 이벤트 발행
+            if (EventManager.HasInstance)
             {
-                Title = "초기화 실패",
-                Message = retryMessage,
-                ConfirmText = canRetry ? "재시도" : "종료",
-                CancelText = "종료",
-                ShowCancelButton = canRetry,
-                OnConfirm = () =>
+                EventManager.Instance.Publish(new ShowConfirmationEvent
                 {
-                    if (canRetry)
+                    Title = "초기화 실패",
+                    Message = retryMessage,
+                    ConfirmText = canRetry ? "재시도" : "종료",
+                    CancelText = "종료",
+                    ShowCancelButton = canRetry,
+                    OnConfirm = () =>
                     {
-                        RetryInitialize().Forget();
-                    }
-                    else
-                    {
-                        QuitApplication();
-                    }
-                },
-                OnCancel = QuitApplication
-            };
-
-            ConfirmPopup.Open(state);
+                        if (canRetry)
+                        {
+                            RetryInitialize().Forget();
+                        }
+                        else
+                        {
+                            QuitApplication();
+                        }
+                    },
+                    OnCancel = QuitApplication
+                });
+            }
 
             // 팝업 닫힐 때까지 대기 (간단히 딜레이로 구현)
             await UniTask.Yield();

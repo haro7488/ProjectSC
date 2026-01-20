@@ -1,5 +1,8 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Sc.Core;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Sc.Common.UI
 {
@@ -60,7 +63,9 @@ namespace Sc.Common.UI
         /// <summary>
         /// State로 UI 초기화. 서브클래스에서 오버라이드.
         /// </summary>
-        protected virtual void OnBind(TState state) { }
+        protected virtual void OnBind(TState state)
+        {
+        }
 
         /// <summary>
         /// 현재 상태 반환. 서브클래스에서 오버라이드.
@@ -80,6 +85,9 @@ namespace Sc.Common.UI
             private TState _state;
             private readonly int _sortingOrder;
             private readonly PopupTransition _transition;
+            private AssetScope _scope;
+            private bool _isInstantiated;
+            private bool _isLoading;
 
             public override PopupWidget View => _popup;
             public override Type PopupType => typeof(TPopup);
@@ -97,15 +105,75 @@ namespace Sc.Common.UI
 
             public override async UniTask Load()
             {
-                // 씬에서 Popup 인스턴스 찾기 (비활성화 포함)
-                _popup = UnityEngine.Object.FindObjectOfType<TPopup>(true);
+                // Race condition 방지
+                if (_isLoading || _popup != null) return;
+                _isLoading = true;
 
-                if (_popup == null)
+                try
                 {
-                    UnityEngine.Debug.LogError($"[PopupWidget] {typeof(TPopup).Name}을 씬에서 찾을 수 없음");
-                }
+                    // 1. 씬에서 먼저 찾기 (기존 방식 하위 호환)
+                    _popup = FindObjectOfType<TPopup>(true);
 
-                await UniTask.CompletedTask;
+                    if (_popup != null)
+                    {
+                        _isInstantiated = false;
+                        return;
+                    }
+
+                    // 2. Addressables에서 로드
+                    if (!AssetManager.HasInstance)
+                    {
+                        Debug.LogError($"[PopupWidget] AssetManager가 초기화되지 않음");
+                        return;
+                    }
+
+                    // Canvas 체크
+                    var parent = NavigationManager.Instance?.PopupCanvas?.transform;
+                    if (parent == null)
+                    {
+                        Debug.LogError($"[PopupWidget] PopupCanvas가 없어서 {typeof(TPopup).Name} 로드 불가");
+                        return;
+                    }
+
+                    _scope = AssetManager.Instance.CreateScope($"Popup_{typeof(TPopup).Name}");
+                    var result = await AssetManager.Instance.LoadPopupPrefabAsync<TPopup>(_scope);
+
+                    if (!result.IsSuccess)
+                    {
+                        Debug.LogError($"[PopupWidget] {typeof(TPopup).Name} 로드 실패: {result.Error}");
+                        CleanupScope();
+                        return;
+                    }
+
+                    // 3. 프리팹 인스턴스화
+                    var prefab = result.Value;
+                    var instance = Instantiate(prefab, parent);
+                    instance.name = typeof(TPopup).Name;
+
+                    _popup = instance.GetComponent<TPopup>();
+                    _isInstantiated = true;
+
+                    if (_popup == null)
+                    {
+                        Debug.LogError($"[PopupWidget] 프리팹에 {typeof(TPopup).Name} 컴포넌트가 없음");
+                        Destroy(instance);
+                        _isInstantiated = false;
+                        CleanupScope();
+                    }
+                }
+                finally
+                {
+                    _isLoading = false;
+                }
+            }
+
+            private void CleanupScope()
+            {
+                if (_scope != null && AssetManager.HasInstance)
+                {
+                    AssetManager.Instance.ReleaseScope(_scope);
+                    _scope = null;
+                }
             }
 
             public override async UniTask Enter()
@@ -134,6 +202,20 @@ namespace Sc.Common.UI
 
                 // UI 숨김
                 _popup?.Hide();
+
+                // Addressables로 로드된 인스턴스 정리
+                if (_isInstantiated && _popup != null)
+                {
+                    Object.Destroy(_popup.gameObject);
+                    _popup = null;
+                }
+
+                // Scope 해제 (에셋 RefCount 감소)
+                if (_scope != null)
+                {
+                    AssetManager.Instance?.ReleaseScope(_scope);
+                    _scope = null;
+                }
 
                 await UniTask.CompletedTask;
             }

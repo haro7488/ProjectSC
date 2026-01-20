@@ -1,5 +1,8 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Sc.Core;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Sc.Common.UI
 {
@@ -55,7 +58,9 @@ namespace Sc.Common.UI
         /// <summary>
         /// State로 UI 초기화. 서브클래스에서 오버라이드.
         /// </summary>
-        protected virtual void OnBind(TState state) { }
+        protected virtual void OnBind(TState state)
+        {
+        }
 
         /// <summary>
         /// 현재 상태 반환. 서브클래스에서 오버라이드.
@@ -74,6 +79,9 @@ namespace Sc.Common.UI
             private TScreen _screen;
             private TState _state;
             private readonly Transition _transition;
+            private AssetScope _scope;
+            private bool _isInstantiated;
+            private bool _isLoading;
 
             public override ScreenWidget View => _screen;
             public override Type ScreenType => typeof(TScreen);
@@ -87,15 +95,75 @@ namespace Sc.Common.UI
 
             public override async UniTask Load()
             {
-                // 씬에서 Screen 인스턴스 찾기 (비활성화 포함)
-                _screen = UnityEngine.Object.FindObjectOfType<TScreen>(true);
+                // Race condition 방지
+                if (_isLoading || _screen != null) return;
+                _isLoading = true;
 
-                if (_screen == null)
+                try
                 {
-                    UnityEngine.Debug.LogError($"[ScreenWidget] {typeof(TScreen).Name}을 씬에서 찾을 수 없음");
-                }
+                    // 1. 씬에서 먼저 찾기 (기존 방식 하위 호환)
+                    _screen = FindObjectOfType<TScreen>(true);
 
-                await UniTask.CompletedTask;
+                    if (_screen != null)
+                    {
+                        _isInstantiated = false;
+                        return;
+                    }
+
+                    // 2. Addressables에서 로드
+                    if (!AssetManager.HasInstance)
+                    {
+                        Debug.LogError($"[ScreenWidget] AssetManager가 초기화되지 않음");
+                        return;
+                    }
+
+                    // Canvas 체크
+                    var parent = NavigationManager.Instance?.ScreenCanvas?.transform;
+                    if (parent == null)
+                    {
+                        Debug.LogError($"[ScreenWidget] ScreenCanvas가 없어서 {typeof(TScreen).Name} 로드 불가");
+                        return;
+                    }
+
+                    _scope = AssetManager.Instance.CreateScope($"Screen_{typeof(TScreen).Name}");
+                    var result = await AssetManager.Instance.LoadScreenPrefabAsync<TScreen>(_scope);
+
+                    if (!result.IsSuccess)
+                    {
+                        Debug.LogError($"[ScreenWidget] {typeof(TScreen).Name} 로드 실패: {result.Error}");
+                        CleanupScope();
+                        return;
+                    }
+
+                    // 3. 프리팹 인스턴스화
+                    var prefab = result.Value;
+                    var instance = Instantiate(prefab, parent);
+                    instance.name = typeof(TScreen).Name;
+
+                    _screen = instance.GetComponent<TScreen>();
+                    _isInstantiated = true;
+
+                    if (_screen == null)
+                    {
+                        Debug.LogError($"[ScreenWidget] 프리팹에 {typeof(TScreen).Name} 컴포넌트가 없음");
+                        Destroy(instance);
+                        _isInstantiated = false;
+                        CleanupScope();
+                    }
+                }
+                finally
+                {
+                    _isLoading = false;
+                }
+            }
+
+            private void CleanupScope()
+            {
+                if (_scope != null && AssetManager.HasInstance)
+                {
+                    AssetManager.Instance.ReleaseScope(_scope);
+                    _scope = null;
+                }
             }
 
             public override async UniTask Enter()
@@ -126,6 +194,20 @@ namespace Sc.Common.UI
 
                 // UI 숨김
                 _screen?.Hide();
+
+                // Addressables로 로드된 인스턴스 정리
+                if (_isInstantiated && _screen != null)
+                {
+                    Object.Destroy(_screen.gameObject);
+                    _screen = null;
+                }
+
+                // Scope 해제 (에셋 RefCount 감소)
+                if (_scope != null)
+                {
+                    AssetManager.Instance?.ReleaseScope(_scope);
+                    _scope = null;
+                }
 
                 await UniTask.CompletedTask;
             }

@@ -9,7 +9,16 @@
       "name": "Main Scene Setup - Session 2: 씬 구조 및 초기화 시스템",
       "status": "completed",
       "plan_doc": "Docs/Specs/Editor/MainSceneSetup_PLAN.md"
+    },
+    "main-scene-s3-prefab": {
+      "name": "Main Scene Setup - Session 3: 프리팹 자동화",
+      "status": "in_progress",
+      "plan_doc": "Docs/Specs/Editor/MainSceneSetup_PLAN.md"
     }
   },
-  "locked_files": {}
+  "locked_files": {
+    "Assets/Scripts/Common/UI/ScreenWidget.cs": "main-scene-s3-prefab",
+    "Assets/Scripts/Common/UI/PopupWidget.cs": "main-scene-s3-prefab",
+    "Assets/Scripts/Common/UI/NavigationManager.cs": "main-scene-s3-prefab"
+  }
 }

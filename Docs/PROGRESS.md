@@ -20,7 +20,7 @@
 | E | LocalServer 분리 | ✅ | 마일스톤 내 |
 | F | **LiveEvent** | ✅ | LiveEvent.md |
 | F | **Shop** | ✅ | Shop.md |
-| F | Stage | ⬜ | Stage.md |
+| F | Stage | 🔨 | Stage.md (v3.0 설계 완료) |
 | F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
 | F | CharacterEnhancement | ⬜ | Character/Enhancement.md |
 | F | NavigationEnhancement | ⬜ | Common/NavigationEnhancement.md |
@@ -33,7 +33,7 @@
 
 ### 우선순위
 1. **로비 진입 후처리 시스템** - [Lobby.md 참조](Specs/Lobby.md#로비-진입-후처리-시스템)
-2. **Stage** 시스템
+2. **Stage** 시스템 구현 (설계 완료, [Stage.md v3.0](Specs/Stage.md))
 
 ---
 
@@ -102,6 +102,29 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-20
+- [x] **Stage 시스템 설계 완료** (Stage.md v3.0)
+  - 컴포지션 패턴 확정: StageSelectScreen + IStageContentModule
+  - 화면 계층 구조 정립:
+    - Lobby → InGameContentDashboard → StageDashboard (선택적) → StageSelectScreen
+  - 7개 컨텐츠 모듈 설계: MainStory, ElementDungeon, ExpDungeon, GoldDungeon, BossRaid, Tower, EventStage
+  - StageListPanel을 StageSelectScreen 내 Panel로 통합
+  - 별 시스템: StarCondition enum + StarAchieved[] 배열
+  - 진입 제한: LimitType 재사용 (Daily/Weekly/Monthly)
+- [x] **Main Scene 프리팹 자동화 구현** (Session 3)
+  - Track A: UI 런타임 로딩
+    - ScreenWidget/PopupWidget.Context.Load() Addressables 전환
+    - 하이브리드 방식: 씬에 있으면 기존, 없으면 Addressables 로드
+    - AssetScope 기반 메모리 관리 (Exit 시 자동 해제)
+    - NavigationManager에 ScreenCanvas/PopupCanvas 참조 추가
+  - Track B: 프리팹 생성 시스템
+    - PrefabGenerator.cs 구현 (SC Tools/Prefabs 메뉴)
+    - Screen/Popup 타입 자동 스캔 + 프리팹 생성
+    - Addressables 자동 등록 (UI/Screens/*, UI/Popups/*)
+  - Critical 이슈 수정:
+    - Memory Leak (컴포넌트 누락 시 정리)
+    - Null Canvas Parent 체크
+    - Load Race Condition 방지 (_isLoading 플래그)
+    - Nested Canvas 제거 (부모 Canvas 활용)
 - [x] **Shop 시스템 구현 완료** (17개 파일)
   - Phase A: ShopProductType, ShopProductData, ShopProductDatabase, ShopPurchaseRecord
   - Phase B: ShopEvents (ProductPurchasedEvent, ProductPurchaseFailedEvent)

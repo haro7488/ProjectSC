@@ -13,10 +13,25 @@ namespace Sc.Common.UI
     {
         public static NavigationManager Instance { get; private set; }
 
+        [Header("Canvas 참조 (Addressables 로딩용)")] [SerializeField]
+        private Canvas _screenCanvas;
+
+        [SerializeField] private Canvas _popupCanvas;
+
         private readonly List<INavigationContext> _navigationStack = new();
         private bool _isTransitioning;
 
         #region Properties
+
+        /// <summary>
+        /// Screen 인스턴스가 배치될 Canvas.
+        /// </summary>
+        public Canvas ScreenCanvas => _screenCanvas;
+
+        /// <summary>
+        /// Popup 인스턴스가 배치될 Canvas.
+        /// </summary>
+        public Canvas PopupCanvas => _popupCanvas;
 
         /// <summary>
         /// 현재 최상위 Screen (Popup 제외).
@@ -30,6 +45,7 @@ namespace Sc.Common.UI
                     if (_navigationStack[i] is ScreenWidget.Context screenContext)
                         return screenContext.View;
                 }
+
                 return null;
             }
         }
@@ -58,6 +74,7 @@ namespace Sc.Common.UI
                     if (ctx.ContextType == NavigationContextType.Screen)
                         count++;
                 }
+
                 return count;
             }
         }
@@ -349,6 +366,7 @@ namespace Sc.Common.UI
                             await popupContext.Exit();
                             _navigationStack.RemoveAt(i);
                         }
+
                         break;
                     }
                 }
@@ -443,6 +461,7 @@ namespace Sc.Common.UI
                         await _navigationStack[j].Exit();
                         _navigationStack.RemoveAt(j);
                     }
+
                     break;
                 }
             }
@@ -468,6 +487,7 @@ namespace Sc.Common.UI
                 if (i < _navigationStack.Count - 1)
                     sb.Append(" → ");
             }
+
             return sb.ToString();
         }
 

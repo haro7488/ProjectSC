@@ -1,0 +1,50 @@
+{
+  "id": "main-scene-s3-prefab",
+  "name": "Main Scene Setup - Session 3: 프리팹 자동화",
+  "status": "in_progress",
+  "created": "2026-01-20",
+  "plan_doc": "Docs/Specs/Editor/MainSceneSetup_PLAN.md",
+  "tracks": {
+    "A": {
+      "name": "UI 런타임 로딩",
+      "status": "completed",
+      "todos": [
+        { "task": "ScreenWidget.Context.Load() Addressables 전환", "status": "completed" },
+        { "task": "PopupWidget.Context.Load() Addressables 전환", "status": "completed" },
+        { "task": "NavigationManager Canvas 참조 추가", "status": "completed" },
+        { "task": "Context.Exit() Release 로직 추가", "status": "completed" }
+      ]
+    },
+    "B": {
+      "name": "프리팹 생성 시스템",
+      "status": "completed",
+      "todos": [
+        { "task": "PrefabGenerator.cs 구현", "status": "completed" },
+        { "task": "Menu Item 추가 (SC Tools/Prefabs)", "status": "completed" },
+        { "task": "모든 Screen/Popup 프리팹 생성", "status": "pending", "note": "Unity 에디터에서 실행 필요" },
+        { "task": "Addressables Group UI 설정", "status": "pending", "note": "프리팹 생성 시 자동 처리" }
+      ]
+    }
+  },
+  "decisions": [
+    { "item": "인스턴스 관리", "value": "레퍼런스 카운팅 + 임계값 언로드" },
+    { "item": "마이그레이션", "value": "하이브리드 (씬에 있으면 기존 방식, 없으면 Addressables)" },
+    { "item": "아키텍처", "value": "실용적 균형 (기존 AssetManager 활용)" }
+  ],
+  "outputs": {
+    "modified": [
+      "Assets/Scripts/Common/UI/ScreenWidget.cs",
+      "Assets/Scripts/Common/UI/PopupWidget.cs",
+      "Assets/Scripts/Common/UI/NavigationManager.cs"
+    ],
+    "created": [
+      "Assets/Scripts/Editor/Wizard/Generators/PrefabGenerator.cs"
+    ]
+  },
+  "review_fixed": [
+    "Memory Leak: 컴포넌트 누락 시 _isInstantiated 및 Scope 정리",
+    "Null Reference: Canvas 부재 시 조기 반환",
+    "Race Condition: _isLoading 플래그로 중복 로드 방지",
+    "Nested Canvas: 프리팹에서 Canvas 제거 (부모 Canvas 활용)"
+  ]
+}

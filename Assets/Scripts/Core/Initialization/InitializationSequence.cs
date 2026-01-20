@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Sc.Common.UI;
+using Sc.Event.UI;
 using Sc.Foundation;
 using UnityEngine;
 
@@ -74,10 +74,14 @@ namespace Sc.Core.Initialization
             float totalWeight = _steps.Sum(s => s.Weight);
             float completedWeight = 0f;
 
-            // 로딩 UI 표시
-            if (LoadingService.HasInstance)
+            // 로딩 UI 표시 (이벤트로 전달)
+            if (EventManager.HasInstance)
             {
-                LoadingService.Instance.ShowProgress(0f, "초기화 중...");
+                EventManager.Instance.Publish(new ShowLoadingEvent
+                {
+                    InitialProgress = 0f,
+                    Message = "초기화 중..."
+                });
             }
 
             try
@@ -140,10 +144,10 @@ namespace Sc.Core.Initialization
             {
                 _isRunning = false;
 
-                // 로딩 UI 숨김
-                if (LoadingService.HasInstance)
+                // 로딩 UI 숨김 (이벤트로 전달)
+                if (EventManager.HasInstance)
                 {
-                    LoadingService.Instance.Hide();
+                    EventManager.Instance.Publish(new HideLoadingEvent());
                 }
             }
         }
@@ -167,13 +171,17 @@ namespace Sc.Core.Initialization
 
         private void NotifyProgress(float progress, string stepName)
         {
-            // 이벤트 호출
+            // 로컬 이벤트 호출
             OnProgressChanged?.Invoke(progress, stepName);
 
-            // LoadingService 업데이트
-            if (LoadingService.HasInstance && LoadingService.Instance.IsLoading)
+            // 글로벌 이벤트 발행 (UI 업데이트용)
+            if (EventManager.HasInstance)
             {
-                LoadingService.Instance.UpdateProgress(progress, stepName);
+                EventManager.Instance.Publish(new LoadingProgressEvent
+                {
+                    Progress = progress,
+                    StepName = stepName
+                });
             }
         }
     }
