@@ -21,6 +21,9 @@ namespace Sc.Foundation
         Battle,
 
         /// <summary>가챠 결과</summary>
-        Gacha
+        Gacha,
+
+        /// <summary>로비 진입, Task 실행</summary>
+        Lobby
     }
 }

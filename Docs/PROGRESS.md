@@ -20,6 +20,7 @@
 | E | LocalServer 분리 | ✅ | 마일스톤 내 |
 | F | **LiveEvent** | ✅ | LiveEvent.md |
 | F | **Shop** | ✅ | Shop.md |
+| F | **LobbyEntryTask** | ✅ | Lobby.md |
 | F | Stage | 🔨 | Stage.md (v3.0, Phase E~F 완료) |
 | F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
 | F | CharacterEnhancement | ⬜ | Character/Enhancement.md |
@@ -32,49 +33,14 @@
 **지시**: "[시스템명] 구현하자" (예: "Shop 구현하자", "Stage 구현하자")
 
 ### 우선순위
-1. **로비 진입 후처리 시스템** - [Lobby.md 참조](Specs/Lobby.md#로비-진입-후처리-시스템)
-2. **Stage** 시스템 구현 (설계 완료, [Stage.md v3.0](Specs/Stage.md))
+1. **Stage** 시스템 구현 (설계 완료, [Stage.md v3.0](Specs/Stage.md))
+2. GachaEnhancement / CharacterEnhancement
 
 ---
 
 ## 🔨 진행 중인 작업
 
-### 로비 진입 후처리 시스템 ⬜
-
-> **스펙 문서**: [Lobby.md](Specs/Lobby.md#로비-진입-후처리-시스템)
-
-**설계 결정:**
-- Continue on Failure (실패해도 다음 Task 계속)
-- 하이브리드 실행 (로그인 후 1회 + Background Refresh)
-- 팝업 큐잉 (순차적 표시)
-- 출석체크는 Stub만 (추후 별도 구현)
-
-#### Phase A: 인터페이스 및 Runner (Core)
-```
-- [ ] ILobbyEntryTask.cs
-- [ ] LobbyTaskResult.cs
-- [ ] LobbyEntryTaskRunner.cs
-- [ ] LobbyEvents.cs
-```
-
-#### Phase B: PopupQueueService (Common)
-```
-- [ ] PopupQueueService.cs
-- [ ] IPopupRequest.cs (내부)
-```
-
-#### Phase C: Task 구현
-```
-- [ ] AttendanceCheckTask.cs (Stub)
-- [ ] EventCurrencyConversionTask.cs (Full)
-- [ ] NewEventNotificationTask.cs (Stub)
-```
-
-#### Phase D: 통합
-```
-- [ ] LobbyScreen.OnShow() 수정
-- [ ] Task 등록 및 실행 연결
-```
+(현재 진행 중인 작업 없음)
 
 ---
 
@@ -126,6 +92,24 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-20
+- [x] **로비 진입 후처리 시스템 구현** (11개 파일)
+  - Phase A (Core 인터페이스):
+    - ILobbyEntryTask.cs - Task 인터페이스
+    - IPopupQueueService.cs - 팝업 큐 인터페이스
+    - LobbyTaskResult.cs - Task 결과 DTO
+    - LobbyEntryTaskRunner.cs - Task 순차 실행기
+  - Phase A (Event):
+    - LobbyEvents.cs - LobbyEntryTasksCompletedEvent, LobbyEntryTaskCompletedEvent
+  - Phase B (Common):
+    - PopupQueueService.cs - 팝업 큐잉 서비스
+  - Phase C (Lobby/Tasks):
+    - AttendanceCheckTask.cs - 출석체크 (Stub)
+    - EventCurrencyConversionTask.cs - 이벤트 재화 전환 (Full)
+    - NewEventNotificationTask.cs - 신규 이벤트 알림 (Stub)
+  - Phase D (통합):
+    - LobbyScreen.cs 수정 - TaskRunner 초기화 및 OnShow 연동
+    - DataManager.cs 확장 - GetUserDataCopy(), UpdateUserData()
+  - Assembly 참조 추가: Sc.Contents.Lobby → Sc.Event, Sc.LocalServer
 - [x] **Stage 시스템 Phase E~F 구현** (9개 파일)
   - Assembly: Sc.Contents.Stage.asmdef
   - Phase E (Screens):

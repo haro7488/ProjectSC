@@ -178,6 +178,25 @@ namespace Sc.Core
         }
 
         /// <summary>
+        /// 유저 데이터 복사본 반환 (ref 전달용, 로컬 수정 시 사용)
+        /// </summary>
+        public UserSaveData GetUserDataCopy()
+        {
+            return _userData;
+        }
+
+        /// <summary>
+        /// 유저 데이터 갱신 (내부용, 이벤트 발행)
+        /// </summary>
+        public void UpdateUserData(UserSaveData userData)
+        {
+            _userData = userData;
+            _userData.LastSyncAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            OnUserDataChanged?.Invoke();
+            Debug.Log("[DataManager] 유저 데이터 갱신 완료");
+        }
+
+        /// <summary>
         /// 서버 응답 Delta 적용 (유저 데이터 갱신)
         /// Handler에서 호출
         /// </summary>

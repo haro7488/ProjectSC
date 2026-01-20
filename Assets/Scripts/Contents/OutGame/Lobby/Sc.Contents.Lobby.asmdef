@@ -7,6 +7,8 @@
         "Sc.Data",
         "Sc.Packet",
         "Sc.Foundation",
+        "Sc.Event",
+        "Sc.LocalServer",
         "Sc.Contents.Gacha",
         "Sc.Contents.Character",
         "Sc.Contents.Shop",

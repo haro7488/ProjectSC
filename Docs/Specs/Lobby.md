@@ -51,17 +51,19 @@ Event/OutGame/
 
 | 클래스 | 설명 | 상태 |
 |--------|------|------|
-| ILobbyEntryTask | Task 인터페이스 | ⬜ |
-| LobbyEntryTaskRunner | Task 순차 실행기 | ⬜ |
-| AttendanceCheckTask | 출석체크 (Priority: 10) | ⬜ Stub |
-| EventCurrencyConversionTask | 재화 전환 (Priority: 20) | ⬜ |
-| NewEventNotificationTask | 신규 이벤트 알림 (Priority: 30) | ⬜ Stub |
+| ILobbyEntryTask | Task 인터페이스 | ✅ |
+| IPopupQueueService | 팝업 큐 인터페이스 | ✅ |
+| LobbyTaskResult | Task 결과 DTO | ✅ |
+| LobbyEntryTaskRunner | Task 순차 실행기 | ✅ |
+| AttendanceCheckTask | 출석체크 (Priority: 10) | ✅ Stub |
+| EventCurrencyConversionTask | 재화 전환 (Priority: 20) | ✅ |
+| NewEventNotificationTask | 신규 이벤트 알림 (Priority: 30) | ✅ Stub |
 
 ### 공통 서비스
 
 | 클래스 | 설명 | 상태 |
 |--------|------|------|
-| PopupQueueService | 팝업 순차 표시 서비스 | ⬜ |
+| PopupQueueService | 팝업 순차 표시 서비스 | ✅ |
 
 ---
 
@@ -398,24 +400,25 @@ PopupQueueService.ProcessQueueAsync()
 
 ## 구현 Phase
 
-### Phase A: 인터페이스 및 Runner (Core)
-- [ ] ILobbyEntryTask.cs
-- [ ] LobbyTaskResult.cs
-- [ ] LobbyEntryTaskRunner.cs
-- [ ] LobbyEvents.cs
+### Phase A: 인터페이스 및 Runner (Core) ✅
+- [x] ILobbyEntryTask.cs
+- [x] IPopupQueueService.cs
+- [x] LobbyTaskResult.cs
+- [x] LobbyEntryTaskRunner.cs
+- [x] LobbyEvents.cs
 
-### Phase B: PopupQueueService (Common)
-- [ ] PopupQueueService.cs
-- [ ] IPopupRequest.cs (내부 인터페이스)
+### Phase B: PopupQueueService (Common) ✅
+- [x] PopupQueueService.cs (IPopupRequest 내부 포함)
 
-### Phase C: Task 구현
-- [ ] AttendanceCheckTask.cs (Stub)
-- [ ] EventCurrencyConversionTask.cs (Full)
-- [ ] NewEventNotificationTask.cs (Stub)
+### Phase C: Task 구현 ✅
+- [x] AttendanceCheckTask.cs (Stub)
+- [x] EventCurrencyConversionTask.cs (Full)
+- [x] NewEventNotificationTask.cs (Stub)
 
-### Phase D: 통합
-- [ ] LobbyScreen.OnShow() 수정
-- [ ] Task 등록 및 실행 연결
+### Phase D: 통합 ✅
+- [x] LobbyScreen.OnShow() 수정
+- [x] Task 등록 및 실행 연결
+- [x] DataManager 확장 (GetUserDataCopy, UpdateUserData)
 
 ---
 

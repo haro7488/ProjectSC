@@ -23,6 +23,8 @@ namespace Sc.Foundation
         ConfigLoadFailed = 1002,
         InitializationFailed = 1003,
         InitStepFailed = 1004,
+        InvalidParameter = 1005,
+        InvalidState = 1006,
 
         // Asset (1100~)
         AssetNotFound = 1100,
