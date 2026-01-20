@@ -17,6 +17,7 @@ namespace Sc.Core
         [SerializeField] private SkillDatabase _skillDatabase;
         [SerializeField] private ItemDatabase _itemDatabase;
         [SerializeField] private StageDatabase _stageDatabase;
+        [SerializeField] private StageCategoryDatabase _stageCategoryDatabase;
         [SerializeField] private GachaPoolDatabase _gachaPoolDatabase;
         [SerializeField] private ShopProductDatabase _shopProductDatabase;
         [SerializeField] private LiveEventDatabase _liveEventDatabase;
@@ -57,6 +58,11 @@ namespace Sc.Core
         public StageDatabase Stages => _stageDatabase;
 
         /// <summary>
+        /// 스테이지 카테고리 마스터 데이터베이스
+        /// </summary>
+        public StageCategoryDatabase StageCategories => _stageCategoryDatabase;
+
+        /// <summary>
         /// 가챠 풀 마스터 데이터베이스
         /// </summary>
         public GachaPoolDatabase GachaPools => _gachaPoolDatabase;
@@ -80,6 +86,7 @@ namespace Sc.Core
             if (typeof(T) == typeof(SkillDatabase)) return _skillDatabase as T;
             if (typeof(T) == typeof(ItemDatabase)) return _itemDatabase as T;
             if (typeof(T) == typeof(StageDatabase)) return _stageDatabase as T;
+            if (typeof(T) == typeof(StageCategoryDatabase)) return _stageCategoryDatabase as T;
             if (typeof(T) == typeof(GachaPoolDatabase)) return _gachaPoolDatabase as T;
             if (typeof(T) == typeof(ShopProductDatabase)) return _shopProductDatabase as T;
             if (typeof(T) == typeof(LiveEventDatabase)) return _liveEventDatabase as T;

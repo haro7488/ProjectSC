@@ -618,8 +618,8 @@ Phase A: Data Foundation
 - [x] StageCategoryDatabase.cs
 - [x] StageClearInfo 확장 (StarAchieved[])
 - [x] StageEntryRecord.cs
-- [ ] PartyPreset.cs
-- [ ] UserSaveData v5 마이그레이션
+- [x] PartyPreset.cs
+- [x] UserSaveData v6 마이그레이션 (PartyPresets 추가)
 - [ ] Stage.json 샘플 데이터
 
 Phase B: Request/Response
@@ -653,10 +653,10 @@ Phase G: Content Modules
 - [x] StageContentModuleFactory.cs (Factory Pattern)
 - [x] MainStoryContentModule.cs (챕터 탭, 진행도)
 - [x] ElementDungeonContentModule.cs (속성 아이콘, 권장 속성)
-- [ ] ExpDungeonContentModule.cs
-- [ ] BossRaidContentModule.cs
-- [ ] TowerContentModule.cs
-- [ ] EventStageContentModule.cs
+- [x] ExpDungeonContentModule.cs (난이도 표시, 경험치 미리보기)
+- [x] BossRaidContentModule.cs (보스 HP, 기여도, 랭킹)
+- [x] TowerContentModule.cs (현재/최고 층, 보상 미리보기)
+- [x] EventStageContentModule.cs (이벤트 정보, 남은 기간, 이벤트 재화)
 
 Phase H: Popups/States
 - [ ] StageInfoPopup.cs
@@ -667,7 +667,7 @@ Phase H: Popups/States
 Phase I: Integration
 - [x] LobbyScreen에 [던전] 버튼 추가
 - [ ] EventDetailScreen Stage 탭 연동
-- [ ] DataManager StageDatabase 로드
+- [x] DataManager StageCategoryDatabase 추가
 
 Phase J: Testing
 - [ ] StageEntryValidatorTests.cs

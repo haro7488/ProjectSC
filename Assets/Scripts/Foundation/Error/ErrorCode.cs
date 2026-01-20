@@ -59,6 +59,11 @@ namespace Sc.Foundation
         PurchaseLimitReached = 5007,
         StageNotCleared = 5008,
 
+        // Gacha (5500~)
+        GachaPoolNotFound = 5501,
+        GachaBannerExpired = 5502,
+        GachaInvalidPullType = 5503,
+
         // UI (6000~)
         ScreenLoadFailed = 6001,
         PopupLoadFailed = 6002

@@ -21,7 +21,7 @@
 | F | **LiveEvent** | ✅ | LiveEvent.md |
 | F | **Shop** | ✅ | Shop.md |
 | F | **LobbyEntryTask** | ✅ | Lobby.md |
-| F | Stage | 🔨 | Stage.md (v3.0, Phase E~F 완료) |
+| F | Stage | 🔨 | Stage.md (v3.1, Phase A~G 완료) |
 | F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
 | F | CharacterEnhancement | ⬜ | Character/Enhancement.md |
 | F | NavigationEnhancement | ⬜ | Common/NavigationEnhancement.md |
@@ -92,6 +92,17 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-20
+- [x] **Stage 시스템 Phase G 완료** (6개 파일)
+  - Content Modules 추가:
+    - ExpDungeonContentModule.cs - 난이도 표시, 경험치 미리보기
+    - BossRaidContentModule.cs - 보스 HP, 기여도, 랭킹 버튼
+    - TowerContentModule.cs - 현재/최고 층, 보상 미리보기
+    - EventStageContentModule.cs - 이벤트 이름, 남은 기간, 이벤트 재화
+  - StageContentModuleFactory 업데이트 - 모든 모듈 등록
+  - DataManager에 StageCategoryDatabase 추가
+- [x] **PartyPreset 시스템 구현** (2개 파일)
+  - PartyPreset.cs - 파티 프리셋 데이터 구조
+  - UserSaveData v6 마이그레이션 (PartyPresets 필드)
 - [x] **로비 진입 후처리 시스템 구현** (11개 파일)
   - Phase A (Core 인터페이스):
     - ILobbyEntryTask.cs - Task 인터페이스

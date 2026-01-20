@@ -25,13 +25,11 @@ namespace Sc.Contents.Stage
             RegisterModule(InGameContentType.MainStory, () => new MainStoryContentModule());
             RegisterModule(InGameContentType.HardMode, () => new MainStoryContentModule()); // MainStory와 유사
             RegisterModule(InGameContentType.GoldDungeon, () => new ElementDungeonContentModule());
-            RegisterModule(InGameContentType.ExpDungeon, () => new ElementDungeonContentModule()); // Element와 유사
+            RegisterModule(InGameContentType.ExpDungeon, () => new ExpDungeonContentModule());
             RegisterModule(InGameContentType.SkillDungeon, () => new ElementDungeonContentModule()); // Element와 유사
-
-            // TODO: 추후 구현
-            // RegisterModule(InGameContentType.BossRaid, () => new BossRaidContentModule());
-            // RegisterModule(InGameContentType.Tower, () => new TowerContentModule());
-            // RegisterModule(InGameContentType.Event, () => new EventStageContentModule());
+            RegisterModule(InGameContentType.BossRaid, () => new BossRaidContentModule());
+            RegisterModule(InGameContentType.Tower, () => new TowerContentModule());
+            RegisterModule(InGameContentType.Event, () => new EventStageContentModule());
 
             _isInitialized = true;
             Log.Info("[StageContentModuleFactory] 초기화 완료", LogCategory.UI);

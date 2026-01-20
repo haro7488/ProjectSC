@@ -75,14 +75,24 @@ namespace Sc.Data
         public Dictionary<string, BattleSessionData> BattleSessions;
 
         /// <summary>
+        /// 파티 프리셋 목록
+        /// </summary>
+        public List<PartyPreset> PartyPresets;
+
+        /// <summary>
         /// 마지막 동기화 시간 (Unix Timestamp)
         /// </summary>
         public long LastSyncAt;
 
         /// <summary>
+        /// 가챠 히스토리 (Key: PoolId)
+        /// </summary>
+        public Dictionary<string, List<GachaHistoryRecord>> GachaHistory;
+
+        /// <summary>
         /// 현재 데이터 버전
         /// </summary>
-        public const int CurrentVersion = 5;
+        public const int CurrentVersion = 7;
 
         /// <summary>
         /// 신규 유저 데이터 생성
@@ -104,6 +114,8 @@ namespace Sc.Data
                 ShopPurchaseRecords = new Dictionary<string, ShopPurchaseRecord>(),
                 StageEntryRecords = new Dictionary<string, StageEntryRecord>(),
                 BattleSessions = new Dictionary<string, BattleSessionData>(),
+                PartyPresets = new List<PartyPreset>(),
+                GachaHistory = new Dictionary<string, List<GachaHistoryRecord>>(),
                 LastSyncAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
         }
@@ -161,6 +173,28 @@ namespace Sc.Data
                 }
 
                 data.Version = 5;
+            }
+
+            // Version 5 → 6: PartyPresets 필드 추가
+            if (data.Version < 6)
+            {
+                if (data.PartyPresets == null)
+                {
+                    data.PartyPresets = new List<PartyPreset>();
+                }
+
+                data.Version = 6;
+            }
+
+            // Version 6 → 7: GachaHistory 필드 추가
+            if (data.Version < 7)
+            {
+                if (data.GachaHistory == null)
+                {
+                    data.GachaHistory = new Dictionary<string, List<GachaHistoryRecord>>();
+                }
+
+                data.Version = 7;
             }
 
             return data;
@@ -416,6 +450,161 @@ namespace Sc.Data
             {
                 BattleSessions.Remove(id);
             }
+        }
+
+        #endregion
+
+        #region Party Preset Helpers
+
+        /// <summary>
+        /// 프리셋 ID로 파티 프리셋 조회
+        /// </summary>
+        public PartyPreset? FindPartyPreset(string presetId)
+        {
+            if (PartyPresets == null || string.IsNullOrEmpty(presetId)) return null;
+            foreach (var preset in PartyPresets)
+            {
+                if (preset.PresetId == presetId)
+                    return preset;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 그룹별 파티 프리셋 목록 조회
+        /// </summary>
+        public List<PartyPreset> GetPresetsForGroup(string presetGroupId)
+        {
+            var result = new List<PartyPreset>();
+            if (PartyPresets == null || string.IsNullOrEmpty(presetGroupId)) return result;
+
+            foreach (var preset in PartyPresets)
+            {
+                if (preset.PresetGroupId == presetGroupId)
+                {
+                    result.Add(preset);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 파티 프리셋 업데이트 또는 추가
+        /// </summary>
+        public void UpdatePartyPreset(PartyPreset preset)
+        {
+            PartyPresets ??= new List<PartyPreset>();
+
+            for (int i = 0; i < PartyPresets.Count; i++)
+            {
+                if (PartyPresets[i].PresetId == preset.PresetId)
+                {
+                    PartyPresets[i] = preset;
+                    return;
+                }
+            }
+
+            // 새 프리셋 추가
+            PartyPresets.Add(preset);
+        }
+
+        /// <summary>
+        /// 파티 프리셋 삭제
+        /// </summary>
+        public bool RemovePartyPreset(string presetId)
+        {
+            if (PartyPresets == null || string.IsNullOrEmpty(presetId)) return false;
+
+            for (int i = 0; i < PartyPresets.Count; i++)
+            {
+                if (PartyPresets[i].PresetId == presetId)
+                {
+                    PartyPresets.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region Gacha History Helpers
+
+        /// <summary>
+        /// 가챠 히스토리 추가
+        /// </summary>
+        public void AddGachaHistory(GachaHistoryRecord record)
+        {
+            GachaHistory ??= new Dictionary<string, List<GachaHistoryRecord>>();
+
+            if (!GachaHistory.ContainsKey(record.PoolId))
+            {
+                GachaHistory[record.PoolId] = new List<GachaHistoryRecord>();
+            }
+
+            // 최신순으로 추가
+            GachaHistory[record.PoolId].Insert(0, record);
+
+            // 풀당 최대 100개 유지
+            const int MaxHistoryPerPool = 100;
+            if (GachaHistory[record.PoolId].Count > MaxHistoryPerPool)
+            {
+                GachaHistory[record.PoolId].RemoveAt(GachaHistory[record.PoolId].Count - 1);
+            }
+        }
+
+        /// <summary>
+        /// 특정 풀의 가챠 히스토리 조회
+        /// </summary>
+        public List<GachaHistoryRecord> GetGachaHistory(string poolId, int limit = 50)
+        {
+            if (GachaHistory == null || !GachaHistory.ContainsKey(poolId))
+            {
+                return new List<GachaHistoryRecord>();
+            }
+
+            var result = new List<GachaHistoryRecord>();
+            var list = GachaHistory[poolId];
+            int count = System.Math.Min(limit, list.Count);
+
+            for (int i = 0; i < count; i++)
+            {
+                result.Add(list[i]);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 전체 가챠 히스토리 조회 (최신순)
+        /// </summary>
+        public List<GachaHistoryRecord> GetAllGachaHistory(int limit = 100)
+        {
+            if (GachaHistory == null)
+            {
+                return new List<GachaHistoryRecord>();
+            }
+
+            var allRecords = new List<GachaHistoryRecord>();
+
+            foreach (var kvp in GachaHistory)
+            {
+                allRecords.AddRange(kvp.Value);
+            }
+
+            // 시간순 정렬 (최신 먼저)
+            allRecords.Sort((a, b) => b.Timestamp.CompareTo(a.Timestamp));
+
+            // limit 적용
+            if (allRecords.Count > limit)
+            {
+                allRecords.RemoveRange(limit, allRecords.Count - limit);
+            }
+
+            return allRecords;
         }
 
         #endregion
