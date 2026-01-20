@@ -12,13 +12,9 @@
     },
     "main-scene-s3-prefab": {
       "name": "Main Scene Setup - Session 3: 프리팹 자동화",
-      "status": "in_progress",
+      "status": "completed",
       "plan_doc": "Docs/Specs/Editor/MainSceneSetup_PLAN.md"
     }
   },
-  "locked_files": {
-    "Assets/Scripts/Common/UI/ScreenWidget.cs": "main-scene-s3-prefab",
-    "Assets/Scripts/Common/UI/PopupWidget.cs": "main-scene-s3-prefab",
-    "Assets/Scripts/Common/UI/NavigationManager.cs": "main-scene-s3-prefab"
-  }
+  "locked_files": {}
 }

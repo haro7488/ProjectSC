@@ -1,8 +1,9 @@
 {
   "id": "main-scene-s3-prefab",
   "name": "Main Scene Setup - Session 3: 프리팹 자동화",
-  "status": "in_progress",
+  "status": "completed",
   "created": "2026-01-20",
+  "completed": "2026-01-20",
   "plan_doc": "Docs/Specs/Editor/MainSceneSetup_PLAN.md",
   "tracks": {
     "A": {
@@ -21,8 +22,8 @@
       "todos": [
         { "task": "PrefabGenerator.cs 구현", "status": "completed" },
         { "task": "Menu Item 추가 (SC Tools/Prefabs)", "status": "completed" },
-        { "task": "모든 Screen/Popup 프리팹 생성", "status": "pending", "note": "Unity 에디터에서 실행 필요" },
-        { "task": "Addressables Group UI 설정", "status": "pending", "note": "프리팹 생성 시 자동 처리" }
+        { "task": "모든 Screen/Popup 프리팹 생성", "status": "completed" },
+        { "task": "Addressables Group UI 설정", "status": "completed" }
       ]
     }
   },
@@ -35,10 +36,15 @@
     "modified": [
       "Assets/Scripts/Common/UI/ScreenWidget.cs",
       "Assets/Scripts/Common/UI/PopupWidget.cs",
-      "Assets/Scripts/Common/UI/NavigationManager.cs"
+      "Assets/Scripts/Common/UI/NavigationManager.cs",
+      "Assets/Scripts/Core/Initialization/InitializationSequence.cs",
+      "Assets/Scripts/Core/Systems/GameBootstrap.cs"
     ],
     "created": [
-      "Assets/Scripts/Editor/Wizard/Generators/PrefabGenerator.cs"
+      "Assets/Scripts/Editor/Wizard/Generators/PrefabGenerator.cs",
+      "Assets/Scripts/Common/UI/UIEventBridge.cs",
+      "Assets/Scripts/Event/UI/UIFeedbackEvents.cs",
+      "Assets/Prefabs/UI/Popups/*.prefab"
     ]
   },
   "review_fixed": [
