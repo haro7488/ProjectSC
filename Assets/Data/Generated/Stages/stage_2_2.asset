@@ -15,10 +15,19 @@ MonoBehaviour:
   _id: stage_2_2
   _name: "\uD654\uC5FC\uC758 \uB3D9\uAD74 2"
   _nameEn: Fire Cave 2
+  _contentType: 0
+  _categoryId: 
+  _stageType: 0
   _chapter: 2
   _stageNumber: 2
   _difficulty: 1
-  _staminaCost: 8
+  _entryCostType: 3
+  _entryCost: 0
+  _limitType: 0
+  _limitCount: 0
+  _availableDays: 
+  _unlockConditionStageId: 
+  _unlockConditionLevel: 0
   _recommendedPower: 2500
   _enemyIds:
   - enemy_003
@@ -26,10 +35,19 @@ MonoBehaviour:
   - enemy_004
   _rewardGold: 250
   _rewardExp: 120
-  _rewardItemIds:
-  - item_weapon_001
-  - item_consume_002
-  _rewardItemRates:
-  - 0.15
-  - 0.15
+  _rewardItemIds: []
+  _rewardItemRates: []
+  _firstClearRewards: []
+  _repeatClearRewards: []
+  _star1Condition:
+    ConditionType: 0
+    Value: 0
+  _star2Condition:
+    ConditionType: 0
+    Value: 0
+  _star3Condition:
+    ConditionType: 0
+    Value: 0
+  _displayOrder: 0
+  _isEnabled: 1
   _description: "\uC6A9\uC554 \uC9C0\uB300"

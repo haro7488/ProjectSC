@@ -1,15 +1,25 @@
 using Sc.Common.UI;
+using Sc.Contents.Stage;
+using Sc.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sc.Contents.Event
 {
     /// <summary>
-    /// 이벤트 스테이지 탭 (플레이스홀더)
+    /// 이벤트 스테이지 탭.
+    /// 이벤트 스테이지 목록으로 이동하는 버튼 제공.
     /// </summary>
     public class EventStageTab : Widget
     {
         [Header("UI References")]
+        [SerializeField] private TMP_Text _titleText;
+        [SerializeField] private TMP_Text _descriptionText;
+        [SerializeField] private Button _stageListButton;
+        [SerializeField] private TMP_Text _stageListButtonText;
+
+        [Header("Legacy (Hide)")]
         [SerializeField] private TMP_Text _placeholderText;
         [SerializeField] private GameObject _stageListContainer;
 
@@ -19,6 +29,11 @@ namespace Sc.Contents.Event
         protected override void OnInitialize()
         {
             Debug.Log("[EventStageTab] OnInitialize");
+
+            if (_stageListButton != null)
+            {
+                _stageListButton.onClick.AddListener(OnStageListClicked);
+            }
         }
 
         /// <summary>
@@ -36,13 +51,10 @@ namespace Sc.Contents.Event
 
         private void RefreshUI()
         {
-            // 플레이스홀더 표시
+            // 플레이스홀더 숨기기
             if (_placeholderText != null)
             {
-                _placeholderText.text = "스테이지 시스템 준비 중\n\n" +
-                                        "이벤트 스테이지 기능은\n" +
-                                        "추후 업데이트될 예정입니다.";
-                _placeholderText.gameObject.SetActive(true);
+                _placeholderText.gameObject.SetActive(false);
             }
 
             if (_stageListContainer != null)
@@ -50,10 +62,41 @@ namespace Sc.Contents.Event
                 _stageListContainer.SetActive(false);
             }
 
-            // TODO: 실제 스테이지 목록 구현
-            // 1. StageListScreen 재사용
-            // 2. Event 타입 필터 적용
-            // 3. PresetGroupId: event_{eventId}
+            // 타이틀
+            if (_titleText != null)
+            {
+                _titleText.text = "이벤트 스테이지";
+            }
+
+            // 설명
+            if (_descriptionText != null)
+            {
+                _descriptionText.text = "이벤트 전용 스테이지에서\n특별한 보상을 획득하세요!";
+            }
+
+            // 버튼 텍스트
+            if (_stageListButtonText != null)
+            {
+                _stageListButtonText.text = "스테이지 목록";
+            }
+
+            // 버튼 표시
+            if (_stageListButton != null)
+            {
+                _stageListButton.gameObject.SetActive(true);
+            }
+        }
+
+        private void OnStageListClicked()
+        {
+            Debug.Log($"[EventStageTab] OnStageListClicked - navigating to StageSelectScreen");
+
+            // StageSelectScreen으로 이동
+            StageSelectScreen.Open(new StageSelectScreen.StageSelectState
+            {
+                ContentType = InGameContentType.Event,
+                CategoryId = _stageGroupId
+            });
         }
 
         protected override void OnShow()
@@ -64,6 +107,17 @@ namespace Sc.Contents.Event
         protected override void OnHide()
         {
             Debug.Log("[EventStageTab] OnHide");
+        }
+
+        protected override void OnRelease()
+        {
+            if (_stageListButton != null)
+            {
+                _stageListButton.onClick.RemoveListener(OnStageListClicked);
+            }
+
+            _eventId = null;
+            _stageGroupId = null;
         }
     }
 }

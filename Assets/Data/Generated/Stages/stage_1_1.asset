@@ -15,10 +15,19 @@ MonoBehaviour:
   _id: stage_1_1
   _name: "\uC2DC\uC791\uC758 \uC232 1"
   _nameEn: Beginning Forest 1
+  _contentType: 0
+  _categoryId: 
+  _stageType: 0
   _chapter: 1
   _stageNumber: 1
   _difficulty: 0
-  _staminaCost: 5
+  _entryCostType: 3
+  _entryCost: 0
+  _limitType: 0
+  _limitCount: 0
+  _availableDays: 
+  _unlockConditionStageId: 
+  _unlockConditionLevel: 0
   _recommendedPower: 1000
   _enemyIds:
   - enemy_001
@@ -26,8 +35,19 @@ MonoBehaviour:
   - enemy_002
   _rewardGold: 100
   _rewardExp: 50
-  _rewardItemIds:
-  - item_consume_001
-  _rewardItemRates:
-  - 0.3
+  _rewardItemIds: []
+  _rewardItemRates: []
+  _firstClearRewards: []
+  _repeatClearRewards: []
+  _star1Condition:
+    ConditionType: 0
+    Value: 0
+  _star2Condition:
+    ConditionType: 0
+    Value: 0
+  _star3Condition:
+    ConditionType: 0
+    Value: 0
+  _displayOrder: 0
+  _isEnabled: 1
   _description: "\uBAA8\uD5D8\uC758 \uC2DC\uC791\uC810"

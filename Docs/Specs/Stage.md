@@ -586,7 +586,8 @@ Assets/Scripts/Contents/OutGame/Stage/
 │   └── EventStageContentModule.cs    (TODO)
 │
 ├── Popups/
-│   └── StageInfoPopup.cs             (TODO)
+│   ├── StageInfoPopup.cs
+│   └── StageInfoState.cs
 │
 └── (States - Screen 내부 클래스)
 
@@ -620,7 +621,7 @@ Phase A: Data Foundation
 - [x] StageEntryRecord.cs
 - [x] PartyPreset.cs
 - [x] UserSaveData v6 마이그레이션 (PartyPresets 추가)
-- [ ] Stage.json 샘플 데이터
+- [x] Stage.json 샘플 데이터 (v2.0 - 신규 필드 포함)
 
 Phase B: Request/Response
 - [x] EnterStageRequest.cs
@@ -659,14 +660,15 @@ Phase G: Content Modules
 - [x] EventStageContentModule.cs (이벤트 정보, 남은 기간, 이벤트 재화)
 
 Phase H: Popups/States
-- [ ] StageInfoPopup.cs
+- [x] StageInfoPopup.cs
+- [x] StageInfoState.cs
 - [x] StageSelectState.cs (CategoryId 포함)
 - [x] StageDashboardState.cs (InitialCategoryId 포함)
 - [x] PartySelectState.cs
 
 Phase I: Integration
 - [x] LobbyScreen에 [던전] 버튼 추가
-- [ ] EventDetailScreen Stage 탭 연동
+- [x] EventDetailScreen Stage 탭 연동 (EventStageTab → StageSelectScreen 네비게이션)
 - [x] DataManager StageCategoryDatabase 추가
 
 Phase J: Testing

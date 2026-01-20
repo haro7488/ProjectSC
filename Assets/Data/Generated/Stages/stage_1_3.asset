@@ -15,10 +15,19 @@ MonoBehaviour:
   _id: stage_1_3
   _name: "\uC2DC\uC791\uC758 \uC232 \uBCF4\uC2A4"
   _nameEn: Beginning Forest Boss
+  _contentType: 0
+  _categoryId: 
+  _stageType: 0
   _chapter: 1
   _stageNumber: 3
   _difficulty: 1
-  _staminaCost: 10
+  _entryCostType: 3
+  _entryCost: 0
+  _limitType: 0
+  _limitCount: 0
+  _availableDays: 
+  _unlockConditionStageId: 
+  _unlockConditionLevel: 0
   _recommendedPower: 1500
   _enemyIds:
   - enemy_002
@@ -26,10 +35,19 @@ MonoBehaviour:
   - enemy_boss_001
   _rewardGold: 300
   _rewardExp: 150
-  _rewardItemIds:
-  - item_weapon_001
-  - item_armor_001
-  _rewardItemRates:
-  - 0.2
-  - 0.2
+  _rewardItemIds: []
+  _rewardItemRates: []
+  _firstClearRewards: []
+  _repeatClearRewards: []
+  _star1Condition:
+    ConditionType: 0
+    Value: 0
+  _star2Condition:
+    ConditionType: 0
+    Value: 0
+  _star3Condition:
+    ConditionType: 0
+    Value: 0
+  _displayOrder: 0
+  _isEnabled: 1
   _description: "\uC232\uC758 \uC218\uD638\uC790\uC640\uC758 \uB300\uACB0"
