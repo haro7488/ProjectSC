@@ -12,7 +12,8 @@
         "Sc.Contents.Shop",
         "UniTask",
         "Unity.TextMeshPro",
-        "Sc.Contents.Event"
+        "Sc.Contents.Event",
+        "Sc.Contents.Stage"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -4,6 +4,7 @@ using Sc.Contents.Character;
 using Sc.Contents.Event;
 using Sc.Contents.Gacha;
 using Sc.Contents.Shop;
+using Sc.Contents.Stage;
 using Sc.Core;
 using TMPro;
 using UnityEngine;
@@ -33,6 +34,7 @@ namespace Sc.Contents.Lobby
         [SerializeField] private Button _characterButton;
         [SerializeField] private Button _eventButton;
         [SerializeField] private Button _shopButton;
+        [SerializeField] private Button _stageButton;
         [SerializeField] private TMP_Text _welcomeText;
 
         private LobbyState _currentState;
@@ -59,6 +61,11 @@ namespace Sc.Contents.Lobby
             if (_shopButton != null)
             {
                 _shopButton.onClick.AddListener(OnShopButtonClicked);
+            }
+
+            if (_stageButton != null)
+            {
+                _stageButton.onClick.AddListener(OnStageButtonClicked);
             }
         }
 
@@ -135,6 +142,12 @@ namespace Sc.Contents.Lobby
         {
             Debug.Log("[LobbyScreen] Shop button clicked");
             ShopScreen.Open(new ShopScreen.ShopState());
+        }
+
+        private void OnStageButtonClicked()
+        {
+            Debug.Log("[LobbyScreen] Stage button clicked");
+            InGameContentDashboard.Open(new InGameContentDashboard.DashboardState());
         }
     }
 }
