@@ -12,6 +12,7 @@ namespace Sc.LocalServer
     {
         private readonly LoginHandler _loginHandler;
         private readonly GachaHandler _gachaHandler;
+        private readonly GachaService _gachaService;
         private readonly ShopHandler _shopHandler;
         private readonly StageHandler _stageHandler;
         private readonly EventHandler _eventHandler;
@@ -22,10 +23,10 @@ namespace Sc.LocalServer
             _timeService = new ServerTimeService();
             var validator = new ServerValidator(_timeService);
             var rewardService = new RewardService();
-            var gachaService = new GachaService();
+            _gachaService = new GachaService();
 
             _loginHandler = new LoginHandler();
-            _gachaHandler = new GachaHandler(validator, gachaService, rewardService, _timeService);
+            _gachaHandler = new GachaHandler(validator, _gachaService, rewardService, _timeService);
             _shopHandler = new ShopHandler(validator, rewardService, _timeService);
             _stageHandler = new StageHandler(validator, rewardService, _timeService);
 
@@ -86,6 +87,22 @@ namespace Sc.LocalServer
         public void SetShopProductDatabase(ShopProductDatabase database)
         {
             _shopHandler?.SetProductDatabase(database);
+        }
+
+        /// <summary>
+        /// GachaPoolDatabase 설정 (외부에서 Database 주입)
+        /// </summary>
+        public void SetGachaPoolDatabase(GachaPoolDatabase database)
+        {
+            _gachaHandler?.SetPoolDatabase(database);
+        }
+
+        /// <summary>
+        /// CharacterDatabase 설정 (GachaService에서 사용)
+        /// </summary>
+        public void SetCharacterDatabase(CharacterDatabase database)
+        {
+            _gachaService?.SetCharacterDatabase(database);
         }
 
         /// <summary>

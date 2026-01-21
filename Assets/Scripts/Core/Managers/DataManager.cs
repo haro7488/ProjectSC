@@ -151,6 +151,11 @@ namespace Sc.Core
         /// </summary>
         public EventCurrencyData EventCurrency => _userData.EventCurrency;
 
+        /// <summary>
+        /// 가챠 히스토리 (읽기 전용)
+        /// </summary>
+        public System.Collections.Generic.IReadOnlyList<GachaHistoryRecord> GachaHistory => _userData.GachaHistory;
+
         #endregion
 
         #region Initialization
@@ -384,6 +389,22 @@ namespace Sc.Core
         }
 
         /// <summary>
+        /// 최근 가챠 히스토리 조회
+        /// </summary>
+        public System.Collections.Generic.List<GachaHistoryRecord> GetRecentGachaHistory(int count = 50)
+        {
+            return _userData.GetRecentHistory(count);
+        }
+
+        /// <summary>
+        /// 풀별 가챠 히스토리 조회
+        /// </summary>
+        public System.Collections.Generic.List<GachaHistoryRecord> GetGachaHistoryByPool(string poolId, int count = 50)
+        {
+            return _userData.GetHistoryByPool(poolId, count);
+        }
+
+        /// <summary>
         /// 데이터베이스를 NetworkManager에 주입 (LocalServer용)
         /// NetworkManager 초기화 후 호출 필요
         /// </summary>
@@ -403,6 +424,16 @@ namespace Sc.Core
             if (_liveEventDatabase != null)
             {
                 NetworkManager.Instance.SetEventDatabase(_liveEventDatabase);
+            }
+
+            if (_gachaPoolDatabase != null)
+            {
+                NetworkManager.Instance.SetGachaPoolDatabase(_gachaPoolDatabase);
+            }
+
+            if (_characterDatabase != null)
+            {
+                NetworkManager.Instance.SetCharacterDatabase(_characterDatabase);
             }
         }
 

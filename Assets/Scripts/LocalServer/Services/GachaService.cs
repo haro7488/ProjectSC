@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Sc.Data;
 using UnityEngine;
 
@@ -9,39 +10,130 @@ namespace Sc.LocalServer
     /// </summary>
     public class GachaService
     {
-        // 기본 확률 (실제로는 GachaPoolData에서 읽어와야 함)
-        private const float SSR_RATE = 0.03f;
-        private const float SR_RATE = 0.12f;
-        private const int PITY_THRESHOLD = 90;
+        // 기본 확률 (풀 데이터가 없을 때 사용)
+        private const float DEFAULT_SSR_RATE = 0.03f;
+        private const float DEFAULT_SR_RATE = 0.12f;
+        private const int DEFAULT_PITY_THRESHOLD = 90;
+
+        private CharacterDatabase _characterDatabase;
 
         /// <summary>
-        /// 가챠 희귀도 계산 (천장 시스템 포함)
+        /// CharacterDatabase 설정 (외부에서 주입)
         /// </summary>
-        public Rarity CalculateRarity(int pityCount)
+        public void SetCharacterDatabase(CharacterDatabase database)
         {
-            // 천장 도달 시 SSR 확정
-            if (pityCount >= PITY_THRESHOLD)
+            _characterDatabase = database;
+        }
+
+        /// <summary>
+        /// 가챠 희귀도 계산 (소프트 천장 시스템 포함)
+        /// </summary>
+        public Rarity CalculateRarity(int pityCount, GachaPoolData poolData = null)
+        {
+            var ssrRate = poolData?.Rates.SSR ?? DEFAULT_SSR_RATE;
+            var srRate = poolData?.Rates.SR ?? DEFAULT_SR_RATE;
+            var pityThreshold = poolData?.PityCount ?? DEFAULT_PITY_THRESHOLD;
+            var pitySoftStart = poolData?.PitySoftStart ?? 0;
+            var pitySoftRateBonus = poolData?.PitySoftRateBonus ?? 0f;
+
+            // 확정 천장 도달 시 SSR 확정
+            if (pityThreshold > 0 && pityCount >= pityThreshold)
+            {
                 return Rarity.SSR;
+            }
+
+            // 소프트 천장 확률 증가 계산
+            var effectiveSSRRate = ssrRate;
+            if (pitySoftStart > 0 && pityCount >= pitySoftStart && pitySoftRateBonus > 0)
+            {
+                var bonusCount = pityCount - pitySoftStart;
+                effectiveSSRRate += bonusCount * pitySoftRateBonus;
+
+                // 최대 100% 제한
+                effectiveSSRRate = Mathf.Min(effectiveSSRRate, 1f);
+            }
 
             var random = Random.Range(0f, 1f);
 
-            if (random < SSR_RATE)
+            if (random < effectiveSSRRate)
                 return Rarity.SSR;
-            if (random < SSR_RATE + SR_RATE)
+            if (random < effectiveSSRRate + srRate)
                 return Rarity.SR;
             return Rarity.R;
         }
 
         /// <summary>
+        /// 현재 적용되는 SSR 확률 계산 (UI 표시용)
+        /// </summary>
+        public float GetEffectiveSSRRate(int pityCount, GachaPoolData poolData)
+        {
+            if (poolData == null) return DEFAULT_SSR_RATE;
+
+            var ssrRate = poolData.Rates.SSR;
+            var pityThreshold = poolData.PityCount;
+            var pitySoftStart = poolData.PitySoftStart;
+            var pitySoftRateBonus = poolData.PitySoftRateBonus;
+
+            // 확정 천장
+            if (pityThreshold > 0 && pityCount >= pityThreshold)
+            {
+                return 1f;
+            }
+
+            // 소프트 천장 적용
+            if (pitySoftStart > 0 && pityCount >= pitySoftStart && pitySoftRateBonus > 0)
+            {
+                var bonusCount = pityCount - pitySoftStart;
+                var effectiveRate = ssrRate + bonusCount * pitySoftRateBonus;
+                return Mathf.Min(effectiveRate, 1f);
+            }
+
+            return ssrRate;
+        }
+
+        /// <summary>
         /// 희귀도에 따른 랜덤 캐릭터 선택
         /// </summary>
-        /// <remarks>
-        /// 실제 구현에서는 GachaPoolData의 캐릭터 목록에서 선택해야 함
-        /// 현재는 더미 데이터 반환
-        /// </remarks>
-        public string GetRandomCharacterByRarity(Rarity rarity, string poolId)
+        public string GetRandomCharacterByRarity(Rarity rarity, string poolId, GachaPoolData poolData = null)
         {
-            // TODO: GachaPoolData에서 해당 poolId의 캐릭터 목록 조회
+            // 풀 데이터에서 캐릭터 목록 조회
+            if (poolData != null && poolData.CharacterIds != null && poolData.CharacterIds.Length > 0)
+            {
+                // 해당 희귀도의 캐릭터 필터링
+                var candidates = new List<string>();
+
+                if (_characterDatabase != null)
+                {
+                    foreach (var charId in poolData.CharacterIds)
+                    {
+                        var charData = _characterDatabase.GetById(charId);
+                        if (charData != null && charData.Rarity == rarity)
+                        {
+                            candidates.Add(charId);
+                        }
+                    }
+                }
+
+                // 픽업 캐릭터 우선 처리
+                if (rarity == Rarity.SSR &&
+                    !string.IsNullOrEmpty(poolData.RateUpCharacterId) &&
+                    poolData.RateUpBonus > 0)
+                {
+                    // 픽업 확률 적용
+                    if (Random.Range(0f, 1f) < poolData.RateUpBonus)
+                    {
+                        return poolData.RateUpCharacterId;
+                    }
+                }
+
+                // 일반 랜덤 선택
+                if (candidates.Count > 0)
+                {
+                    return candidates[Random.Range(0, candidates.Count)];
+                }
+            }
+
+            // 기본 더미 데이터 반환
             return rarity switch
             {
                 Rarity.SSR => Random.Range(0, 2) == 0 ? "char_001" : "char_002",
@@ -53,13 +145,13 @@ namespace Sc.LocalServer
         /// <summary>
         /// 가챠 비용 계산
         /// </summary>
-        public (int costPerPull, int totalCost) CalculateCost(GachaPullType pullType)
+        public (int costPerPull, int totalCost) CalculateCost(GachaPullType pullType, GachaPoolData poolData = null)
         {
-            const int costPerPull = 300;
-            var pullCount = pullType == GachaPullType.Multi ? 10 : 1;
-            var totalCost = pullType == GachaPullType.Multi ? 2700 : costPerPull; // 10연차 할인
+            var costSingle = poolData?.CostAmount ?? 300;
+            var cost10 = poolData?.CostAmount10 ?? 2700;
 
-            return (costPerPull, totalCost);
+            var totalCost = pullType == GachaPullType.Multi ? cost10 : costSingle;
+            return (costSingle, totalCost);
         }
 
         /// <summary>
@@ -68,6 +160,15 @@ namespace Sc.LocalServer
         public int GetPullCount(GachaPullType pullType)
         {
             return pullType == GachaPullType.Multi ? 10 : 1;
+        }
+
+        /// <summary>
+        /// 소프트 천장 도달 여부 확인
+        /// </summary>
+        public bool IsInSoftPityRange(int pityCount, GachaPoolData poolData)
+        {
+            if (poolData == null) return false;
+            return poolData.PitySoftStart > 0 && pityCount >= poolData.PitySoftStart;
         }
     }
 }

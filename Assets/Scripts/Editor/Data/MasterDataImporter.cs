@@ -375,6 +375,10 @@ namespace Sc.Editor.Data
             public bool IsActive;
             public string StartDate;
             public string EndDate;
+            public string BannerImagePath;
+            public int DisplayOrder;
+            public int PitySoftStart;
+            public float PitySoftRateBonus;
             public string Description;
         }
 
@@ -426,6 +430,10 @@ namespace Sc.Editor.Data
                     item.IsActive,
                     item.StartDate ?? "",
                     item.EndDate ?? "",
+                    item.BannerImagePath ?? "",
+                    item.DisplayOrder,
+                    item.PitySoftStart,
+                    item.PitySoftRateBonus,
                     item.Description ?? ""
                 );
 

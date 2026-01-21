@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "exportedAt": "2026-01-15T12:00:00Z",
+  "version": "1.1.0",
+  "exportedAt": "2026-01-21T12:00:00Z",
   "data": [
     {
       "Id": "gacha_standard",
@@ -22,6 +22,10 @@
       "IsActive": true,
       "StartDate": "2026-01-01T00:00:00Z",
       "EndDate": null,
+      "BannerImagePath": "Gacha/Banner/banner_standard",
+      "DisplayOrder": 100,
+      "PitySoftStart": 75,
+      "PitySoftRateBonus": 0.06,
       "Description": "다양한 영웅을 소환할 수 있는 기본 소환"
     },
     {
@@ -44,6 +48,10 @@
       "IsActive": true,
       "StartDate": "2026-01-15T00:00:00Z",
       "EndDate": "2026-02-15T00:00:00Z",
+      "BannerImagePath": "Gacha/Banner/banner_pickup_aria",
+      "DisplayOrder": 10,
+      "PitySoftStart": 65,
+      "PitySoftRateBonus": 0.06,
       "Description": "불꽃의 전사 아리아 확률 UP!"
     },
     {
@@ -66,6 +74,10 @@
       "IsActive": false,
       "StartDate": "2026-02-15T00:00:00Z",
       "EndDate": "2026-03-15T00:00:00Z",
+      "BannerImagePath": "Gacha/Banner/banner_pickup_luna",
+      "DisplayOrder": 20,
+      "PitySoftStart": 65,
+      "PitySoftRateBonus": 0.06,
       "Description": "달빛의 마법사 루나 확률 UP!"
     },
     {
@@ -88,6 +100,10 @@
       "IsActive": true,
       "StartDate": "2026-01-01T00:00:00Z",
       "EndDate": null,
+      "BannerImagePath": "Gacha/Banner/banner_free_daily",
+      "DisplayOrder": 200,
+      "PitySoftStart": 0,
+      "PitySoftRateBonus": 0,
       "Description": "매일 1회 무료 소환 (SSR 제외)"
     }
   ]

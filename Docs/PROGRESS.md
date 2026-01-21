@@ -22,7 +22,7 @@
 | F | **Shop** | ✅ | Shop.md |
 | F | **LobbyEntryTask** | ✅ | Lobby.md |
 | F | Stage | ✅ | Stage.md (v3.1, Phase A~J 전체 완료) |
-| F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
+| F | GachaEnhancement | ✅ | Gacha/Enhancement.md (Phase A~F 전체 완료) |
 | F | CharacterEnhancement | ✅ | Character/Enhancement.md (Phase A~F 전체 완료) |
 | F | NavigationEnhancement | ✅ | Common/NavigationEnhancement.md (Phase A~D 완료) |
 
@@ -33,13 +33,13 @@
 **지시**: "[시스템명] 구현하자" (예: "Shop 구현하자", "Stage 구현하자")
 
 ### 우선순위
-1. GachaEnhancement
+1. 마일스톤 완료! 다음 단계 설계 필요
 
 ---
 
 ## 🔨 진행 중인 작업
 
-없음
+없음 (OUTGAME-V1 마일스톤 완료)
 
 ---
 
@@ -55,8 +55,9 @@
 | 5차 | LiveEvent 테스트 | ✅ | 115개 |
 | 6차 | Stage 테스트 | ✅ | 47개 |
 | 7차 | CharacterEnhancement 테스트 | ✅ | 26개 |
+| 8차 | GachaEnhancement 테스트 | ✅ | 28개 |
 
-**총 테스트**: 377개
+**총 테스트**: 405개
 
 ---
 
@@ -129,6 +130,28 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-21
+- [x] **GachaEnhancement 시스템 Phase A~F 완료** (13개 파일 생성/수정)
+  - Phase A: 마스터 데이터 확장 (3개 파일)
+    - GachaPoolData.cs - BannerImagePath, DisplayOrder, PitySoftStart, PitySoftRateBonus 필드 추가
+    - GachaPool.json - 4개 풀에 소프트 천장 데이터 추가
+    - MasterDataImporter.cs - 새 필드 처리
+  - Phase B: 유저 데이터 확장 (2개 파일)
+    - GachaHistoryRecord.cs - 히스토리 레코드 구조체 (신규)
+    - UserSaveData.cs - GachaHistory 필드, v8 마이그레이션
+  - Phase C: GachaScreen 리팩토링 (2개 파일)
+    - GachaBannerItem.cs - 배너 아이템 위젯 (신규)
+    - GachaScreen.cs - 배너 스크롤, CostConfirmPopup, LoadingIndicator 연동
+  - Phase D: RateDetailPopup (2개 파일)
+    - RateDetailPopup.cs, RateDetailState.cs - 확률 상세 팝업 (신규)
+  - Phase E: GachaHistoryScreen (3개 파일)
+    - GachaHistoryScreen.cs, GachaHistoryState.cs, GachaHistoryItem.cs (신규)
+  - Phase F: Server 로직 (3개 파일)
+    - GachaService.cs - 소프트 천장 확률 계산 (GetEffectiveSSRRate)
+    - GachaHandler.cs - 히스토리 저장, 풀 활성화 검증
+    - GachaResponse.cs - PityThreshold, PitySoftStart, HitPity 필드 추가
+  - 테스트 (2개 파일)
+    - GachaServiceTests.cs - 소프트 천장 테스트 12개 추가
+    - GachaHistoryRecordTests.cs - 히스토리 테스트 16개 (신규)
 - [x] **NavigationEnhancement 시스템 Phase A~E 완료** (13개 파일 생성/수정)
   - Phase A: Core 배지 시스템 (3개 파일)
     - BadgeType.cs - 배지 타입 enum (Home, Character, Gacha, Settings, Event, Shop, Stage)

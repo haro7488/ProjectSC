@@ -152,6 +152,22 @@ namespace Sc.Packet
             _server?.SetEventDatabase(database);
         }
 
+        /// <summary>
+        /// GachaPoolDatabase 설정 (외부에서 Database 주입)
+        /// </summary>
+        public void SetGachaPoolDatabase(GachaPoolDatabase database)
+        {
+            _server?.SetGachaPoolDatabase(database);
+        }
+
+        /// <summary>
+        /// CharacterDatabase 설정 (외부에서 Database 주입)
+        /// </summary>
+        public void SetCharacterDatabase(CharacterDatabase database)
+        {
+            _server?.SetCharacterDatabase(database);
+        }
+
         #endregion
 
         #region Private Methods

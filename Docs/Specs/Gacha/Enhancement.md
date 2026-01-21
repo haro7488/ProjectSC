@@ -2,18 +2,18 @@
 type: spec
 assembly: Sc.Contents.Gacha
 category: Enhancement
-status: draft
-version: "1.0"
-dependencies: [Sc.Common, Sc.Packet, Phase1.RewardPopup, Phase0.LoadingIndicator]
+status: implemented
+version: "2.0"
+dependencies: [Sc.Common, Sc.Packet, Sc.Data, Phase1.CostConfirmPopup, Phase0.LoadingIndicator]
 created: 2026-01-18
-updated: 2026-01-18
+updated: 2026-01-21
 ---
 
-# 가챠 강화 (Phase 5.1)
+# 가챠 강화 (GachaEnhancement)
 
 ## 목적
 
-Phase 0~4 시스템과 연동하여 가챠 시스템 완성도 향상
+기존 가챠 시스템을 확장하여 다중 배너 스크롤, 소환 히스토리, 확률 상세 팝업, Phase 0~1 연동 등 완성도 향상
 
 ## Phase 연계
 
@@ -21,61 +21,149 @@ Phase 0~4 시스템과 연동하여 가챠 시스템 완성도 향상
 |-----------|-----------|
 | Phase 0 LoadingIndicator | 소환 요청 시 로딩 UI |
 | Phase 0 Log | 소환 요청/결과 로깅 |
-| Phase 0 Result<T> | API 반환 타입 통일 |
-| Phase 1 RewardPopup | 가챠 결과 표시 |
 | Phase 1 CostConfirmPopup | 재화 소비 확인 |
 | Phase 1 AlertPopup | 에러 표시 |
-| Phase 2 TimeHelper | 남은 시간 표시 |
-| Phase 4 배너 패턴 | EventBannerItem 참조 |
+| Phase 2 TimeHelper | 남은 시간 포맷팅 |
+
+---
+
+## 아키텍처 변경 개요
+
+### 현재 → 목표
+
+```
+[현재]
+GachaScreen (단일 풀 하드코딩)
+    └── SinglePull / MultiPull 버튼
+    └── GachaResultPopup (커스텀)
+
+[목표]
+GachaScreen (다중 풀 선택)
+    ├── BannerScrollView
+    │   └── GachaBannerItem[] (선택 가능)
+    ├── SelectedBannerDetailPanel
+    │   ├── PityProgressBar
+    │   ├── RateInfoDisplay
+    │   └── PickupCharacterDisplay
+    ├── ActionButtons
+    │   └── SinglePull / MultiPull → CostConfirmPopup
+    └── SubButtons
+        ├── [확률 상세] → RateDetailPopup
+        └── [히스토리] → GachaHistoryScreen
+```
+
+---
+
+## 구현 범위
+
+### Phase A: 마스터 데이터 확장
+
+| 항목 | 설명 | 필드 |
+|------|------|------|
+| 배너 표시 | 배너 이미지, 표시 순서 | `BannerImagePath`, `DisplayOrder` |
+| 소프트 천장 | 확률 점진 증가 | `PitySoftStart`, `PitySoftRateBonus` |
+
+### Phase B: 유저 데이터 확장
+
+| 항목 | 설명 |
+|------|------|
+| GachaHistoryRecord | 소환 이력 기록 |
+| UserSaveData Migration | GachaHistory 필드 추가 |
+
+### Phase C: GachaScreen 리팩토링
+
+| 항목 | 설명 |
+|------|------|
+| BannerScrollView | 활성 배너 가로 스크롤 |
+| GachaBannerItem | 배너 위젯 (선택, 남은 시간) |
+| SelectedBannerDetailPanel | 선택 배너 상세 정보 |
+| CostConfirmPopup 연동 | 소환 버튼 클릭 시 확인 팝업 |
+| LoadingIndicator 연동 | 요청 중 로딩 표시 |
+
+### Phase D: 팝업 추가
+
+| 항목 | 설명 |
+|------|------|
+| RateDetailPopup | 확률 상세 (등급별 확률, 천장 설명) |
+
+### Phase E: 히스토리 화면
+
+| 항목 | 설명 |
+|------|------|
+| GachaHistoryScreen | 소환 이력 목록 |
+| GachaHistoryItem | 이력 아이템 위젯 |
+
+### Phase F (선택): 연출
+
+| 항목 | 설명 |
+|------|------|
+| GachaAnimator | 소환 연출 (희귀도별, 스킵 가능) |
 
 ---
 
 ## 마스터 데이터 확장
 
-### GachaPoolData 확장
+### GachaPoolData 확장 필드
 
 **위치**: `Assets/Scripts/Data/ScriptableObjects/GachaPoolData.cs`
 
 ```csharp
-[CreateAssetMenu(fileName = "GachaPoolData", menuName = "SC/Data/GachaPoolData")]
-public class GachaPoolData : ScriptableObject
+// 기존 필드 유지 + 추가
+
+[Header("배너 표시 (Enhancement)")]
+[SerializeField] private string _bannerImagePath;    // Addressables 경로
+[SerializeField] private int _displayOrder;          // 표시 순서 (낮을수록 앞)
+
+[Header("소프트 천장 (Enhancement)")]
+[SerializeField] private int _pitySoftStart;         // 소프트 천장 시작 (예: 75)
+[SerializeField] private float _pitySoftRateBonus;   // 회당 추가 확률 (예: 0.06)
+
+// Properties
+public string BannerImagePath => _bannerImagePath;
+public int DisplayOrder => _displayOrder;
+public int PitySoftStart => _pitySoftStart;
+public float PitySoftRateBonus => _pitySoftRateBonus;
+
+// 헬퍼 메서드
+public bool IsActive(DateTime serverTime)
 {
-    [Header("기본 정보")]
-    public string Id;
-    public string NameKey;
-    public string DescriptionKey;
-    public GachaType GachaType;
+    if (string.IsNullOrEmpty(StartDate)) return IsActive;
 
-    [Header("확률")]
-    public GachaRates Rates;
+    var start = DateTime.Parse(StartDate, null, DateTimeStyles.RoundtripKind);
+    if (serverTime < start) return false;
 
-    [Header("배너 정보 (신규)")]
-    public string BannerImagePath;
-    public string BannerNameKey;
-    public DateTime StartTime;          // 기간 한정 (null이면 상시)
-    public DateTime EndTime;
-    public bool IsPickup;               // 픽업 여부
-    public List<string> PickupCharacterIds; // 픽업 캐릭터
-    public int DisplayOrder;            // 표시 순서
+    if (string.IsNullOrEmpty(EndDate)) return true;
+    var end = DateTime.Parse(EndDate, null, DateTimeStyles.RoundtripKind);
+    return serverTime < end;
+}
 
-    [Header("천장 정보 (신규)")]
-    public int PityThreshold;           // 천장 횟수 (예: 90)
-    public float PitySoftStart;         // 소프트 천장 시작 (예: 75)
-    public float PitySoftRate;          // 소프트 천장 확률 보너스
-    public bool ShowPityProgress;       // UI에 천장 진행도 표시
-    public bool ResetPityOnGet;         // ★5 획득 시 천장 리셋
+public TimeSpan GetRemainingTime(DateTime serverTime)
+{
+    if (string.IsNullOrEmpty(EndDate)) return TimeSpan.MaxValue;
+    var end = DateTime.Parse(EndDate, null, DateTimeStyles.RoundtripKind);
+    return end - serverTime;
+}
+```
 
-    [Header("비용")]
-    public CostType CostType;
-    public int SingleCost;              // 1회 비용
-    public int MultiCost;               // 10회 비용 (할인 적용)
+### GachaPool.json 확장
 
-    // 헬퍼 메서드
-    public bool IsActive(DateTime serverTime)
-        => StartTime == default || (serverTime >= StartTime && serverTime < EndTime);
-
-    public int GetRemainingDays(DateTime serverTime)
-        => EndTime == default ? -1 : Math.Max(0, (EndTime - serverTime).Days);
+```json
+{
+  "Id": "gacha_pickup_aria",
+  "Name": "아리아 픽업 소환",
+  "Type": "Pickup",
+  "CostType": "Gem",
+  "CostAmount": 300,
+  "CostAmount10": 2700,
+  "PityCount": 90,
+  "PitySoftStart": 75,
+  "PitySoftRateBonus": 0.06,
+  "BannerImagePath": "UI/Banners/banner_aria",
+  "DisplayOrder": 1,
+  "RateUpCharacterId": "char_001",
+  "RateUpBonus": 0.5,
+  "StartDate": "2026-01-15T00:00:00Z",
+  "EndDate": "2026-02-15T00:00:00Z"
 }
 ```
 
@@ -91,48 +179,86 @@ public class GachaPoolData : ScriptableObject
 [Serializable]
 public struct GachaHistoryRecord
 {
-    public string PoolId;
-    public long Timestamp;
-    public GachaPullType PullType;      // Single, Multi
-    public List<GachaResultItem> Results;
+    public string Id;                       // UUID
+    public string PoolId;                   // 가챠 풀 ID
+    public string PoolName;                 // 풀 이름 (표시용)
+    public long Timestamp;                  // Unix timestamp
+    public GachaPullType PullType;          // Single, Multi
+    public List<GachaHistoryResultItem> Results;
+
+    // 요약 정보 (UI 표시용)
+    public int SSRCount;
+    public int SRCount;
+    public int RCount;
+}
+
+[Serializable]
+public struct GachaHistoryResultItem
+{
+    public string CharacterId;
+    public Rarity Rarity;
+    public bool IsNew;
+    public bool IsPity;
 }
 ```
 
 ### UserSaveData 확장
 
+**Migration**: v7 (v6 → v7)
+
 ```csharp
-// UserSaveData.cs에 추가
+// UserSaveData.cs
 public List<GachaHistoryRecord> GachaHistory;
 
 // 헬퍼 메서드
+public List<GachaHistoryRecord> GetRecentHistory(int limit = 100)
+    => GachaHistory?
+        .OrderByDescending(h => h.Timestamp)
+        .Take(limit)
+        .ToList() ?? new List<GachaHistoryRecord>();
+
 public List<GachaHistoryRecord> GetHistoryByPool(string poolId, int limit = 50)
-    => GachaHistory
+    => GachaHistory?
         .Where(h => h.PoolId == poolId)
         .OrderByDescending(h => h.Timestamp)
         .Take(limit)
-        .ToList();
+        .ToList() ?? new List<GachaHistoryRecord>();
+```
+
+### SaveMigrator 추가
+
+```csharp
+// v6 → v7
+private UserSaveData MigrateV6ToV7(UserSaveData data)
+{
+    data.GachaHistory ??= new List<GachaHistoryRecord>();
+    data.Version = 7;
+    return data;
+}
 ```
 
 ---
 
-## Request/Response 확장
+## GachaResponse 확장
 
-### GachaResponse 확장
+**위치**: `Assets/Scripts/Data/Responses/GachaResponse.cs`
 
 ```csharp
 [Serializable]
-public struct GachaResponse : IGameActionResponse
+public class GachaResponse : IGameActionResponse
 {
+    // 기존 필드 유지
     public bool IsSuccess { get; set; }
-    public ErrorCode ErrorCode { get; set; }
+    public int ErrorCode { get; set; }
+    public string ErrorMessage { get; set; }
     public long ServerTime { get; set; }
     public UserDataDelta Delta { get; set; }
-
     public List<GachaResultItem> Results;
+    public int CurrentPityCount;
 
-    // 신규 필드
-    public int CurrentPityCount;        // 현재 천장 카운트
-    public int PityThreshold;           // 천장 도달 횟수
+    // 추가 필드
+    public int PityThreshold;           // 하드 천장 횟수
+    public int PitySoftStart;           // 소프트 천장 시작
     public bool HitPity;                // 이번 소환에서 천장 발동 여부
 }
 ```
@@ -146,28 +272,32 @@ public struct GachaResponse : IGameActionResponse
 ```
 [GachaScreen]
 ├── ScreenHeader
-├── BannerScrollView (가로 스크롤)
+├── BannerScrollView (가로 스크롤, SnapCenter)
 │   └── GachaBannerItem[]
-│       ├── BannerImage
+│       ├── BannerImage (Addressables)
 │       ├── BannerName
-│       ├── RemainingTime
-│       ├── PickupCharacterIcons (최대 3개)
-│       └── SelectIndicator
+│       ├── RemainingTimeText (TimeHelper 포맷)
+│       ├── PickupBadge (픽업 여부)
+│       ├── FreeBadge (무료 소환)
+│       └── SelectedIndicator
 ├── SelectedBannerDetailPanel
-│   ├── PickupInfo
-│   │   ├── PickupCharacterCard[]
-│   │   └── PickupRateText (예: "픽업 확률 UP!")
-│   ├── RateInfo
-│   │   ├── Star5Rate (0.6%)
-│   │   ├── Star4Rate (5.1%)
-│   │   └── Star3Rate (94.3%)
-│   ├── PityProgress
-│   │   ├── ProgressBar
-│   │   ├── CurrentCount / Threshold (예: 45/90)
-│   │   └── PityGuaranteeText (예: "45회 후 ★5 확정")
-│   └── CostDisplay
-│       ├── SingleCost (300 Gem)
-│       └── MultiCost (2700 Gem, 10% 할인)
+│   ├── BannerTitle
+│   ├── PityProgressBar
+│   │   ├── FillBar
+│   │   ├── CurrentText (45회)
+│   │   ├── ThresholdText (/90)
+│   │   └── SoftPityMarker (75회 위치)
+│   ├── PickupCharacterDisplay
+│   │   ├── CharacterIcon
+│   │   ├── CharacterName
+│   │   └── PickupRateText (확률 UP!)
+│   └── RateSummary
+│       ├── SSRRate (★5: 3.0%)
+│       ├── SRRate (★4: 12.0%)
+│       └── RRate (★3: 85.0%)
+├── CostDisplay
+│   ├── SingleCost (300 Gem)
+│   └── MultiCost (2,700 Gem)
 ├── ActionButtons
 │   ├── [1회 소환] → CostConfirmPopup
 │   └── [10회 소환] → CostConfirmPopup
@@ -179,57 +309,64 @@ public struct GachaResponse : IGameActionResponse
 
 ### GachaBannerItem
 
+**위치**: `Assets/Scripts/Contents/OutGame/Gacha/GachaBannerItem.cs`
+
 ```csharp
-public class GachaBannerItem : Widget
+public class GachaBannerItem : MonoBehaviour
 {
     [SerializeField] private Image _bannerImage;
     [SerializeField] private TMP_Text _bannerName;
     [SerializeField] private TMP_Text _remainingTime;
     [SerializeField] private GameObject _pickupBadge;
-    [SerializeField] private Image[] _pickupCharacterIcons;
+    [SerializeField] private GameObject _freeBadge;
     [SerializeField] private GameObject _selectedIndicator;
-    [SerializeField] private GameObject _newBadge;
+    [SerializeField] private Button _button;
 
     private GachaPoolData _data;
+    private Action<GachaPoolData> _onSelected;
 
-    public void Setup(GachaPoolData data, bool isSelected)
+    public void Setup(GachaPoolData data, bool isSelected, Action<GachaPoolData> onSelected)
     {
         _data = data;
-        // 배너 이미지, 이름, 남은 시간, 픽업 캐릭터 표시
-        RefreshTimeDisplay();
+        _onSelected = onSelected;
+
+        _bannerName.text = data.Name;
+        _pickupBadge.SetActive(data.Type == GachaType.Pickup);
+        _freeBadge.SetActive(data.Type == GachaType.Free);
+        _selectedIndicator.SetActive(isSelected);
+
+        RefreshRemainingTime();
+        LoadBannerImage();
+
+        _button.onClick.AddListener(() => _onSelected?.Invoke(_data));
     }
 
-    public void RefreshTimeDisplay()
+    public void RefreshRemainingTime()
     {
-        if (_data.EndTime != default)
+        if (string.IsNullOrEmpty(_data.EndDate))
         {
-            var remaining = _data.GetRemainingDays(TimeService.Instance.ServerDateTime);
-            _remainingTime.text = TimeHelper.FormatRemainingDays(remaining);
+            _remainingTime.gameObject.SetActive(false);
+            return;
         }
+
+        var serverTime = TimeService.Instance.ServerDateTime;
+        var remaining = _data.GetRemainingTime(serverTime);
+        _remainingTime.text = TimeHelper.FormatRemainingTime(remaining);
+        _remainingTime.gameObject.SetActive(true);
+    }
+
+    private async void LoadBannerImage()
+    {
+        if (string.IsNullOrEmpty(_data.BannerImagePath)) return;
+        var sprite = await AssetManager.Instance.LoadAsync<Sprite>(_data.BannerImagePath);
+        if (sprite != null) _bannerImage.sprite = sprite;
+    }
+
+    public void SetSelected(bool selected)
+    {
+        _selectedIndicator.SetActive(selected);
     }
 }
-```
-
-### GachaHistoryScreen
-
-```
-[GachaHistoryScreen]
-├── ScreenHeader ([히스토리])
-├── FilterTabs
-│   ├── [전체]
-│   ├── [픽업]
-│   └── [일반]
-├── HistoryScrollView
-│   └── GachaHistoryItem[]
-│       ├── Timestamp (TimeHelper 포맷)
-│       ├── BannerName
-│       ├── PullType (1회/10회)
-│       ├── ResultSummary
-│       │   ├── Star5Count (★5 x1)
-│       │   ├── Star4Count (★4 x3)
-│       │   └── Star3Count (★3 x6)
-│       └── [상세] 버튼 → GachaHistoryDetailPopup
-└── EmptyState (기록 없음)
 ```
 
 ### RateDetailPopup
@@ -238,68 +375,53 @@ public class GachaBannerItem : Widget
 [RateDetailPopup]
 ├── Title (확률 상세)
 ├── RateList
-│   ├── ★5 캐릭터: 0.6%
-│   │   └── 픽업 캐릭터 (50%): 0.3%
-│   ├── ★4 캐릭터: 5.1%
-│   └── ★3 캐릭터: 94.3%
+│   ├── ★5 캐릭터: 3.0%
+│   │   └── (픽업 시) 픽업 캐릭터: 1.5%
+│   ├── ★4 캐릭터: 12.0%
+│   └── ★3 캐릭터: 85.0%
 ├── PityExplanation
-│   ├── 소프트 천장: 75회부터 확률 상승
+│   ├── 소프트 천장: 75회부터 회당 6% 확률 증가
 │   └── 하드 천장: 90회 ★5 확정
+├── CharacterList (접이식)
+│   └── 획득 가능 캐릭터 목록
 └── [닫기] 버튼
 ```
 
----
+### GachaHistoryScreen
 
-## 소환 연출 (선택적)
-
-### GachaAnimator
-
-```csharp
-public class GachaAnimator : MonoBehaviour
-{
-    [SerializeField] private float _singleDuration = 2f;
-    [SerializeField] private float _multiDuration = 5f;
-    [SerializeField] private GameObject _skipButton;
-
-    private bool _isSkipped;
-
-    public async UniTask PlayAsync(List<GachaResultItem> results)
-    {
-        _skipButton.SetActive(true);
-        _isSkipped = false;
-
-        foreach (var result in results)
-        {
-            if (_isSkipped) break;
-
-            await PlaySingleRevealAsync(result);
-        }
-
-        _skipButton.SetActive(false);
-    }
-
-    public void OnSkipClicked()
-    {
-        _isSkipped = true;
-    }
-
-    private async UniTask PlaySingleRevealAsync(GachaResultItem result)
-    {
-        // 희귀도별 연출
-        // ★5: 금색 이펙트, 긴 연출
-        // ★4: 보라색 이펙트, 중간 연출
-        // ★3: 파란색 이펙트, 짧은 연출
-    }
-}
+```
+[GachaHistoryScreen]
+├── ScreenHeader ([소환 기록])
+├── FilterTabs (TabGroupWidget)
+│   ├── [전체]
+│   ├── [픽업]
+│   └── [일반]
+├── HistoryScrollView
+│   └── GachaHistoryItem[]
+│       ├── Timestamp (2026-01-21 14:30)
+│       ├── PoolName (아리아 픽업 소환)
+│       ├── PullType (10회 소환)
+│       ├── ResultSummary
+│       │   ├── SSRBadge (★5 x1)
+│       │   ├── SRBadge (★4 x3)
+│       │   └── RBadge (★3 x6)
+│       └── [상세] 버튼 (선택적)
+└── EmptyState (기록이 없습니다)
 ```
 
 ---
 
 ## 흐름
 
-### 소환 흐름
+### 소환 흐름 (Enhancement 적용)
 
 ```
+[GachaScreen] 배너 선택
+        │
+        ▼
+[SelectedBannerDetailPanel 갱신]
+        │
+        ▼
 [1회/10회 소환] 클릭
         │
         ▼
@@ -311,27 +433,33 @@ public class GachaAnimator : MonoBehaviour
           ▼
 ┌─────────────────────┐
 │ LoadingIndicator    │  ← Phase 0
-│ "소환 중..."        │
+│ Show()              │
 └─────────┬───────────┘
           │
           ▼
 [NetworkManager.Send(GachaRequest)]
           │
           ▼
+[GachaHandler.Handle]
+    ├─ 소프트 천장 확률 계산
+    ├─ 가챠 실행
+    ├─ 히스토리 저장 (GachaHistory)
+    └─ Response 생성
+          │
+          ▼
 ┌─────────────────────┐
-│ GachaAnimator       │  ← 선택적
-│ (연출, 스킵 가능)   │
+│ LoadingIndicator    │
+│ Hide()              │
 └─────────┬───────────┘
           │
           ▼
 ┌─────────────────────┐
-│ RewardPopup         │  ← Phase 1
+│ GachaResultPopup    │
 │ (결과 표시)         │
 └─────────┬───────────┘
           │
           ▼
-[천장 카운트 갱신]
-[히스토리 저장]
+[PityProgressBar 갱신]
 ```
 
 ### 에러 처리 흐름
@@ -340,18 +468,87 @@ public class GachaAnimator : MonoBehaviour
 [GachaResponse.IsSuccess == false]
           │
           ▼
-┌─────────────────────────────────────┐
-│ ErrorCode 분기                       │
-│                                      │
-│ GACHA_NOT_ENOUGH_CURRENCY:           │
-│   → AlertPopup("재화가 부족합니다")  │
-│                                      │
-│ GACHA_POOL_NOT_FOUND:                │
-│   → AlertPopup("배너가 종료되었습니다")│
-│                                      │
-│ 기타:                                │
-│   → AlertPopup(ErrorMessages.Get())  │
-└──────────────────────────────────────┘
+┌───────────────────────────────────────┐
+│ ErrorCode 분기                        │
+│                                       │
+│ 1001 (재화 부족):                     │
+│   → AlertPopup("보석이 부족합니다")   │
+│                                       │
+│ 1002 (풀 없음):                       │
+│   → AlertPopup("배너가 종료됨")       │
+│   → 배너 목록 새로고침                │
+│                                       │
+│ 기타:                                 │
+│   → AlertPopup(ErrorMessages.Get())   │
+└───────────────────────────────────────┘
+```
+
+---
+
+## GachaHandler 수정사항
+
+### 소프트 천장 확률 계산
+
+```csharp
+// GachaService.cs
+public Rarity CalculateRarity(int currentPity, GachaPoolData pool)
+{
+    var ssrRate = pool.Rates.SSR;
+
+    // 하드 천장
+    if (currentPity >= pool.PityCount)
+        return Rarity.SSR;
+
+    // 소프트 천장
+    if (pool.PitySoftStart > 0 && currentPity >= pool.PitySoftStart)
+    {
+        var overCount = currentPity - pool.PitySoftStart;
+        ssrRate += pool.PitySoftRateBonus * overCount;
+        ssrRate = Math.Min(ssrRate, 1f);  // 최대 100%
+    }
+
+    var roll = Random.Range(0f, 1f);
+    if (roll < ssrRate) return Rarity.SSR;
+    if (roll < ssrRate + pool.Rates.SR) return Rarity.SR;
+    return Rarity.R;
+}
+```
+
+### 히스토리 저장
+
+```csharp
+// GachaHandler.cs Handle 메서드 내
+// 가챠 실행 후 히스토리 저장
+var historyRecord = new GachaHistoryRecord
+{
+    Id = Guid.NewGuid().ToString(),
+    PoolId = request.GachaPoolId,
+    PoolName = poolData.Name,
+    Timestamp = _timeService.ServerTimeUtc,
+    PullType = request.PullType,
+    Results = results.Select(r => new GachaHistoryResultItem
+    {
+        CharacterId = r.CharacterId,
+        Rarity = r.Rarity,
+        IsNew = r.IsNew,
+        IsPity = r.IsPity
+    }).ToList(),
+    SSRCount = results.Count(r => r.Rarity == Rarity.SSR),
+    SRCount = results.Count(r => r.Rarity == Rarity.SR),
+    RCount = results.Count(r => r.Rarity == Rarity.R)
+};
+
+userData.GachaHistory ??= new List<GachaHistoryRecord>();
+userData.GachaHistory.Add(historyRecord);
+
+// 최근 200건만 유지
+if (userData.GachaHistory.Count > 200)
+{
+    userData.GachaHistory = userData.GachaHistory
+        .OrderByDescending(h => h.Timestamp)
+        .Take(200)
+        .ToList();
+}
 ```
 
 ---
@@ -359,47 +556,81 @@ public class GachaAnimator : MonoBehaviour
 ## 구현 체크리스트
 
 ```
-가챠 강화 (Phase 5.1):
+가챠 강화 (GachaEnhancement):
 
-마스터 데이터:
-- [ ] GachaPoolData.cs 확장 (배너, 천장 필드)
-- [ ] GachaPool.json 샘플 데이터 업데이트
-- [ ] MasterDataImporter 업데이트
+Phase A - 마스터 데이터 확장:
+- [x] GachaPoolData.cs 필드 추가 (BannerImagePath, DisplayOrder, PitySoft*)
+- [x] GachaPool.json 샘플 데이터 업데이트
+- [x] MasterDataImporter 업데이트
 
-유저 데이터:
-- [ ] GachaHistoryRecord.cs 생성
-- [ ] UserSaveData.GachaHistory 필드 추가
-- [ ] UserSaveData 버전 마이그레이션
+Phase B - 유저 데이터 확장:
+- [x] GachaHistoryRecord.cs 생성
+- [x] UserSaveData.GachaHistory 필드 추가
+- [x] SaveMigrator v7→v8 마이그레이션
 
-Request/Response:
-- [ ] GachaResponse 확장 (천장 정보)
+Phase C - GachaScreen 리팩토링:
+- [x] GachaBannerItem.cs 생성
+- [x] GachaScreen 배너 스크롤 구현
+- [x] SelectedBannerDetailPanel 구현
+- [x] PityProgressBar 위젯 구현
+- [x] CostConfirmPopup 연동
+- [x] LoadingIndicator 연동
+- [x] Log.Info/Error 적용
 
-UI:
-- [ ] GachaBannerItem.cs 생성
-- [ ] GachaScreen.cs 리팩토링
-- [ ] GachaHistoryScreen.cs 생성
-- [ ] GachaHistoryItem.cs 생성
-- [ ] RateDetailPopup.cs 생성
-- [ ] GachaAnimator.cs 생성 (선택)
+Phase D - 팝업:
+- [x] RateDetailPopup.cs 생성
+- [ ] RateDetailPopup 프리팹 (Unity에서 설정 필요)
 
-연동:
-- [ ] GachaResultPopup → RewardPopup 교체
-- [ ] 소환 버튼 → CostConfirmPopup 연동
-- [ ] 에러 → AlertPopup + ErrorCode 연동
-- [ ] 로딩 → LoadingIndicator 적용
-- [ ] 남은 시간 → TimeHelper 사용
-- [ ] Log.Info/Error 적용
+Phase E - 히스토리:
+- [x] GachaHistoryScreen.cs 생성
+- [x] GachaHistoryState.cs 생성
+- [x] GachaHistoryItem.cs 생성
+- [ ] GachaHistoryScreen 프리팹 (Unity에서 설정 필요)
 
-프리팹:
-- [ ] GachaBannerItem 프리팹
-- [ ] GachaHistoryItem 프리팹
-- [ ] MVPSceneSetup 업데이트
+Phase F - Server:
+- [x] GachaService 소프트 천장 로직
+- [x] GachaHandler 히스토리 저장 로직
+- [x] GachaResponse 확장 필드 (HitPity, PityThreshold)
+
+테스트:
+- [x] GachaPoolData 헬퍼 메서드 테스트
+- [x] 소프트 천장 확률 계산 테스트
+- [x] 히스토리 저장/조회 테스트
+```
+
+---
+
+## 파일 구조 (목표)
+
+```
+Assets/Scripts/Contents/OutGame/Gacha/
+├── GachaScreen.cs              (수정)
+├── GachaResultPopup.cs         (기존)
+├── GachaBannerItem.cs          (신규)
+├── GachaHistoryScreen.cs       (신규)
+├── GachaHistoryItem.cs         (신규)
+├── RateDetailPopup.cs          (신규)
+└── Widgets/
+    └── PityProgressBar.cs      (신규)
+
+Assets/Scripts/Data/
+├── ScriptableObjects/
+│   └── GachaPoolData.cs        (수정)
+├── Structs/UserData/
+│   └── GachaHistoryRecord.cs   (신규)
+└── Responses/
+    └── GachaResponse.cs        (수정)
+
+Assets/Scripts/LocalServer/
+└── Services/
+    └── GachaService.cs         (수정)
 ```
 
 ---
 
 ## 관련 문서
 
-- [Gacha.md](../Gacha.md) - 가챠 시스템 개요
-- [Common/Reward.md](../Common/Reward.md) - Phase 1 보상 시스템
-- [Common/Popups/RewardPopup.md](../Common/Popups/RewardPopup.md) - Phase 1 RewardPopup
+- [Gacha.md](../Gacha.md) - 가챠 시스템 기본
+- [Common/Popups/CostConfirmPopup.md](../Common/Popups/CostConfirmPopup.md) - Phase 1 CostConfirmPopup
+- [Core/TimeService.md](../Core/TimeService.md) - TimeHelper 포맷팅
+- [Foundation/LoadingIndicator.md](../Foundation/LoadingIndicator.md) - Phase 0 로딩

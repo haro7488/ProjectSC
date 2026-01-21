@@ -72,9 +72,30 @@ namespace Sc.Data
         public int CurrentPityCount;
 
         /// <summary>
+        /// 확정 천장 임계값
+        /// </summary>
+        public int PityThreshold;
+
+        /// <summary>
+        /// 소프트 천장 시작 지점
+        /// </summary>
+        public int PitySoftStart;
+
+        /// <summary>
+        /// 이번 뽑기에서 천장 발동 여부
+        /// </summary>
+        public bool HitPity;
+
+        /// <summary>
         /// 성공 응답 생성
         /// </summary>
-        public static GachaResponse Success(List<GachaResultItem> results, UserDataDelta delta, int pityCount)
+        public static GachaResponse Success(
+            List<GachaResultItem> results,
+            UserDataDelta delta,
+            int pityCount,
+            int pityThreshold = 0,
+            int pitySoftStart = 0,
+            bool hitPity = false)
         {
             return new GachaResponse
             {
@@ -84,7 +105,10 @@ namespace Sc.Data
                 ServerTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 Delta = delta,
                 Results = results,
-                CurrentPityCount = pityCount
+                CurrentPityCount = pityCount,
+                PityThreshold = pityThreshold,
+                PitySoftStart = pitySoftStart,
+                HitPity = hitPity
             };
         }
 

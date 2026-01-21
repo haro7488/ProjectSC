@@ -80,6 +80,11 @@ namespace Sc.Data
         public List<PartyPreset> PartyPresets;
 
         /// <summary>
+        /// 가챠 히스토리 목록
+        /// </summary>
+        public List<GachaHistoryRecord> GachaHistory;
+
+        /// <summary>
         /// 마지막 동기화 시간 (Unix Timestamp)
         /// </summary>
         public long LastSyncAt;
@@ -87,7 +92,7 @@ namespace Sc.Data
         /// <summary>
         /// 현재 데이터 버전
         /// </summary>
-        public const int CurrentVersion = 7;
+        public const int CurrentVersion = 8;
 
         /// <summary>
         /// 신규 유저 데이터 생성
@@ -110,6 +115,7 @@ namespace Sc.Data
                 StageEntryRecords = new Dictionary<string, StageEntryRecord>(),
                 BattleSessions = new Dictionary<string, BattleSessionData>(),
                 PartyPresets = new List<PartyPreset>(),
+                GachaHistory = new List<GachaHistoryRecord>(),
                 LastSyncAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
         }
@@ -179,7 +185,24 @@ namespace Sc.Data
 
                 data.Version = 6;
             }
-            
+
+            // Version 6 → 7: 기존 마이그레이션 (이미 처리됨)
+            if (data.Version < 7)
+            {
+                data.Version = 7;
+            }
+
+            // Version 7 → 8: GachaHistory 필드 추가
+            if (data.Version < 8)
+            {
+                if (data.GachaHistory == null)
+                {
+                    data.GachaHistory = new List<GachaHistoryRecord>();
+                }
+
+                data.Version = 8;
+            }
+
             return data;
         }
 
@@ -510,6 +533,75 @@ namespace Sc.Data
             }
 
             return false;
+        }
+
+        #endregion
+
+        #region Gacha History Helpers
+
+        /// <summary>
+        /// 가챠 히스토리 기록 추가
+        /// </summary>
+        public void AddGachaHistory(GachaHistoryRecord record)
+        {
+            GachaHistory ??= new List<GachaHistoryRecord>();
+            GachaHistory.Insert(0, record); // 최신 기록을 앞에 삽입
+        }
+
+        /// <summary>
+        /// 최근 가챠 히스토리 조회
+        /// </summary>
+        public List<GachaHistoryRecord> GetRecentHistory(int count = 50)
+        {
+            if (GachaHistory == null || GachaHistory.Count == 0)
+            {
+                return new List<GachaHistoryRecord>();
+            }
+
+            var result = new List<GachaHistoryRecord>();
+            var maxCount = Math.Min(count, GachaHistory.Count);
+            for (int i = 0; i < maxCount; i++)
+            {
+                result.Add(GachaHistory[i]);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 특정 풀의 가챠 히스토리 조회
+        /// </summary>
+        public List<GachaHistoryRecord> GetHistoryByPool(string poolId, int count = 50)
+        {
+            if (GachaHistory == null || string.IsNullOrEmpty(poolId))
+            {
+                return new List<GachaHistoryRecord>();
+            }
+
+            var result = new List<GachaHistoryRecord>();
+            foreach (var record in GachaHistory)
+            {
+                if (record.PoolId == poolId)
+                {
+                    result.Add(record);
+                    if (result.Count >= count) break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 가챠 히스토리 정리 (오래된 기록 삭제)
+        /// </summary>
+        public void CleanupOldGachaHistory(int maxRecords = 500)
+        {
+            if (GachaHistory == null || GachaHistory.Count <= maxRecords) return;
+
+            while (GachaHistory.Count > maxRecords)
+            {
+                GachaHistory.RemoveAt(GachaHistory.Count - 1);
+            }
         }
 
         #endregion

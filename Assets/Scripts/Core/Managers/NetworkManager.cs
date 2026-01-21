@@ -251,6 +251,30 @@ namespace Sc.Core
             }
         }
 
+        /// <summary>
+        /// GachaPoolDatabase 설정 (LocalApiClient에 주입)
+        /// </summary>
+        public void SetGachaPoolDatabase(GachaPoolDatabase database)
+        {
+            if (_apiClient is LocalApiClient localClient)
+            {
+                localClient.SetGachaPoolDatabase(database);
+                Debug.Log("[NetworkManager] GachaPoolDatabase injected");
+            }
+        }
+
+        /// <summary>
+        /// CharacterDatabase 설정 (LocalApiClient에 주입)
+        /// </summary>
+        public void SetCharacterDatabase(CharacterDatabase database)
+        {
+            if (_apiClient is LocalApiClient localClient)
+            {
+                localClient.SetCharacterDatabase(database);
+                Debug.Log("[NetworkManager] CharacterDatabase injected");
+            }
+        }
+
         #region Private Methods
 
         private void RegisterDefaultHandlers()
