@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(claude mcp:*)",
+      "Bash(uvx:*)",
+      "Bash(curl:*)",
+      "Bash(sh)",
+      "Bash(source $HOME/.local/bin/env)",
+      "Bash(dotnet format:*)",
+      "Bash(dotnet build:*)",
+      "mcp__plugin_serena_serena__activate_project",
+      "mcp__plugin_serena_serena__check_onboarding_performed",
+      "mcp__plugin_serena_serena__get_current_config",
+      "mcp__plugin_serena_serena__read_file",
+      "mcp__plugin_serena_serena__read_memory",
+      "mcp__plugin_serena_serena__find_file",
+      "mcp__plugin_serena_serena__get_symbols_overview",
+      "mcp__plugin_serena_serena__list_dir",
+      "mcp__plugin_serena_serena__find_symbol",
+      "mcp__plugin_serena_serena__think_about_collected_information",
+      "Skill(explore)",
+      "Bash(find:*)",
+      "Bash(for f in /Users/park-yongje/Projects/ProjectSC/Assets/Scripts/Common/UI/*.cs)",
+      "Bash(do grep -E \"^\\\\s*\\(public|internal|private\\)?\\\\s*\\(class|interface|struct\\)\\\\s+\\\\w+\" $f)",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "mcp__plugin_serena_serena__think_about_task_adherence",
+      "mcp__plugin_serena_serena__create_text_file",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nImprove multi-session management structure\n\n- _active.json에 sessions/file_owners/completed 구조 추가\n- 영역 선언\\(scope\\) + 실제 변경 파일\\(modified_files\\) 추적\n- 세션 간 충돌 방지 규칙 문서화\nEOF\n\\)\")",
+      "Bash(git commit:*)",
+      "mcp__plugin_serena_serena__replace_content"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_FILE_PATH\" == *.cs ]]; then dotnet format \"$CLAUDE_FILE_PATH\" --verbosity quiet 2>/dev/null || true; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
