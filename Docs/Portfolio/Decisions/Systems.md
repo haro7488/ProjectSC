@@ -113,3 +113,180 @@ OnBind → PreloadAsync → SpawnItems (캐시에서 즉시 표시)
 
 ### 결과
 AssetManager Scope 기반 로딩으로 대체. RewardIconCache 127줄 삭제.
+
+---
+
+## CharacterEnhancement 전투력 계산 공식
+
+**일자**: 2026-01-21 | **상태**: 결정됨
+
+### 컨텍스트
+캐릭터 레벨업/돌파 시 전투력(Combat Power) 변화 표시 필요. 공식 투명성 vs 복잡성 트레이드오프.
+
+### 선택지
+1. **단순 합산** - HP + ATK + DEF + ... (직관적이나 밸런스 어려움)
+2. **가중치 기반** - 스탯별 계수 적용 (선택)
+3. **비선형 공식** - 복잡한 계산 (정확하나 이해 어려움)
+
+### 결정
+**가중치 기반 선형 공식**
+```csharp
+public static class PowerCalculator
+{
+    public static int Calculate(CharacterStats stats)
+    {
+        return (int)(
+            stats.HP / 10 +
+            stats.ATK * 5 +
+            stats.DEF * 3 +
+            stats.SPD * 2 +
+            stats.CritRate * 100 +
+            stats.CritDamage * 50
+        );
+    }
+}
+```
+
+### 결과
+- 중앙 집중 계산으로 일관성 보장
+- UI에서 레벨업 전/후 비교 미리보기 가능
+- 돌파 시 스탯 보너스도 동일 공식 적용
+
+---
+
+## CharacterEnhancement 재료 시스템
+
+**일자**: 2026-01-21 | **상태**: 결정됨
+
+### 컨텍스트
+레벨업 재료 선택 UX. 여러 종류 경험치 아이템 존재.
+
+### 선택지
+1. **자동 선택 only** - 단순하나 유저 제어 부족
+2. **수동 선택 only** - 유연하나 번거로움
+3. **하이브리드** - 자동 선택 + 수동 조정 가능 (선택)
+
+### 결정
+**하이브리드 방식**
+```csharp
+// LevelUpPopup
+public void AutoSelectMaterials()
+{
+    // 낮은 등급부터 채워서 고급 재료 절약
+    var sorted = materials.OrderBy(m => m.ExpValue);
+    SelectUntilTargetLevel(sorted);
+}
+```
+
+### 결과
+- 자동 선택: 낮은 등급 우선 사용
+- +/- 버튼으로 수동 조정
+- 목표 레벨 도달 시 자동 제한
+
+---
+
+## GachaEnhancement 소프트 천장 설계
+
+**일자**: 2026-01-21 | **상태**: 결정됨
+
+### 컨텍스트
+하드 천장(100연차 확정)만으로는 유저 경험 부족. 점진적 확률 증가 필요.
+
+### 선택지
+1. **하드 천장만** - 단순하나 99연차까지 희망 없음
+2. **소프트 천장** - 특정 횟수 이후 점진적 확률 증가 (선택)
+3. **복합 시스템** - 소프트 + 하드 + 운명 시스템 (복잡)
+
+### 결정
+**소프트 천장 시스템**
+```csharp
+// GachaPoolData 확장
+public int PitySoftStart;      // 소프트 천장 시작 (예: 70)
+public float PitySoftRateBonus; // 회차당 추가 확률 (예: 0.5%)
+
+// GachaService
+public float GetEffectiveSSRRate(int pityCount, GachaPoolData pool)
+{
+    if (pityCount < pool.PitySoftStart)
+        return pool.SSRRate;
+    
+    var bonusCount = pityCount - pool.PitySoftStart;
+    return pool.SSRRate + (bonusCount * pool.PitySoftRateBonus);
+}
+```
+
+### 결과
+- 70연차부터 매 회차 +0.5% (기본 3% → 70연차 3%, 80연차 8%, 90연차 13%...)
+- 서버에서 계산, 클라이언트는 표시만
+- 테스트 12개로 경계 조건 검증
+
+---
+
+## GachaEnhancement 히스토리 시스템
+
+**일자**: 2026-01-21 | **상태**: 결정됨
+
+### 컨텍스트
+뽑기 히스토리 저장 범위와 형식.
+
+### 선택지
+1. **최근 N건만** - 저장 용량 제한, 오래된 기록 손실
+2. **풀별 최근 N건** - 풀마다 별도 관리 (선택)
+3. **전체 저장** - 용량 무제한 증가
+
+### 결정
+**풀별 최근 100건**
+```csharp
+public struct GachaHistoryRecord
+{
+    public string PoolId;
+    public long Timestamp;
+    public List<GachaResultItem> Results;
+}
+
+// UserSaveData
+public List<GachaHistoryRecord> GachaHistory; // 풀별 최근 100건
+```
+
+### 결과
+- v8 마이그레이션으로 기존 유저 데이터 호환
+- 히스토리 화면에서 풀 필터링 가능
+- 테스트 16개
+
+---
+
+## NavigationEnhancement 배지 시스템
+
+**일자**: 2026-01-21 | **상태**: 결정됨
+
+### 컨텍스트
+탭/버튼에 알림 배지 표시. 여러 시스템에서 배지 제공 필요.
+
+### 선택지
+1. **하드코딩** - 각 화면에서 직접 계산
+2. **중앙 Manager + Provider** - 확장 가능 (선택)
+3. **이벤트 기반** - 변경 시마다 브로드캐스트
+
+### 결정
+**BadgeManager + IBadgeProvider 패턴**
+```csharp
+public interface IBadgeProvider
+{
+    BadgeType BadgeType { get; }
+    int GetBadgeCount();
+    event Action OnBadgeCountChanged;
+}
+
+public class BadgeManager : Singleton<BadgeManager>
+{
+    private readonly Dictionary<BadgeType, IBadgeProvider> _providers;
+    
+    public int GetBadgeCount(BadgeType type) 
+        => _providers.TryGetValue(type, out var p) ? p.GetBadgeCount() : 0;
+}
+```
+
+### 결과
+- 3개 Provider 구현: EventBadgeProvider, ShopBadgeProvider, GachaBadgeProvider
+- LobbyScreen 탭에 배지 연동
+- 새 배지 타입 추가 시 Provider만 구현

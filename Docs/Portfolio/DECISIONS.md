@@ -47,25 +47,30 @@
 
 ## 최근 의사결정 (최신 5개)
 
-### Claude Code 토큰 최적화 아키텍처
-**일자**: 2026-01-21 | [상세](Decisions/ClaudeCode.md)
+### NavigationEnhancement 배지 시스템
+**일자**: 2026-01-21 | [상세](Decisions/Systems.md#navigationenhancement-배지-시스템)
 
-서브에이전트 위임 + Skills 온디맨드 로딩 + Hooks 자동화. CLAUDE.md 139줄→76줄(45%↓), 초기 컨텍스트 50%↓ 예상.
+IBadgeProvider 인터페이스 + BadgeManager 중앙 집계. 탭별 배지 카운트 실시간 갱신.
 
-### AssetManager RewardIconCache 대체
-**일자**: 2026-01-19 | [상세](Decisions/Architecture.md#assetmanager-rewardIconCache-대체)
+### GachaEnhancement 소프트 천장 설계
+**일자**: 2026-01-21 | [상세](Decisions/Systems.md#gachaenhancement-소프트-천장-설계)
 
-범용 AssetManager Scope 기반으로 RewardIconCache 127줄 제거. 중앙 집중 에셋 관리.
+PitySoftStart 이후 점진적 확률 증가. 서버에서 GetEffectiveSSRRate() 계산, 클라이언트는 표시만.
 
-### LocalServer 서버 로직 분리
-**일자**: 2026-01-19 | [상세](Decisions/Architecture.md#localserver-서버-로직-분리)
+### CharacterEnhancement 전투력 계산 공식
+**일자**: 2026-01-21 | [상세](Decisions/Systems.md#characterenhancement-전투력-계산-공식)
 
-LocalApiClient 354줄 → 157줄. Sc.LocalServer Assembly로 서버 로직 분리.
+HP/10 + ATK×5 + DEF×3 + SPD×2 + CritRate×100 + CritDamage×50. PowerCalculator 중앙 계산.
 
-### PlayMode 테스트 인프라
-**일자**: 2026-01-19 | [상세](Decisions/Testing.md#playmode-테스트-인프라)
+### Stage 컴포지션 패턴
+**일자**: 2026-01-20 | [상세](Decisions/Content.md#stage-컴포지션-패턴-istagecontentmodule)
 
-기존 헬퍼 재사용 + PlayModeTestBase로 Addressables 초기화 패턴 표준화.
+StageSelectScreen + IStageContentModule. 컨텐츠별 모듈로 확장성 확보.
+
+### Shop 구매 제한 시스템
+**일자**: 2026-01-20 | [상세](Decisions/Content.md#shop-구매-제한-시스템-purchaselimitvalidator)
+
+PurchaseLimitValidator로 Daily/Weekly/Monthly 제한. TimeService LimitType 재사용.
 
 ### 에디터 도구 Bootstrap 레벨
 **일자**: 2026-01-19 | [상세](Decisions/Architecture.md#에디터-도구-bootstrap-레벨)

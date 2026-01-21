@@ -111,3 +111,98 @@ Phase 2 상점 설계 중 시즌패스(Pass) 포함 여부.
 
 ### 결과
 ProductType에서 Pass 제외. 핵심 기능 우선 완성 후 확장.
+
+---
+
+## Shop 구매 제한 시스템 (PurchaseLimitValidator)
+
+**일자**: 2026-01-20 | **상태**: 결정됨
+
+### 컨텍스트
+상점 상품 구매 제한 (일일/주간/월간) 처리 방식. TimeService의 LimitType과 통합 필요.
+
+### 선택지
+1. **상품별 개별 검증** - 간단하나 중복 로직
+2. **중앙 Validator** - 일관성, 테스트 용이 (선택)
+3. **Handler 내부 검증** - 결합도 높음
+
+### 결정
+**PurchaseLimitValidator 분리**
+```csharp
+public class PurchaseLimitValidator
+{
+    public bool CanPurchase(ShopProductData product, UserSaveData userData)
+    {
+        var record = FindRecord(userData, product.ProductId);
+        var currentCount = GetPurchaseCount(record, product.LimitType);
+        return currentCount < product.PurchaseLimit;
+    }
+}
+```
+
+### 결과
+- TimeService의 LimitType (Daily/Weekly/Monthly) 재사용
+- ShopHandler는 검증 위임, 비즈니스 로직만 담당
+- 테스트 독립적 작성 가능
+
+---
+
+## Stage 컴포지션 패턴 (IStageContentModule)
+
+**일자**: 2026-01-20 | **상태**: 결정됨
+
+### 컨텍스트
+7개 컨텐츠 타입 (MainStory, ElementDungeon, ExpDungeon, GoldDungeon, BossRaid, Tower, EventStage) 각각 다른 UI 요소 필요.
+
+### 선택지
+1. **상속 기반** - StageSelectScreen 7개 서브클래스
+2. **조건문 분기** - 단일 클래스에 switch 문
+3. **컴포지션 패턴** - IStageContentModule 주입 (선택)
+
+### 결정
+**컴포지션 패턴**
+```csharp
+public interface IStageContentModule
+{
+    StageContentType ContentType { get; }
+    void Initialize(StageSelectScreen screen);
+    void OnStageSelected(StageData stage);
+    void Render(Transform container);
+}
+
+// StageSelectScreen
+private IStageContentModule _contentModule;
+public void SetContentModule(IStageContentModule module) { ... }
+```
+
+### 결과
+- 새 컨텐츠 추가 시 모듈만 구현 (OCP)
+- StageSelectScreen은 공통 로직만 담당
+- 4개 모듈 구현: ExpDungeon, BossRaid, Tower, EventStage
+
+---
+
+## Stage 화면 계층 구조
+
+**일자**: 2026-01-20 | **상태**: 결정됨
+
+### 컨텍스트
+스테이지 진입까지 몇 단계 화면을 거칠 것인가.
+
+### 선택지
+1. **2단계** - Lobby → StageSelect (단순하나 분류 어려움)
+2. **3단계** - Lobby → Dashboard → StageSelect (중간)
+3. **4단계** - Lobby → InGame → Category → StageSelect (복잡하나 확장성)
+
+### 결정
+**3~4단계 가변 구조**
+```
+Lobby → InGameContentDashboard → StageDashboard (선택적) → StageSelectScreen
+                                       ↑
+                               속성/난이도 분류 필요 시만
+```
+
+### 결과
+- ElementDungeon: StageDashboard에서 속성 선택 후 StageSelect
+- MainStory: InGameContent에서 바로 StageSelect
+- 유연한 네비게이션 흐름
