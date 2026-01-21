@@ -24,7 +24,7 @@
 | F | Stage | ✅ | Stage.md (v3.1, Phase A~J 전체 완료) |
 | F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
 | F | CharacterEnhancement | ✅ | Character/Enhancement.md (Phase A~F 전체 완료) |
-| F | NavigationEnhancement | ⬜ | Common/NavigationEnhancement.md |
+| F | NavigationEnhancement | ✅ | Common/NavigationEnhancement.md (Phase A~D 완료) |
 
 ---
 
@@ -34,7 +34,6 @@
 
 ### 우선순위
 1. GachaEnhancement
-2. NavigationEnhancement
 
 ---
 
@@ -130,6 +129,25 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-21
+- [x] **NavigationEnhancement 시스템 Phase A~E 완료** (13개 파일 생성/수정)
+  - Phase A: Core 배지 시스템 (3개 파일)
+    - BadgeType.cs - 배지 타입 enum (Home, Character, Gacha, Settings, Event, Shop, Stage)
+    - IBadgeProvider.cs - 배지 제공자 인터페이스
+    - BadgeManager.cs - 배지 집계/캐시 관리자 (Singleton)
+  - Phase B: Lobby Tabs (5개 파일)
+    - LobbyTabContent.cs - 탭 컨텐츠 베이스 클래스
+    - HomeTabContent.cs - 홈 탭 (퀵 메뉴: 스테이지, 상점, 이벤트)
+    - CharacterTabContent.cs - 캐릭터 탭
+    - GachaTabContent.cs - 가챠 탭
+    - SettingsTabContent.cs - 설정 탭
+  - Phase C: Badge Providers (3개 파일)
+    - EventBadgeProvider.cs - 수령 가능 미션 보상 카운트
+    - ShopBadgeProvider.cs - 무료 상품 존재 여부
+    - GachaBadgeProvider.cs - 무료 가챠 (플레이스홀더)
+  - Phase D: LobbyScreen 리팩토링 (1개 파일 수정)
+    - LobbyScreen.cs - 탭 시스템 통합, BadgeManager 연동, 레거시 버튼 호환
+  - Phase E: 프리팹 재구성 도구 (1개 파일)
+    - LobbyScreenSetup.cs - TabButton 프리팹, LobbyScreen 탭 시스템 자동 설정
 - [x] **CharacterEnhancement 시스템 Phase A~F 완료** (21개 파일 생성, 3개 수정)
   - Phase A: 데이터 레이어 (8개 파일)
     - CharacterStats.cs - 스탯 구조체 (+ 연산자)

@@ -488,25 +488,25 @@ namespace Sc.Contents.Lobby
 Navigation 강화 (Phase 5.3):
 
 BadgeManager:
-- [ ] BadgeType.cs 생성
-- [ ] IBadgeProvider.cs 생성
-- [ ] BadgeManager.cs 생성
-- [ ] EventBadgeProvider 구현
-- [ ] GachaBadgeProvider 구현 (무료 가챠)
-- [ ] ShopBadgeProvider 구현 (무료 상품)
+- [x] BadgeType.cs 생성
+- [x] IBadgeProvider.cs 생성
+- [x] BadgeManager.cs 생성
+- [x] EventBadgeProvider 구현
+- [x] GachaBadgeProvider 구현 (무료 가챠 - 플레이스홀더)
+- [x] ShopBadgeProvider 구현 (무료 상품)
 
 LobbyScreen 리팩토링:
-- [ ] LobbyTabContent.cs 베이스 클래스
-- [ ] HomeTabContent.cs
-- [ ] CharacterTabContent.cs
-- [ ] GachaTabContent.cs
-- [ ] SettingsTabContent.cs
-- [ ] LobbyScreen.cs 수정 (탭 시스템 통합)
-- [ ] LobbyScreen 프리팹 재구성
+- [x] LobbyTabContent.cs 베이스 클래스
+- [x] HomeTabContent.cs
+- [x] CharacterTabContent.cs
+- [x] GachaTabContent.cs
+- [x] SettingsTabContent.cs
+- [x] LobbyScreen.cs 수정 (탭 시스템 통합)
+- [x] LobbyScreen 프리팹 재구성 (에디터 도구: SC Tools/Lobby/Setup Tab System)
 
 연동:
-- [ ] LobbyScreen.OnShow에서 BadgeManager.RefreshAll 호출
-- [ ] TabGroupWidget 배지 표시 연동
+- [x] LobbyScreen.OnShow에서 BadgeManager.RefreshAll 호출
+- [x] TabGroupWidget 배지 표시 연동
 ```
 
 ---
