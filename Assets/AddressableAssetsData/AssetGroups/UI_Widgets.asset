@@ -15,20 +15,10 @@ MonoBehaviour:
   m_GroupName: UI_Widgets
   m_Data:
     m_SerializedData: []
-  m_GUID: 5c2b6080389ef3c45bac630a1ffd55c4
+  m_GUID: aea55bcc5dca14941aa494122056cf21
   m_SerializeEntries:
   - m_GUID: 1e354c43c56bcb44d98d13bd8b655235
     m_Address: UI/Widgets/LoadingWidget
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 34a2fb94e756eac40afe8fc7af42ab5a
-    m_Address: UI/Widgets/ScreenHeader
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 71c53c71d78e8024d805c010e8cab194
-    m_Address: UI/Widgets/CurrencyHUD
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -15,13 +15,8 @@ MonoBehaviour:
   m_GroupName: UI_Popups
   m_Data:
     m_SerializedData: []
-  m_GUID: 55979093742dcff4a8c36d5864e562c6
-  m_SerializeEntries:
-  - m_GUID: 40e2639dae0eb22489842722656a2f66
-    m_Address: UI/Popups/GachaResultPopup
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_GUID: 7f086127a3cc93547a4417a3ea8e2e1a
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a07cc9c31bf893141bff7fbbc6d761b9, type: 2}
   m_SchemaSet:

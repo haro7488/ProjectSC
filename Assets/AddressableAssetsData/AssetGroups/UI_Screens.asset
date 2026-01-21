@@ -15,33 +15,8 @@ MonoBehaviour:
   m_GroupName: UI_Screens
   m_Data:
     m_SerializedData: []
-  m_GUID: 5f02e533163bbfa4297b8e24e46b6973
-  m_SerializeEntries:
-  - m_GUID: 3a9452919c53f0149a60bddfbae98710
-    m_Address: UI/Screens/CharacterListScreen
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 40247ba06ec064343b6692673248bc0a
-    m_Address: UI/Screens/TitleScreen
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 73dc3f9a4dfd8c94796f9af81f9b2169
-    m_Address: UI/Screens/CharacterDetailScreen
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9bde8e7de943da7429d6068376fedc6c
-    m_Address: UI/Screens/GachaScreen
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b402f3e93ab9a544d97d906dd958a775
-    m_Address: UI/Screens/LobbyScreen
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_GUID: afa547e8fb7d64b4faad90c51893fd7f
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: a07cc9c31bf893141bff7fbbc6d761b9, type: 2}
   m_SchemaSet:
