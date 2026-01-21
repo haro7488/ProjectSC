@@ -193,7 +193,7 @@ var shuffled = cardList.Shuffle();
 | UI/Base | 6 | ✅ | ✅ |
 | UI/Components | 8 | ✅ | ✅ |
 | UI/Services | 3 | ✅ | ✅ |
-| Pool | 3 | ✅ | ⬜ |
+| Pool | 4 | ✅ | ✅ |
 | Utility | 2 | ✅ | ⬜ |
 
 ---

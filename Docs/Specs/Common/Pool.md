@@ -3,11 +3,11 @@ type: spec
 assembly: Sc.Common
 class: ObjectPool, PoolManager, IPoolable
 category: System
-status: draft
+status: implemented
 version: "1.0"
 dependencies: [Singleton]
 created: 2025-01-14
-updated: 2025-01-14
+updated: 2026-01-21
 ---
 
 # Pool 시스템
@@ -169,6 +169,29 @@ PoolManager.Instance.DespawnAll<DamageText>();
 | 크기 | maxSize 적절히 설정 (메모리 vs GC) |
 | OnDespawn | 상태 초기화 철저히 (버그 원인) |
 | 제약 | T는 Component + IPoolable |
+
+## 상태
+
+| 분류 | 상태 |
+|------|------|
+| IPoolable | ✅ 완료 |
+| ObjectPool\<T\> | ✅ 완료 |
+| PoolManager | ✅ 완료 |
+| 테스트 | ✅ 완료 (25개) |
+
+## 파일 구조
+
+```
+Assets/Scripts/
+├── Common/Pool/
+│   ├── IPoolable.cs
+│   ├── IClearable.cs (internal)
+│   ├── ObjectPool.cs
+│   └── PoolManager.cs
+└── Editor/Tests/Common/
+    ├── ObjectPoolTests.cs
+    └── PoolManagerTests.cs
+```
 
 ## 관련
 - [Common.md](../Common.md)

@@ -68,7 +68,7 @@
 
 | 항목 | 스펙 문서 | 우선순위 |
 |------|----------|---------|
-| Pool 시스템 | Common/Pool.md | HIGH |
+| ~~Pool 시스템~~ | ~~Common/Pool.md~~ | ✅ 완료 (2026-01-21) |
 | Utility (CollectionExtensions, MathHelper) | Common/Utility.md | HIGH |
 | AudioManager | Core/AudioManager.md | MEDIUM |
 | SceneLoader | Core/SceneLoader.md | LOW |
