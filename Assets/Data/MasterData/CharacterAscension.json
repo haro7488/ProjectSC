@@ -1,0 +1,182 @@
+{
+  "data": [
+    {
+      "rarity": "N",
+      "requirements": [
+        {
+          "ascensionLevel": 0,
+          "requiredCharacterLevel": 20,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_n", "amount": 3 }
+          ],
+          "goldCost": 5000,
+          "statBonus": { "hp": 50, "atk": 10, "def": 5, "spd": 0, "critRate": 0, "critDamage": 0 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 1,
+          "requiredCharacterLevel": 30,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_n", "amount": 6 }
+          ],
+          "goldCost": 10000,
+          "statBonus": { "hp": 75, "atk": 15, "def": 8, "spd": 0, "critRate": 0, "critDamage": 0 },
+          "levelCapIncrease": 10
+        }
+      ]
+    },
+    {
+      "rarity": "R",
+      "requirements": [
+        {
+          "ascensionLevel": 0,
+          "requiredCharacterLevel": 20,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_r", "amount": 3 }
+          ],
+          "goldCost": 8000,
+          "statBonus": { "hp": 80, "atk": 15, "def": 8, "spd": 0, "critRate": 0, "critDamage": 0 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 1,
+          "requiredCharacterLevel": 30,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_r", "amount": 6 }
+          ],
+          "goldCost": 16000,
+          "statBonus": { "hp": 120, "atk": 22, "def": 12, "spd": 0, "critRate": 0, "critDamage": 0 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 2,
+          "requiredCharacterLevel": 40,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_r", "amount": 10 },
+            { "type": "Item", "itemId": "mat_boss_r", "amount": 2 }
+          ],
+          "goldCost": 30000,
+          "statBonus": { "hp": 160, "atk": 30, "def": 16, "spd": 0, "critRate": 0.01, "critDamage": 0 },
+          "levelCapIncrease": 10
+        }
+      ]
+    },
+    {
+      "rarity": "SR",
+      "requirements": [
+        {
+          "ascensionLevel": 0,
+          "requiredCharacterLevel": 20,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_sr", "amount": 5 }
+          ],
+          "goldCost": 15000,
+          "statBonus": { "hp": 120, "atk": 25, "def": 12, "spd": 0, "critRate": 0, "critDamage": 0 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 1,
+          "requiredCharacterLevel": 30,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_sr", "amount": 10 }
+          ],
+          "goldCost": 30000,
+          "statBonus": { "hp": 180, "atk": 38, "def": 18, "spd": 0, "critRate": 0.01, "critDamage": 0 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 2,
+          "requiredCharacterLevel": 40,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_sr", "amount": 15 },
+            { "type": "Item", "itemId": "mat_boss_sr", "amount": 3 }
+          ],
+          "goldCost": 50000,
+          "statBonus": { "hp": 250, "atk": 50, "def": 25, "spd": 2, "critRate": 0.02, "critDamage": 0.05 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 3,
+          "requiredCharacterLevel": 50,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_sr", "amount": 20 },
+            { "type": "Item", "itemId": "mat_boss_sr", "amount": 5 }
+          ],
+          "goldCost": 80000,
+          "statBonus": { "hp": 320, "atk": 65, "def": 32, "spd": 3, "critRate": 0.02, "critDamage": 0.08 },
+          "levelCapIncrease": 10
+        }
+      ]
+    },
+    {
+      "rarity": "SSR",
+      "requirements": [
+        {
+          "ascensionLevel": 0,
+          "requiredCharacterLevel": 20,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_ssr", "amount": 5 }
+          ],
+          "goldCost": 20000,
+          "statBonus": { "hp": 200, "atk": 40, "def": 20, "spd": 0, "critRate": 0, "critDamage": 0 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 1,
+          "requiredCharacterLevel": 30,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_ssr", "amount": 10 }
+          ],
+          "goldCost": 40000,
+          "statBonus": { "hp": 300, "atk": 60, "def": 30, "spd": 0, "critRate": 0.01, "critDamage": 0.03 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 2,
+          "requiredCharacterLevel": 40,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_ssr", "amount": 15 },
+            { "type": "Item", "itemId": "mat_boss_ssr", "amount": 3 }
+          ],
+          "goldCost": 70000,
+          "statBonus": { "hp": 400, "atk": 80, "def": 40, "spd": 3, "critRate": 0.02, "critDamage": 0.06 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 3,
+          "requiredCharacterLevel": 50,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_ssr", "amount": 20 },
+            { "type": "Item", "itemId": "mat_boss_ssr", "amount": 6 }
+          ],
+          "goldCost": 100000,
+          "statBonus": { "hp": 500, "atk": 100, "def": 50, "spd": 5, "critRate": 0.03, "critDamage": 0.10 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 4,
+          "requiredCharacterLevel": 60,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_ssr", "amount": 30 },
+            { "type": "Item", "itemId": "mat_boss_ssr", "amount": 10 }
+          ],
+          "goldCost": 150000,
+          "statBonus": { "hp": 600, "atk": 120, "def": 60, "spd": 5, "critRate": 0.03, "critDamage": 0.12 },
+          "levelCapIncrease": 10
+        },
+        {
+          "ascensionLevel": 5,
+          "requiredCharacterLevel": 70,
+          "materials": [
+            { "type": "Item", "itemId": "mat_essence_ssr", "amount": 40 },
+            { "type": "Item", "itemId": "mat_boss_ssr", "amount": 15 },
+            { "type": "Item", "itemId": "mat_weekly_boss", "amount": 1 }
+          ],
+          "goldCost": 200000,
+          "statBonus": { "hp": 700, "atk": 140, "def": 70, "spd": 8, "critRate": 0.04, "critDamage": 0.15 },
+          "levelCapIncrease": 10
+        }
+      ]
+    }
+  ]
+}
