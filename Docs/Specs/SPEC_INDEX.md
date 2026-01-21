@@ -156,13 +156,13 @@ Docs/Specs/
 | Pool 시스템 구현 | 문서만 존재 |
 | Utility 구현 | 문서만 존재 |
 
-### 미문서화 구현
+### ~~미문서화 구현~~ → 문서화 완료 (2026-01-21)
 
-| 시스템 | 미문서화 항목 |
-|--------|-------------|
-| Foundation | Services.cs, ISaveStorage, FileSaveStorage |
-| Core | NetworkManager, GameBootstrap, InitializationSequence 등 12개 |
-| Common | PopupQueueService, UIEventBridge |
+| 시스템 | 항목 | 상태 |
+|--------|------|------|
+| Foundation | Services.cs, ISaveStorage, FileSaveStorage | ✅ |
+| Core | NetworkManager, GameBootstrap, InitializationSequence 등 12개 | ✅ |
+| Common | PopupQueueService, UIEventBridge | ✅ |
 
 ### 플레이스홀더 상태
 

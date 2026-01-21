@@ -46,6 +46,42 @@ updated: 2025-01-15
 | GachaResponseHandler | 가챠 응답 처리 | ApplyDelta 호출, 결과 이벤트 발행 |
 | ShopResponseHandler | 구매 응답 처리 | ApplyDelta 호출, 구매 완료 이벤트 |
 
+### 네트워크/초기화
+
+| 클래스 | 역할 | 책임 |
+|--------|------|------|
+| NetworkManager | 네트워크 중앙 관리 | API 클라이언트, 요청 큐, 응답 디스패칭 |
+| GameBootstrap | 게임 초기화 진입점 | InitializationSequence 실행, 재시도 로직 |
+| InitializationSequence | 초기화 순차 실행 | IInitStep 실행, 진행률 계산 |
+| IInitStep | 초기화 단계 계약 | StepName, Weight, ExecuteAsync() |
+
+### 초기화 단계 (Init Steps)
+
+| 클래스 | StepName | Weight | 역할 |
+|--------|----------|--------|------|
+| AssetManagerInitStep | "리소스 시스템" | 0.5 | AssetManager 초기화 |
+| NetworkManagerInitStep | "네트워크" | 1.0 | NetworkManager 초기화 |
+| DataManagerInitStep | "게임 데이터" | 1.5 | DataManager 초기화 |
+| LoginStep | "로그인" | 2.0 | 로그인 요청 및 이벤트 대기 |
+
+### 서비스/유틸리티
+
+| 클래스 | 역할 | 책임 |
+|--------|------|------|
+| TimeService | 서버 시간 관리 | 리셋 시간 계산, 기간 체크 |
+| RewardProcessor | 보상 처리 (서버 로직) | RewardInfo → Delta 변환, 검증 |
+| RewardHelper | 보상 UI 헬퍼 | 포맷팅, 아이콘 경로, 희귀도 색상 |
+| ResponseValidator | 응답 검증 | 요청-응답 일관성, Delta 유효성 |
+| LobbyEntryTaskRunner | 로비 Task 실행기 | ILobbyEntryTask 순차 실행 |
+
+### 인터페이스
+
+| 인터페이스 | 역할 | 구현체 |
+|------------|------|--------|
+| ITimeService | 시간 서비스 계약 | TimeService |
+| IPopupQueueService | 팝업 큐 계약 | PopupQueueService (Common) |
+| ILobbyEntryTask | 로비 Task 계약 | AttendanceCheckTask 등 (Lobby) |
+
 ---
 
 ## DataManager 상세
@@ -157,11 +193,40 @@ if (delta.RemovedCharacterIds != null)
 Assets/Scripts/Core/
 ├── Sc.Core.asmdef
 ├── Managers/
-│   └── DataManager.cs
-└── Handlers/
-    ├── LoginResponseHandler.cs
-    ├── GachaResponseHandler.cs
-    └── ShopResponseHandler.cs
+│   ├── DataManager.cs
+│   ├── NetworkManager.cs
+│   ├── AssetManager.cs
+│   └── SaveManager.cs
+├── Handlers/
+│   ├── LoginResponseHandler.cs
+│   ├── GachaResponseHandler.cs
+│   ├── ShopResponseHandler.cs
+│   └── PurchaseResponseHandler.cs
+├── Systems/
+│   └── GameBootstrap.cs
+├── Initialization/
+│   ├── InitializationSequence.cs
+│   ├── IInitStep.cs
+│   └── Steps/
+│       ├── AssetManagerInitStep.cs
+│       ├── NetworkManagerInitStep.cs
+│       ├── DataManagerInitStep.cs
+│       └── LoginStep.cs
+├── Services/
+│   ├── TimeService.cs
+│   ├── LobbyEntryTaskRunner.cs
+│   └── SaveMigrator.cs
+├── Interfaces/
+│   ├── ITimeService.cs
+│   ├── IPopupQueueService.cs
+│   ├── ILobbyEntryTask.cs
+│   └── ISaveMigration.cs
+├── Utility/
+│   ├── RewardProcessor.cs
+│   ├── RewardHelper.cs
+│   └── TimeHelper.cs
+└── Validation/
+    └── ResponseValidator.cs
 ```
 
 ---
@@ -177,7 +242,13 @@ Assets/Scripts/Core/
 
 ## 상태
 
-| 분류 | 파일 수 | 상태 |
-|------|---------|------|
-| Managers | 1 | ✅ |
-| Handlers | 3 | ⬜ (추후 구현) |
+| 분류 | 파일 수 | 스펙 | 구현 |
+|------|---------|------|------|
+| Managers | 4 | ✅ | ✅ |
+| Handlers | 4 | ✅ | ✅ |
+| Systems | 1 | ✅ | ✅ |
+| Initialization | 5 | ✅ | ✅ |
+| Services | 3 | ✅ | ✅ |
+| Interfaces | 4 | ✅ | ✅ |
+| Utility | 3 | ✅ | ✅ |
+| Validation | 1 | ✅ | ✅ |

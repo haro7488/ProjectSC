@@ -23,7 +23,7 @@
 | F | **LobbyEntryTask** | ✅ | Lobby.md |
 | F | Stage | ✅ | Stage.md (v3.1, Phase A~J 전체 완료) |
 | F | GachaEnhancement | ⬜ | Gacha/Enhancement.md |
-| F | CharacterEnhancement | 🔨 | Character/Enhancement.md (Phase A~E 완료, F 대기) |
+| F | CharacterEnhancement | ✅ | Character/Enhancement.md (Phase A~F 전체 완료) |
 | F | NavigationEnhancement | ⬜ | Common/NavigationEnhancement.md |
 
 ---
@@ -33,19 +33,14 @@
 **지시**: "[시스템명] 구현하자" (예: "Shop 구현하자", "Stage 구현하자")
 
 ### 우선순위
-1. **CharacterEnhancement** 테스트 (Phase F)
-2. GachaEnhancement
-3. NavigationEnhancement
+1. GachaEnhancement
+2. NavigationEnhancement
 
 ---
 
 ## 🔨 진행 중인 작업
 
-**CharacterEnhancement** (Phase A~E 완료, F 대기)
-- 데이터: CharacterStats, LevelRequirement, AscensionRequirement, PowerCalculator
-- Handler: CharacterLevelUpHandler, CharacterAscensionHandler
-- UI: CharacterLevelUpPopup, CharacterAscensionPopup
-- 통합: CharacterDetailScreen 레벨업/돌파 버튼 추가
+없음
 
 ---
 
@@ -60,8 +55,9 @@
 | 4~4.5차 | PlayMode 인프라, 에디터 도구 | ✅ | - |
 | 5차 | LiveEvent 테스트 | ✅ | 115개 |
 | 6차 | Stage 테스트 | ✅ | 47개 |
+| 7차 | CharacterEnhancement 테스트 | ✅ | 26개 |
 
-**총 테스트**: 351개
+**총 테스트**: 377개
 
 ---
 
@@ -91,13 +87,13 @@
 | NewEventNotificationTask | Lobby | Stub 구현 |
 | ClaimEventMission API | LiveEvent | 에러코드 6099 반환 |
 
-### 미문서화 (구현됨, 문서 없음)
+### ~~미문서화~~ → 문서화 완료 (2026-01-21)
 
-| 시스템 | 항목 |
-|--------|------|
-| Foundation | Services.cs, ISaveStorage, FileSaveStorage |
-| Core | NetworkManager, GameBootstrap, InitializationSequence 등 12개 |
-| Common | PopupQueueService, UIEventBridge |
+| 시스템 | 항목 | 상태 |
+|--------|------|------|
+| Foundation | Services.cs, ISaveStorage, FileSaveStorage | ✅ |
+| Core | NetworkManager, GameBootstrap, InitializationSequence 등 12개 | ✅ |
+| Common | PopupQueueService, UIEventBridge | ✅ |
 
 ---
 
@@ -134,7 +130,7 @@
 ## 작업 로그 (최근)
 
 ### 2026-01-21
-- [x] **CharacterEnhancement 시스템 Phase A~E 완료** (19개 파일 생성, 3개 수정)
+- [x] **CharacterEnhancement 시스템 Phase A~F 완료** (21개 파일 생성, 3개 수정)
   - Phase A: 데이터 레이어 (8개 파일)
     - CharacterStats.cs - 스탯 구조체 (+ 연산자)
     - LevelRequirement.cs, AscensionRequirement.cs - 요구사항 구조체
@@ -152,7 +148,9 @@
     - ItemData.cs - ExpValue, GoldCostPerUse 필드 추가
     - CharacterDetailScreen.cs - 레벨업/돌파 버튼, 전투력 표시 추가
     - DataManager.cs - LevelDatabase, AscensionDatabase 참조 추가
-  - Phase F: 테스트 (대기)
+  - Phase F: 테스트 (2개 파일)
+    - CharacterLevelUpHandlerTests.cs - 레벨업 핸들러 테스트 (13개)
+    - CharacterAscensionHandlerTests.cs - 돌파 핸들러 테스트 (13개)
 - [x] **Stage 시스템 Phase J 완료** (2개 파일)
   - StageEntryValidatorTests.cs - 입장 제한 검증 테스트 (21개)
   - StageHandlerTests.cs - 입장/클리어 핸들러 테스트 (26개)

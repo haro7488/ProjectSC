@@ -43,6 +43,14 @@ updated: 2026-01-17
 | `ErrorMessages` | 에러 메시지 매핑 | ErrorCode → 사용자 메시지 변환 | 에러 처리 로직 |
 | `Result<T>` | 결과 래퍼 구조체 | 성공/실패 명시적 전달 | 에러 복구 |
 
+### 서비스/저장소 (Phase A~E 추가)
+
+| 클래스 | 역할 | 책임 | 비책임 |
+|--------|------|------|--------|
+| `Services` | ServiceLocator 패턴 | 전역 서비스 등록/조회 | 비즈니스 로직 |
+| `ISaveStorage` | 저장소 추상화 | Save/Load/Exists/Delete 계약 | 구체적 저장 방식 |
+| `FileSaveStorage` | 파일 저장소 구현 | persistentDataPath 파일 저장 | 클라우드/메모리 저장 |
+
 ---
 
 ## 관계도
@@ -94,6 +102,67 @@ updated: 2026-01-17
 
 ---
 
+## Services (ServiceLocator)
+
+간단한 ServiceLocator 패턴 구현으로 전역 서비스 관리.
+
+```csharp
+// 등록
+Services.Register<IUserService>(new UserService());
+
+// 조회
+var service = Services.Get<IUserService>();
+
+// 안전 조회
+if (Services.TryGet<IUserService>(out var svc)) { }
+
+// 테스트 정리
+Services.Clear();
+```
+
+| 메서드 | 설명 |
+|--------|------|
+| `Register<T>(T service)` | 서비스 등록 (중복 시 덮어씀) |
+| `Get<T>()` | 서비스 조회 (없으면 null) |
+| `TryGet<T>(out T service)` | 안전한 서비스 조회 |
+| `Unregister<T>()` | 서비스 제거 |
+| `Clear()` | 전체 초기화 |
+| `Count` | 등록된 서비스 수 |
+
+---
+
+## ISaveStorage / FileSaveStorage
+
+저장소 추상화 인터페이스 및 파일 저장소 구현.
+
+```csharp
+// 초기화
+var storage = new FileSaveStorage();
+Services.Register<ISaveStorage>(storage);
+
+// 저장/로드
+var saveResult = storage.Save("player", jsonData);
+var loadResult = storage.Load("player");
+
+// 존재 확인/삭제
+if (storage.Exists("player"))
+    storage.Delete("player");
+```
+
+| 메서드 | 반환 | 설명 |
+|--------|------|------|
+| `Save(key, data)` | `Result<bool>` | JSON 데이터 저장 |
+| `Load(key)` | `Result<string>` | JSON 데이터 로드 |
+| `Exists(key)` | `bool` | 존재 여부 |
+| `Delete(key)` | `Result<bool>` | 데이터 삭제 |
+
+**FileSaveStorage 특징:**
+- 저장 경로: `Application.persistentDataPath/{key}.json`
+- 테스트용 생성자: `FileSaveStorage(string basePath)`
+- 에러 코드: `SaveFailed`, `LoadFailed`
+
+---
+
 ## 설계 원칙
 
 1. **무의존성**: Foundation은 어떤 Assembly도 참조하지 않음
@@ -112,6 +181,9 @@ Assets/Scripts/Foundation/
 ├── Singleton.cs              # 기존
 ├── EventManager.cs           # 기존
 ├── IsExternalInit.cs         # 기존 (C# 9 지원)
+├── Services.cs               # ServiceLocator 패턴
+├── ISaveStorage.cs           # 저장소 인터페이스
+├── FileSaveStorage.cs        # 파일 저장소 구현
 │
 ├── Logging/                  # Phase 0 추가
 │   ├── LogLevel.cs
@@ -151,6 +223,8 @@ Assets/Scripts/Foundation/
 | 로깅 | ILogOutput, UnityLogOutput | ✅ | ✅ |
 | 에러 | ErrorCode, ErrorMessages | ✅ | ✅ |
 | 에러 | Result<T> | ✅ | ✅ |
+| 서비스 | Services | ✅ | ✅ |
+| 저장소 | ISaveStorage, FileSaveStorage | ✅ | ✅ |
 
 ---
 

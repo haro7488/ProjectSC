@@ -67,6 +67,14 @@ updated: 2025-01-14
 | CollectionExtensions | 컬렉션 확장 | Shuffle, Random Pick, Safe Get | 컬렉션 생성 |
 | MathHelper | 수학 유틸리티 | 확률 계산, 범위 클램프, 보간 | 복잡한 수학 연산 |
 
+### 서비스/브릿지 (구현됨)
+
+| 클래스 | 역할 | 책임 | 하지 않는 것 |
+|--------|------|------|--------------|
+| PopupQueueService | 팝업 큐잉 서비스 | 보상/알림 팝업 순차 표시 | 팝업 내용 정의 |
+| UIEventBridge | 이벤트-UI 브릿지 | Core 이벤트 → UI 연결 | 이벤트 정의, 비즈니스 로직 |
+| LoadingService | 로딩 UI 서비스 | 로딩 표시/숨김, 진행률 | 초기화 로직 |
+
 ---
 
 ## Widget + MVP 흐름
@@ -180,9 +188,64 @@ var shuffled = cardList.Shuffle();
 
 ## 상태
 
-| 분류 | 파일 수 | 상태 |
-|------|---------|------|
-| UI/Base | 4 | ⬜ |
-| UI/Components | 3 | ⬜ |
-| Pool | 3 | ⬜ |
-| Utility | 2 | ⬜ |
+| 분류 | 파일 수 | 스펙 | 구현 |
+|------|---------|------|------|
+| UI/Base | 6 | ✅ | ✅ |
+| UI/Components | 8 | ✅ | ✅ |
+| UI/Services | 3 | ✅ | ✅ |
+| Pool | 3 | ✅ | ⬜ |
+| Utility | 2 | ✅ | ⬜ |
+
+---
+
+## PopupQueueService
+
+팝업 순차 표시 서비스. `IPopupQueueService` (Core) 구현체.
+
+```csharp
+// 보상 팝업 추가
+popupQueue.EnqueueReward("획득 보상", rewards);
+
+// 알림 팝업 추가
+popupQueue.EnqueueNotification("알림", "완료!");
+
+// 큐 처리
+await popupQueue.ProcessQueueAsync();
+```
+
+| 메서드 | 설명 |
+|--------|------|
+| `EnqueueReward(title, rewards)` | 보상 팝업 큐에 추가 |
+| `EnqueueNotification(title, message)` | 알림 팝업 큐에 추가 |
+| `ProcessQueueAsync()` | 모든 팝업 순차 표시 |
+| `Clear()` | 대기 중인 팝업 제거 |
+| `PendingCount` | 대기 중인 팝업 수 |
+| `IsProcessing` | 처리 중 여부 |
+
+---
+
+## UIEventBridge
+
+Core 이벤트 → UI 연결 브릿지. 싱글톤으로 동작.
+
+**처리 이벤트:**
+- `ShowLoadingEvent` → `LoadingService.ShowProgress()`
+- `HideLoadingEvent` → `LoadingService.Hide()`
+- `LoadingProgressEvent` → `LoadingService.UpdateProgress()`
+- `ShowConfirmationEvent` → `ConfirmPopup.Open()`
+
+**사용 예시:**
+```csharp
+// Core에서 로딩 표시 (UI 직접 참조 없이)
+EventManager.Instance.Publish(new ShowLoadingEvent {
+    InitialProgress = 0f,
+    Message = "로딩 중..."
+});
+
+// 확인 팝업
+EventManager.Instance.Publish(new ShowConfirmationEvent {
+    Title = "확인",
+    Message = "삭제하시겠습니까?",
+    OnConfirm = () => { /* 삭제 */ }
+});
+```
