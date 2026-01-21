@@ -1,0 +1,27 @@
+{
+    "name": "Sc.DebugTools",
+    "rootNamespace": "Sc.DebugTools",
+    "references": [
+        "Sc.Foundation",
+        "Sc.Common",
+        "Sc.Core",
+        "Sc.Data",
+        "Sc.Contents.Title",
+        "Sc.Contents.Lobby",
+        "Sc.Contents.Gacha",
+        "Sc.Contents.Character",
+        "Sc.Contents.Shop",
+        "Sc.Contents.Event",
+        "Sc.Contents.Stage",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
