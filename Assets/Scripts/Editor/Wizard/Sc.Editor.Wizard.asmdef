@@ -7,6 +7,7 @@
         "Sc.Core",
         "Sc.Data",
         "Sc.Foundation",
+        "Sc.DebugTools",
         "Sc.Contents.Lobby",
         "Unity.Addressables",
         "Unity.Addressables.Editor",

@@ -21,33 +21,6 @@ namespace Sc.Editor.Wizard.Generators
         private const string POPUP_PATH = PREFAB_ROOT + "/Popups";
         private const string ADDRESSABLE_GROUP = "UI";
 
-        #region Menu Items
-
-        [MenuItem("SC Tools/Prefabs/Generate All Screen Prefabs")]
-        public static void GenerateAllScreenPrefabsMenu()
-        {
-            var count = GenerateAllScreenPrefabs();
-            EditorUtility.DisplayDialog("완료", $"Screen 프리팹 {count}개 생성됨", "확인");
-        }
-
-        [MenuItem("SC Tools/Prefabs/Generate All Popup Prefabs")]
-        public static void GenerateAllPopupPrefabsMenu()
-        {
-            var count = GenerateAllPopupPrefabs();
-            EditorUtility.DisplayDialog("완료", $"Popup 프리팹 {count}개 생성됨", "확인");
-        }
-
-        [MenuItem("SC Tools/Prefabs/Generate All UI Prefabs")]
-        public static void GenerateAllUIPrefabsMenu()
-        {
-            var screenCount = GenerateAllScreenPrefabs();
-            var popupCount = GenerateAllPopupPrefabs();
-            EditorUtility.DisplayDialog("완료",
-                $"Screen 프리팹 {screenCount}개, Popup 프리팹 {popupCount}개 생성됨", "확인");
-        }
-
-        #endregion
-
         #region Public API
 
         /// <summary>

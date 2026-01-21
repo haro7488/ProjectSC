@@ -24,9 +24,8 @@ namespace Sc.Editor.Wizard
         private const string ScenePath = "Assets/Scenes/Main.unity";
         private const string PrefabBasePath = "Assets/Prefabs/UI";
 
-        #region Menu Items
+        #region Public API
 
-        [MenuItem("SC Tools/Setup/Scenes/Main/Setup Main Scene", priority = 200)]
         public static void SetupMainScene()
         {
             // 새 씬 생성 (현재 씬 저장 여부 확인)
@@ -58,7 +57,6 @@ namespace Sc.Editor.Wizard
             Debug.Log($"[MainSceneSetup] Main 씬 생성 완료: {ScenePath}");
         }
 
-        [MenuItem("SC Tools/Setup/Scenes/Main/Clear Main Scene Objects", priority = 201)]
         public static void ClearMainSceneObjects()
         {
             // Manager 오브젝트들 삭제

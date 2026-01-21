@@ -17,9 +17,8 @@ namespace Sc.Editor.Wizard.Generators
         private const string WIDGETS_PATH = PREFAB_ROOT + "/Widgets";
         private const string MVP_PATH = PREFAB_ROOT + "/MVP";
 
-        #region Menu Items
+        #region Public API
 
-        [MenuItem("SC Tools/Lobby/Setup Tab System")]
         public static void SetupTabSystemMenu()
         {
             // TabButton 프리팹 생성
@@ -47,7 +46,6 @@ namespace Sc.Editor.Wizard.Generators
             }
         }
 
-        [MenuItem("SC Tools/Lobby/Create TabButton Prefab Only")]
         public static void CreateTabButtonPrefabMenu()
         {
             CreateTabButtonPrefab();

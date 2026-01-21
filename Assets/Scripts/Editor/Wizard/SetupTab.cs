@@ -18,6 +18,7 @@ namespace Sc.Editor.Wizard
         private bool _showTestSection = false; // 기본 접힘
         private bool _showDialogSection = false; // 기본 접힘
         private bool _showAddressablesSection = true;
+        private bool _showDebugToolsSection = true;
 
         public void Draw()
         {
@@ -26,7 +27,12 @@ namespace Sc.Editor.Wizard
 
             EditorGUILayout.Space(10);
 
-            // UI Prefabs Section (Production) - NEW
+            // Debug Tools Section
+            DrawDebugToolsSection();
+
+            EditorGUILayout.Space(10);
+
+            // UI Prefabs Section (Production)
             DrawUIPrefabsSection();
 
             EditorGUILayout.Space(10);
@@ -406,6 +412,33 @@ namespace Sc.Editor.Wizard
                 }
 
                 EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.EndVertical();
+            }
+
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private void DrawDebugToolsSection()
+        {
+            _showDebugToolsSection = EditorGUILayout.BeginFoldoutHeaderGroup(_showDebugToolsSection, "Debug Tools");
+
+            if (_showDebugToolsSection)
+            {
+                EditorGUILayout.BeginVertical("box");
+
+                EditorGUILayout.HelpBox(
+                    "디버그용 네비게이션 패널을 Main 씬에 추가합니다.\n" +
+                    "F12 키로 토글하여 모든 Screen/Popup에 바로 접근 가능.\n" +
+                    "Development Build에서만 동작합니다.",
+                    MessageType.Info);
+
+                GUI.backgroundColor = new Color(0.9f, 0.8f, 0.6f);
+                if (GUILayout.Button("Add Debug Navigation Panel", GUILayout.Height(30)))
+                {
+                    DebugPanelSetup.AddDebugNavigationPanel();
+                }
+                GUI.backgroundColor = Color.white;
 
                 EditorGUILayout.EndVertical();
             }
