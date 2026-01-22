@@ -155,24 +155,47 @@ Editor/Wizard/
 - LobbyTabContent.cs, HomeTabContent.cs, CharacterTabContent.cs
 - GachaTabContent.cs, SettingsTabContent.cs
 
-### Phase 2: PrefabGenerator 확장 (대기)
+### ✅ Phase 2: PrefabGenerator 확장 (완료)
+
+> **완료일**: 2026-01-22
 
 | 작업 | 파일 | 상태 |
 |------|------|------|
-| UITheme.cs | Editor/Wizard/Generators/ | ⬜ |
-| UIComponentBuilder.cs | Editor/Wizard/Generators/ | ⬜ |
-| ScreenTemplateFactory.cs | Editor/Wizard/Generators/ | ⬜ |
-| PopupTemplateFactory.cs | Editor/Wizard/Generators/ | ⬜ |
-| ScreenTemplateAttribute.cs | Common/UI/Attributes/ | ⬜ |
-| PopupTemplateAttribute.cs | Common/UI/Attributes/ | ⬜ |
-| PrefabGenerator 수정 | Editor/Wizard/Generators/ | ⬜ |
+| UITheme.cs | Editor/Wizard/Generators/ | ✅ |
+| UIComponentBuilder.cs | Editor/Wizard/Generators/ | ✅ |
+| ScreenTemplateFactory.cs | Editor/Wizard/Generators/ | ✅ |
+| PopupTemplateFactory.cs | Editor/Wizard/Generators/ | ✅ |
+| ScreenTemplateAttribute.cs | Common/UI/Attributes/ | ✅ |
+| PopupTemplateAttribute.cs | Common/UI/Attributes/ | ✅ |
+| PrefabGenerator 수정 | Editor/Wizard/Generators/ | ✅ |
 
-### Phase 3: 프리팹 재생성 (대기)
+**Screen Attribute 적용 (7개)**:
+- TitleScreen (FullScreen), LobbyScreen (Tabbed)
+- GachaScreen, GachaHistoryScreen, ShopScreen, LiveEventScreen (Standard)
+- EventDetailScreen (Detail)
 
-- [ ] 테스트 프리팹 삭제
-- [ ] 기존 프리팹 삭제
-- [ ] 템플릿 기반 재생성
-- [ ] Addressables 재등록
+**Popup Attribute 적용 (7개)**:
+- ConfirmPopup, RewardPopup, CostConfirmPopup, StageInfoPopup
+- RateDetailPopup, GachaResultPopup, CharacterLevelUpPopup
+
+### ✅ Phase 3: 테스트 프리팹 정리 (완료)
+
+> **완료일**: 2026-01-22
+
+| 작업 | 상태 |
+|------|------|
+| 테스트 프리팹 폴더 삭제 (Tests, UI/Tests) | ✅ |
+| 테스트 Screen/Popup 프리팹 삭제 | ✅ |
+| 테스트 스크립트 삭제 (Common/UI/Tests, Tests/TestWidgets) | ✅ |
+| Navigation 테스트 러너/시나리오 삭제 | ✅ |
+
+**삭제된 파일 (46개)**: 7,365줄 삭제
+
+### Phase 4: 실제 프리팹 재생성 (대기)
+
+- [ ] Unity Editor에서 PrefabGenerator.RegenerateAllPrefabs() 실행
+- [ ] 생성된 프리팹에 수동으로 세부 UI 요소 추가
+- [ ] Addressables 재등록 확인
 
 ---
 
