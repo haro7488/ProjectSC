@@ -205,7 +205,11 @@ namespace Sc.Editor.Wizard.Generators
             // Quick Menu Grid
             var quickMenu = CreateChild(tab, "QuickMenu");
             var quickRect = quickMenu.AddComponent<RectTransform>();
+            // 가로 stretch, 세로 고정
+            quickRect.anchorMin = new Vector2(0, 0.5f);
+            quickRect.anchorMax = new Vector2(1, 0.5f);
             quickRect.sizeDelta = new Vector2(0, QUICK_BUTTON_SIZE + 20);
+            quickRect.anchoredPosition = Vector2.zero;
 
             var quickGrid = quickMenu.AddComponent<HorizontalLayoutGroup>();
             quickGrid.spacing = 12;

@@ -45,7 +45,30 @@ namespace Sc.Common.UI.Widgets
 
         protected override void OnInitialize()
         {
-            Debug.Log("[TabGroupWidget] OnInitialize");
+            Debug.Log("[TabGroupWidget] OnInitialize 시작");
+            
+            // 프리팹에 이미 생성된 탭 버튼들 자동 감지
+            if (_tabButtonContainer != null)
+            {
+                var existingButtons = _tabButtonContainer.GetComponentsInChildren<TabButton>(true);
+                Debug.Log($"[TabGroupWidget] 기존 탭 버튼 발견: {existingButtons.Length}개");
+                
+                foreach (var button in existingButtons)
+                {
+                    if (!_tabButtons.Contains(button))
+                    {
+                        _tabButtons.Add(button);
+                        button.OnClicked += OnTabButtonClicked;
+                        Debug.Log($"[TabGroupWidget] 탭 버튼 등록: {button.name}");
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[TabGroupWidget] _tabButtonContainer가 null입니다!");
+            }
+            
+            Debug.Log($"[TabGroupWidget] OnInitialize 완료 - 총 {_tabButtons.Count}개 탭");
         }
 
         /// <summary>

@@ -1,17 +1,14 @@
 using Cysharp.Threading.Tasks;
 using Sc.Common.UI;
 using Sc.Common.UI.Widgets;
-using Sc.Contents.Character;
 using Sc.Contents.Event;
 using Sc.Contents.Gacha;
 using Sc.Contents.Shop;
-using Sc.Contents.Stage;
 using Sc.Core;
 using Sc.Foundation;
 using Sc.LocalServer;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Sc.Contents.Lobby
 {
@@ -35,48 +32,38 @@ namespace Sc.Contents.Lobby
         [SerializeField] private TabGroupWidget _tabGroup;
         [SerializeField] private LobbyTabContent[] _tabContents;
 
-        [Header("Legacy Buttons (deprecated)")]
-        [SerializeField] private Button _gachaButton;
-        [SerializeField] private Button _characterButton;
-        [SerializeField] private Button _eventButton;
-        [SerializeField] private Button _shopButton;
-        [SerializeField] private Button _stageButton;
-
         [Header("UI References")]
         [SerializeField] private TMP_Text _welcomeText;
 
         private LobbyState _currentState;
         private LobbyEntryTaskRunner _taskRunner;
         private bool _isTaskRunning;
-        private bool _useTabSystem;
 
         protected override void OnInitialize()
         {
-            Debug.Log("[LobbyScreen] OnInitialize");
+            Debug.Log("[LobbyScreen] OnInitialize 시작");
+            Debug.Log($"[LobbyScreen] _tabGroup:{_tabGroup != null}, _tabContents:{_tabContents != null}, Length:{_tabContents?.Length ?? 0}");
 
-            // 탭 시스템 사용 여부 결정
-            _useTabSystem = _tabGroup != null && _tabContents != null && _tabContents.Length > 0;
-
-            if (_useTabSystem)
+            if (_tabGroup == null || _tabContents == null || _tabContents.Length == 0)
             {
-                InitializeTabSystem();
-            }
-            else
-            {
-                InitializeLegacyButtons();
+                Debug.LogError("[LobbyScreen] TabGroup 또는 TabContents가 설정되지 않았습니다.");
+                return;
             }
 
-            // Task Runner 초기화
+            for (int i = 0; i < _tabContents.Length; i++)
+            {
+                Debug.Log($"[LobbyScreen] TabContent[{i}]: {(_tabContents[i] != null ? _tabContents[i].name : "NULL")}");
+            }
+
+            InitializeTabSystem();
             InitializeTaskRunner();
-
-            // Badge Provider 등록
             RegisterBadgeProviders();
+            Debug.Log("[LobbyScreen] OnInitialize 완료");
         }
 
         private void InitializeTabSystem()
         {
-            Debug.Log("[LobbyScreen] Using Tab System");
-
+            Debug.Log("[LobbyScreen] InitializeTabSystem 시작");
             _tabGroup.OnTabChanged += OnTabChanged;
 
             // 탭 컨텐츠 초기 비활성화
@@ -85,24 +72,10 @@ namespace Sc.Contents.Lobby
                 if (_tabContents[i] != null)
                 {
                     _tabContents[i].gameObject.SetActive(false);
+                    Debug.Log($"[LobbyScreen] TabContent[{i}] 비활성화됨");
                 }
             }
-        }
-
-        private void InitializeLegacyButtons()
-        {
-            Debug.Log("[LobbyScreen] Using Legacy Buttons");
-
-            if (_gachaButton != null)
-                _gachaButton.onClick.AddListener(OnGachaButtonClicked);
-            if (_characterButton != null)
-                _characterButton.onClick.AddListener(OnCharacterButtonClicked);
-            if (_eventButton != null)
-                _eventButton.onClick.AddListener(OnEventButtonClicked);
-            if (_shopButton != null)
-                _shopButton.onClick.AddListener(OnShopButtonClicked);
-            if (_stageButton != null)
-                _stageButton.onClick.AddListener(OnStageButtonClicked);
+            Debug.Log("[LobbyScreen] InitializeTabSystem 완료");
         }
 
         private void InitializeTaskRunner()
@@ -156,7 +129,8 @@ namespace Sc.Contents.Lobby
 
         protected override void OnShow()
         {
-            Debug.Log("[LobbyScreen] OnShow");
+            Debug.Log("[LobbyScreen] OnShow 시작");
+            Debug.Log($"[LobbyScreen] _tabGroup:{_tabGroup != null}, _tabContents:{_tabContents?.Length ?? 0}");
 
             // DataManager 이벤트 구독
             if (DataManager.Instance != null)
@@ -166,20 +140,19 @@ namespace Sc.Contents.Lobby
 
             // 배지 전체 갱신
             BadgeManager.Instance?.RefreshAll();
+            RefreshAllBadges();
 
-            if (_useTabSystem)
-            {
-                RefreshAllBadges();
-
-                // 초기 탭 선택
-                int initialTab = _currentState?.ActiveTabIndex ?? 0;
-                _tabGroup.SelectTab(initialTab);
-            }
+            // 초기 탭 선택
+            int initialTab = _currentState?.ActiveTabIndex ?? 0;
+            Debug.Log($"[LobbyScreen] SelectTab 호출 예정 - index:{initialTab}");
+            _tabGroup.SelectTab(initialTab);
+            Debug.Log("[LobbyScreen] SelectTab 호출 완료");
 
             RefreshUI();
 
             // 로비 진입 후처리 Task 실행
             RunLobbyEntryTasksAsync().Forget();
+            Debug.Log("[LobbyScreen] OnShow 완료");
         }
 
         private async UniTaskVoid RunLobbyEntryTasksAsync()
@@ -232,7 +205,7 @@ namespace Sc.Contents.Lobby
 
         public override LobbyState GetState()
         {
-            if (_currentState != null && _useTabSystem)
+            if (_currentState != null && _tabGroup != null)
             {
                 _currentState.ActiveTabIndex = _tabGroup.CurrentTabIndex;
             }
@@ -243,16 +216,25 @@ namespace Sc.Contents.Lobby
 
         private void OnTabChanged(int index)
         {
-            if (!_useTabSystem || _tabContents == null)
+            Debug.Log($"[LobbyScreen] OnTabChanged 호출됨 - index:{index}");
+            
+            if (_tabContents == null)
+            {
+                Debug.LogError("[LobbyScreen] OnTabChanged - _tabContents가 null!");
                 return;
+            }
 
             for (int i = 0; i < _tabContents.Length; i++)
             {
                 if (_tabContents[i] == null)
+                {
+                    Debug.LogWarning($"[LobbyScreen] TabContent[{i}]가 null");
                     continue;
+                }
 
                 if (i == index)
                 {
+                    Debug.Log($"[LobbyScreen] TabContent[{i}] 활성화 - {_tabContents[i].name}");
                     _tabContents[i].gameObject.SetActive(true);
                     _tabContents[i].OnTabSelected();
                 }
@@ -268,11 +250,8 @@ namespace Sc.Contents.Lobby
 
         private void OnBadgeChanged(BadgeType type, int count)
         {
-            if (!_useTabSystem)
-                return;
-
             int tabIndex = GetTabIndexForBadge(type);
-            if (tabIndex >= 0)
+            if (tabIndex >= 0 && _tabGroup != null)
             {
                 _tabGroup.SetBadgeCount(tabIndex, count);
             }
@@ -280,7 +259,7 @@ namespace Sc.Contents.Lobby
 
         private void RefreshAllBadges()
         {
-            if (!_useTabSystem || BadgeManager.Instance == null)
+            if (BadgeManager.Instance == null || _tabGroup == null)
                 return;
 
             _tabGroup.SetBadgeCount(0, BadgeManager.Instance.GetBadge(BadgeType.Home));
@@ -319,40 +298,6 @@ namespace Sc.Contents.Lobby
 
             // 배지 갱신
             BadgeManager.Instance?.RefreshAll();
-        }
-
-        #endregion
-
-        #region Legacy Button Handlers
-
-        private void OnGachaButtonClicked()
-        {
-            Debug.Log("[LobbyScreen] Gacha button clicked");
-            GachaScreen.Open(new GachaState());
-        }
-
-        private void OnCharacterButtonClicked()
-        {
-            Debug.Log("[LobbyScreen] Character button clicked");
-            CharacterListScreen.Open(new CharacterListState());
-        }
-
-        private void OnEventButtonClicked()
-        {
-            Debug.Log("[LobbyScreen] Event button clicked");
-            LiveEventScreen.Open(new LiveEventState());
-        }
-
-        private void OnShopButtonClicked()
-        {
-            Debug.Log("[LobbyScreen] Shop button clicked");
-            ShopScreen.Open(new ShopScreen.ShopState());
-        }
-
-        private void OnStageButtonClicked()
-        {
-            Debug.Log("[LobbyScreen] Stage button clicked");
-            InGameContentDashboard.Open(new InGameContentDashboard.DashboardState());
         }
 
         #endregion

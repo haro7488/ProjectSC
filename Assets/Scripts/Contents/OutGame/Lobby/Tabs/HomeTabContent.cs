@@ -18,34 +18,55 @@ namespace Sc.Contents.Lobby
 
         private void Awake()
         {
+            Debug.Log($"[HomeTabContent] Awake - Stage:{_stageButton != null}, Shop:{_shopButton != null}, Event:{_eventButton != null}");
+            
             if (_stageButton != null)
+            {
                 _stageButton.onClick.AddListener(OnStageClicked);
+                Debug.Log($"[HomeTabContent] StageButton interactable:{_stageButton.interactable}, enabled:{_stageButton.enabled}");
+            }
             if (_shopButton != null)
+            {
                 _shopButton.onClick.AddListener(OnShopClicked);
+                Debug.Log($"[HomeTabContent] ShopButton interactable:{_shopButton.interactable}, enabled:{_shopButton.enabled}");
+            }
             if (_eventButton != null)
+            {
                 _eventButton.onClick.AddListener(OnEventClicked);
+                Debug.Log($"[HomeTabContent] EventButton interactable:{_eventButton.interactable}, enabled:{_eventButton.enabled}");
+            }
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log("[HomeTabContent] OnEnable - 탭 활성화됨");
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log("[HomeTabContent] OnDisable - 탭 비활성화됨");
         }
 
         public override void Refresh()
         {
-            // 배너, 공지 등 갱신 (추후 확장)
+            Debug.Log("[HomeTabContent] Refresh 호출됨");
         }
 
         private void OnStageClicked()
         {
-            Debug.Log("[HomeTabContent] Stage clicked");
+            Debug.Log("[HomeTabContent] >>> Stage 버튼 클릭됨! <<<");
             InGameContentDashboard.Open(new InGameContentDashboard.DashboardState());
         }
 
         private void OnShopClicked()
         {
-            Debug.Log("[HomeTabContent] Shop clicked");
+            Debug.Log("[HomeTabContent] >>> Shop 버튼 클릭됨! <<<");
             ShopScreen.Open(new ShopScreen.ShopState());
         }
 
         private void OnEventClicked()
         {
-            Debug.Log("[HomeTabContent] Event clicked");
+            Debug.Log("[HomeTabContent] >>> Event 버튼 클릭됨! <<<");
             LiveEventScreen.Open(new LiveEventState());
         }
     }
