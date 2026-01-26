@@ -275,6 +275,7 @@ namespace Sc.Editor.Wizard.Generators
         public static GameObject CreateChild(GameObject parent, string name)
         {
             var go = new GameObject(name);
+            go.AddComponent<RectTransform>(); // UI 요소는 항상 RectTransform 필요
             go.transform.SetParent(parent.transform, false);
             return go;
         }

@@ -12,7 +12,7 @@ namespace Sc.Editor.Wizard.Generators
     /// <summary>
     /// LobbyScreen 프리팹 빌더 (자동 생성됨).
     /// Generated from: Assets/Prefabs/UI/Screens/LobbyScreen.prefab
-    /// Generated at: 2026-01-26 21:10:05
+    /// Generated at: 2026-01-26 21:48:12
     /// </summary>
     public static class LobbyScreenPrefabBuilder
     {
@@ -47,13 +47,9 @@ namespace Sc.Editor.Wizard.Generators
         private const float CHARACTER_IMAGE_HEIGHT = 615.8789f;
         private const float CHARACTER_IMAGE_WIDTH = 350f;
         private const float CONTENT_HEIGHT = 180f;
-        private const float CONTENT_NAV_BUTTON__CARD_SCREEN_WIDTH = 100f;
-        private const float CONTENT_NAV_BUTTON__CASH_SHOP_SCREEN_WIDTH = 100f;
         private const float CONTENT_NAV_BUTTON__CHARACTER_LIST_SCREEN_WIDTH = 100f;
         private const float CONTENT_NAV_BUTTON__GACHA_SCREEN_WIDTH = 100f;
-        private const float CONTENT_NAV_BUTTON__GUILD_SCREEN_WIDTH = 100f;
         private const float CONTENT_NAV_BUTTON__SHOP_SCREEN_WIDTH = 100f;
-        private const float CONTENT_NAV_BUTTON__THEATER_SCREEN_WIDTH = 100f;
         private const float DIALOGUE_BOX_HEIGHT = 60f;
         private const float DIALOGUE_BOX_WIDTH = 300f;
         private const float EVENT_BANNER_CAROUSEL_HEIGHT = 150f;
@@ -2607,12 +2603,8 @@ namespace Sc.Editor.Wizard.Generators
             fitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
 
             CreateContentNavButton_GachaScreen(go);
-            CreateContentNavButton_CashShopScreen(go);
             CreateContentNavButton_ShopScreen(go);
             CreateContentNavButton_CharacterListScreen(go);
-            CreateContentNavButton_CardScreen(go);
-            CreateContentNavButton_TheaterScreen(go);
-            CreateContentNavButton_GuildScreen(go);
 
             return go;
         }
@@ -2791,11 +2783,11 @@ namespace Sc.Editor.Wizard.Generators
 
         #endregion
 
-        #region ContentNavButton_CashShopScreen
+        #region ContentNavButton_ShopScreen
 
-        private static GameObject CreateContentNavButton_CashShopScreen(GameObject parent)
+        private static GameObject CreateContentNavButton_ShopScreen(GameObject parent)
         {
-            var go = CreateChild(parent, "ContentNavButton_CashShopScreen");
+            var go = CreateChild(parent, "ContentNavButton_ShopScreen");
             var rect = go.GetComponent<RectTransform>();
             if (rect == null) rect = go.AddComponent<RectTransform>();
             rect.anchorMin = new Vector2(0f, 0f);
@@ -2854,7 +2846,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var image = go.AddComponent<Image>();
-            image.color = new Color32(255, 215, 100, 255);
+            image.color = new Color32(100, 200, 255, 255);
             image.raycastTarget = true;
 
             return go;
@@ -2880,7 +2872,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "캐시상점";
+            tmp.text = "상점";
             tmp.fontSize = 12f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -2954,7 +2946,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var image = go.AddComponent<Image>();
-            image.color = new Color32(255, 215, 100, 255);
+            image.color = new Color32(100, 200, 255, 255);
             image.raycastTarget = true;
             go.SetActive(false);
 
@@ -2963,11 +2955,11 @@ namespace Sc.Editor.Wizard.Generators
 
         #endregion
 
-        #region ContentNavButton_ShopScreen
+        #region ContentNavButton_CharacterListScreen
 
-        private static GameObject CreateContentNavButton_ShopScreen(GameObject parent)
+        private static GameObject CreateContentNavButton_CharacterListScreen(GameObject parent)
         {
-            var go = CreateChild(parent, "ContentNavButton_ShopScreen");
+            var go = CreateChild(parent, "ContentNavButton_CharacterListScreen");
             var rect = go.GetComponent<RectTransform>();
             if (rect == null) rect = go.AddComponent<RectTransform>();
             rect.anchorMin = new Vector2(0f, 0f);
@@ -3026,7 +3018,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var image = go.AddComponent<Image>();
-            image.color = new Color32(100, 200, 255, 255);
+            image.color = AccentSecondary;
             image.raycastTarget = true;
 
             return go;
@@ -3052,7 +3044,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "상점";
+            tmp.text = "사도";
             tmp.fontSize = 12f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -3126,695 +3118,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var image = go.AddComponent<Image>();
-            image.color = new Color32(100, 200, 255, 255);
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            return go;
-        }
-
-        #endregion
-
-        #region ContentNavButton_CharacterListScreen
-
-        private static GameObject CreateContentNavButton_CharacterListScreen(GameObject parent)
-        {
-            var go = CreateChild(parent, "ContentNavButton_CharacterListScreen");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(100f, 0f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 100f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = BgCard;
-            image.raycastTarget = true;
-
-            var button = go.AddComponent<Button>();
-            var img = go.GetComponent<Image>();
-            if (img != null) button.targetGraphic = img;
-
-            var layout = go.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 4f;
-            layout.padding = new RectOffset(8, 8, 12, 8);
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = true;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = true;
-
-            CreateIcon_16(go);
-            CreateLabel_16(go);
-            CreateBadge_12(go);
-            CreateGlowEffect_4(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Icon
-
-        private static GameObject CreateIcon_16(GameObject parent)
-        {
-            var go = CreateChild(parent, "Icon");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 100f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 32f;
-            layoutElement.preferredHeight = 32f;
-
-
-            var image = go.AddComponent<Image>();
             image.color = AccentSecondary;
-            image.raycastTarget = true;
-
-            return go;
-        }
-
-        #endregion
-
-        #region Label
-
-        private static GameObject CreateLabel_16(GameObject parent)
-        {
-            var go = CreateChild(parent, "Label");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 50f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredHeight = 18f;
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "사도";
-            tmp.fontSize = 12f;
-            tmp.color = TextSecondary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Badge
-
-        private static GameObject CreateBadge_12(GameObject parent)
-        {
-            var go = CreateChild(parent, "Badge");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(1f, 1f);
-            rect.anchorMax = new Vector2(1f, 1f);
-            rect.pivot = new Vector2(1f, 1f);
-            rect.sizeDelta = new Vector2(20f, 20f);
-            rect.anchoredPosition = new Vector2(-4f, -4f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentSecondary;
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            CreateCount_12(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Count
-
-        private static GameObject CreateCount_12(GameObject parent)
-        {
-            var go = CreateChild(parent, "Count");
-            SetStretch(go);
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "";
-            tmp.fontSize = 10f;
-            tmp.color = TextPrimary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region GlowEffect
-
-        private static GameObject CreateGlowEffect_4(GameObject parent)
-        {
-            var go = CreateChild(parent, "GlowEffect");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0f);
-            rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 0f);
-            rect.sizeDelta = new Vector2(60f, 4f);
-            rect.anchoredPosition = new Vector2(0f, 2f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentSecondary;
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            return go;
-        }
-
-        #endregion
-
-        #region ContentNavButton_CardScreen
-
-        private static GameObject CreateContentNavButton_CardScreen(GameObject parent)
-        {
-            var go = CreateChild(parent, "ContentNavButton_CardScreen");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(100f, 0f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 100f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = BgCard;
-            image.raycastTarget = true;
-
-            var button = go.AddComponent<Button>();
-            var img = go.GetComponent<Image>();
-            if (img != null) button.targetGraphic = img;
-
-            var layout = go.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 4f;
-            layout.padding = new RectOffset(8, 8, 12, 8);
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = true;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = true;
-
-            CreateIcon_17(go);
-            CreateLabel_17(go);
-            CreateBadge_13(go);
-            CreateGlowEffect_5(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Icon
-
-        private static GameObject CreateIcon_17(GameObject parent)
-        {
-            var go = CreateChild(parent, "Icon");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 100f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 32f;
-            layoutElement.preferredHeight = 32f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = new Color32(100, 200, 255, 255);
-            image.raycastTarget = true;
-
-            return go;
-        }
-
-        #endregion
-
-        #region Label
-
-        private static GameObject CreateLabel_17(GameObject parent)
-        {
-            var go = CreateChild(parent, "Label");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 50f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredHeight = 18f;
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "카드";
-            tmp.fontSize = 12f;
-            tmp.color = TextSecondary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Badge
-
-        private static GameObject CreateBadge_13(GameObject parent)
-        {
-            var go = CreateChild(parent, "Badge");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(1f, 1f);
-            rect.anchorMax = new Vector2(1f, 1f);
-            rect.pivot = new Vector2(1f, 1f);
-            rect.sizeDelta = new Vector2(20f, 20f);
-            rect.anchoredPosition = new Vector2(-4f, -4f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentSecondary;
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            CreateCount_13(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Count
-
-        private static GameObject CreateCount_13(GameObject parent)
-        {
-            var go = CreateChild(parent, "Count");
-            SetStretch(go);
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "";
-            tmp.fontSize = 10f;
-            tmp.color = TextPrimary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region GlowEffect
-
-        private static GameObject CreateGlowEffect_5(GameObject parent)
-        {
-            var go = CreateChild(parent, "GlowEffect");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0f);
-            rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 0f);
-            rect.sizeDelta = new Vector2(60f, 4f);
-            rect.anchoredPosition = new Vector2(0f, 2f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = new Color32(100, 200, 255, 255);
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            return go;
-        }
-
-        #endregion
-
-        #region ContentNavButton_TheaterScreen
-
-        private static GameObject CreateContentNavButton_TheaterScreen(GameObject parent)
-        {
-            var go = CreateChild(parent, "ContentNavButton_TheaterScreen");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(100f, 0f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 100f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = BgCard;
-            image.raycastTarget = true;
-
-            var button = go.AddComponent<Button>();
-            var img = go.GetComponent<Image>();
-            if (img != null) button.targetGraphic = img;
-
-            var layout = go.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 4f;
-            layout.padding = new RectOffset(8, 8, 12, 8);
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = true;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = true;
-
-            CreateIcon_18(go);
-            CreateLabel_18(go);
-            CreateBadge_14(go);
-            CreateGlowEffect_6(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Icon
-
-        private static GameObject CreateIcon_18(GameObject parent)
-        {
-            var go = CreateChild(parent, "Icon");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 100f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 32f;
-            layoutElement.preferredHeight = 32f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentPurple;
-            image.raycastTarget = true;
-
-            return go;
-        }
-
-        #endregion
-
-        #region Label
-
-        private static GameObject CreateLabel_18(GameObject parent)
-        {
-            var go = CreateChild(parent, "Label");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 50f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredHeight = 18f;
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "극장";
-            tmp.fontSize = 12f;
-            tmp.color = TextSecondary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Badge
-
-        private static GameObject CreateBadge_14(GameObject parent)
-        {
-            var go = CreateChild(parent, "Badge");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(1f, 1f);
-            rect.anchorMax = new Vector2(1f, 1f);
-            rect.pivot = new Vector2(1f, 1f);
-            rect.sizeDelta = new Vector2(20f, 20f);
-            rect.anchoredPosition = new Vector2(-4f, -4f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentSecondary;
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            CreateCount_14(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Count
-
-        private static GameObject CreateCount_14(GameObject parent)
-        {
-            var go = CreateChild(parent, "Count");
-            SetStretch(go);
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "";
-            tmp.fontSize = 10f;
-            tmp.color = TextPrimary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region GlowEffect
-
-        private static GameObject CreateGlowEffect_6(GameObject parent)
-        {
-            var go = CreateChild(parent, "GlowEffect");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0f);
-            rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 0f);
-            rect.sizeDelta = new Vector2(60f, 4f);
-            rect.anchoredPosition = new Vector2(0f, 2f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentPurple;
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            return go;
-        }
-
-        #endregion
-
-        #region ContentNavButton_GuildScreen
-
-        private static GameObject CreateContentNavButton_GuildScreen(GameObject parent)
-        {
-            var go = CreateChild(parent, "ContentNavButton_GuildScreen");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(100f, 0f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 100f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = BgCard;
-            image.raycastTarget = true;
-
-            var button = go.AddComponent<Button>();
-            var img = go.GetComponent<Image>();
-            if (img != null) button.targetGraphic = img;
-
-            var layout = go.AddComponent<VerticalLayoutGroup>();
-            layout.spacing = 4f;
-            layout.padding = new RectOffset(8, 8, 12, 8);
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = true;
-            layout.childControlHeight = false;
-            layout.childForceExpandWidth = true;
-            layout.childForceExpandHeight = true;
-
-            CreateIcon_19(go);
-            CreateLabel_19(go);
-            CreateBadge_15(go);
-            CreateGlowEffect_7(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Icon
-
-        private static GameObject CreateIcon_19(GameObject parent)
-        {
-            var go = CreateChild(parent, "Icon");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 100f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredWidth = 32f;
-            layoutElement.preferredHeight = 32f;
-
-
-            var image = go.AddComponent<Image>();
-            image.color = new Color32(255, 215, 100, 255);
-            image.raycastTarget = true;
-
-            return go;
-        }
-
-        #endregion
-
-        #region Label
-
-        private static GameObject CreateLabel_19(GameObject parent)
-        {
-            var go = CreateChild(parent, "Label");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0f, 0f);
-            rect.anchorMax = new Vector2(0f, 0f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(0f, 50f);
-            rect.anchoredPosition = new Vector2(0f, 0f);
-
-            var layoutElement = go.AddComponent<LayoutElement>();
-            layoutElement.preferredHeight = 18f;
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "고단";
-            tmp.fontSize = 12f;
-            tmp.color = TextSecondary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Badge
-
-        private static GameObject CreateBadge_15(GameObject parent)
-        {
-            var go = CreateChild(parent, "Badge");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(1f, 1f);
-            rect.anchorMax = new Vector2(1f, 1f);
-            rect.pivot = new Vector2(1f, 1f);
-            rect.sizeDelta = new Vector2(20f, 20f);
-            rect.anchoredPosition = new Vector2(-4f, -4f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = AccentSecondary;
-            image.raycastTarget = true;
-            go.SetActive(false);
-
-            CreateCount_15(go);
-
-            return go;
-        }
-
-        #endregion
-
-        #region Count
-
-        private static GameObject CreateCount_15(GameObject parent)
-        {
-            var go = CreateChild(parent, "Count");
-            SetStretch(go);
-
-
-            var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "";
-            tmp.fontSize = 10f;
-            tmp.color = TextPrimary;
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.raycastTarget = true;
-            ApplyFont(tmp);
-
-            return go;
-        }
-
-        #endregion
-
-        #region GlowEffect
-
-        private static GameObject CreateGlowEffect_7(GameObject parent)
-        {
-            var go = CreateChild(parent, "GlowEffect");
-            var rect = go.GetComponent<RectTransform>();
-            if (rect == null) rect = go.AddComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0f);
-            rect.anchorMax = new Vector2(0.5f, 0f);
-            rect.pivot = new Vector2(0.5f, 0f);
-            rect.sizeDelta = new Vector2(60f, 4f);
-            rect.anchoredPosition = new Vector2(0f, 2f);
-
-
-            var image = go.AddComponent<Image>();
-            image.color = new Color32(255, 215, 100, 255);
             image.raycastTarget = true;
             go.SetActive(false);
 
@@ -3897,7 +3201,7 @@ namespace Sc.Editor.Wizard.Generators
             var img = go.GetComponent<Image>();
             if (img != null) button.targetGraphic = img;
 
-            CreateLabel_20(go);
+            CreateLabel_16(go);
 
             return go;
         }
@@ -3906,7 +3210,7 @@ namespace Sc.Editor.Wizard.Generators
 
         #region Label
 
-        private static GameObject CreateLabel_20(GameObject parent)
+        private static GameObject CreateLabel_16(GameObject parent)
         {
             var go = CreateChild(parent, "Label");
             SetStretch(go);
@@ -3951,7 +3255,7 @@ namespace Sc.Editor.Wizard.Generators
             var img = go.GetComponent<Image>();
             if (img != null) button.targetGraphic = img;
 
-            CreateLabel_21(go);
+            CreateLabel_17(go);
 
             return go;
         }
@@ -3960,7 +3264,7 @@ namespace Sc.Editor.Wizard.Generators
 
         #region Label
 
-        private static GameObject CreateLabel_21(GameObject parent)
+        private static GameObject CreateLabel_17(GameObject parent)
         {
             var go = CreateChild(parent, "Label");
             SetStretch(go);

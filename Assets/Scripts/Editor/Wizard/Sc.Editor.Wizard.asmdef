@@ -10,6 +10,11 @@
         "Sc.DebugTools",
         "Sc.Contents.Lobby",
         "Sc.Contents.Title",
+        "Sc.Contents.Character",
+        "Sc.Contents.Gacha",
+        "Sc.Contents.Event",
+        "Sc.Contents.Stage",
+        "Sc.Contents.Shop",
         "Unity.Addressables",
         "Unity.Addressables.Editor",
         "Unity.TextMeshPro"

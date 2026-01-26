@@ -39,6 +39,14 @@ namespace Sc.Editor.Wizard.PrefabSync
                 return null;
             }
 
+            // 기존 수동 빌더가 있는지 확인 (Generated가 아닌 파일)
+            var manualBuilderPath = $"{OUTPUT_FOLDER}/{spec.metadata.prefabName}PrefabBuilder.cs";
+            if (File.Exists(manualBuilderPath))
+            {
+                Debug.LogWarning($"[PrefabBuilderGenerator] Skipped: Manual builder exists - {manualBuilderPath}");
+                return null;
+            }
+
             var code = GenerateBuilderCode(spec);
             var outputPath = SaveBuilderCode(spec.metadata.prefabName, code);
 
@@ -183,7 +191,7 @@ namespace Sc.Editor.Wizard.PrefabSync
             {
                 sb.AppendLine();
                 sb.AppendLine("        // Extracted from prefab");
-                
+
                 var uniqueColors = new Dictionary<string, string>();
                 foreach (var kvp in theme.colors)
                 {
@@ -281,7 +289,7 @@ namespace Sc.Editor.Wizard.PrefabSync
             sb.AppendLine();
         }
 
-        private static void GenerateCreateMethods(StringBuilder sb, HierarchyNode node, int depth, 
+        private static void GenerateCreateMethods(StringBuilder sb, HierarchyNode node, int depth,
             HashSet<string> duplicateNames, Dictionary<string, int> nameCounter)
         {
             // 루트는 별도 처리
@@ -297,7 +305,7 @@ namespace Sc.Editor.Wizard.PrefabSync
 
             var cleanName = node.name.Replace(" ", "");
             var isDuplicate = duplicateNames.Contains(cleanName);
-            
+
             // 인덱스 계산: 중복 이름인 경우에만 인덱스 사용
             int index = 0;
             if (isDuplicate)
@@ -310,9 +318,10 @@ namespace Sc.Editor.Wizard.PrefabSync
                 {
                     nameCounter[cleanName] = 1;
                 }
+
                 index = nameCounter[cleanName];
             }
-            
+
             var methodName = GetCreateMethodName(node.name, isDuplicate ? index : 0);
 
             sb.AppendLine($"        #region {node.name}");
@@ -336,7 +345,7 @@ namespace Sc.Editor.Wizard.PrefabSync
             // 자식 노드 생성 호출을 위한 메서드 이름 미리 계산
             // 자식들의 인덱스를 알기 위해 임시로 카운터 복사본 사용
             var tempCounter = new Dictionary<string, int>(nameCounter);
-            
+
             // 자식 노드 생성
             if (node.children?.Count > 0)
             {
@@ -345,7 +354,7 @@ namespace Sc.Editor.Wizard.PrefabSync
                 {
                     var childCleanName = child.name.Replace(" ", "");
                     var childIsDuplicate = duplicateNames.Contains(childCleanName);
-                    
+
                     int childIndex = 0;
                     if (childIsDuplicate)
                     {
@@ -357,9 +366,10 @@ namespace Sc.Editor.Wizard.PrefabSync
                         {
                             tempCounter[childCleanName] = 1;
                         }
+
                         childIndex = tempCounter[childCleanName];
                     }
-                    
+
                     var childMethodName = GetCreateMethodName(child.name, childIsDuplicate ? childIndex : 0);
                     sb.AppendLine($"            {childMethodName}(go);");
                 }
@@ -1021,13 +1031,13 @@ namespace Sc.Editor.Wizard.PrefabSync
         private static string GetCreateMethodName(string nodeName, int index = 0)
         {
             var baseName = nodeName.Replace(" ", "");
-            
+
             // 인덱스가 0이면 고유한 이름, 1 이상이면 중복 이름
             if (index > 0)
             {
                 return $"Create{baseName}_{index}";
             }
-            
+
             return $"Create{baseName}";
         }
 
