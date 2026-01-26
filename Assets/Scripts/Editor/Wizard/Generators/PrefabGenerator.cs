@@ -183,7 +183,7 @@ namespace Sc.Editor.Wizard.Generators
 
         private static GameObject CreateScreenGameObject(Type screenType)
         {
-            // LobbyScreen 전용 빌더 사용 (커스텀 위젯 구조)
+            // LobbyScreen 전용 빌더 사용 (PrefabSync에서 생성됨)
             if (screenType == typeof(LobbyScreen))
             {
                 return LobbyScreenPrefabBuilder.Build();
@@ -195,14 +195,7 @@ namespace Sc.Editor.Wizard.Generators
                 return TitleScreenPrefabBuilder.Build();
             }
 
-            // ScreenTemplateAttribute가 있으면 팩토리 사용
-            var attr = screenType.GetCustomAttribute<ScreenTemplateAttribute>();
-            if (attr != null)
-            {
-                return ScreenTemplateFactory.Create(screenType);
-            }
-
-            // Attribute 없는 경우 기본 Standard 템플릿 사용
+            // ScreenTemplateAttribute 기반 팩토리 사용
             return ScreenTemplateFactory.Create(screenType);
         }
 
