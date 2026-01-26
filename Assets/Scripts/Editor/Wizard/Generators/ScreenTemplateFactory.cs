@@ -180,7 +180,7 @@ namespace Sc.Editor.Wizard.Generators
 
             // BackButton placeholder
             var backButton = UIComponentBuilder.CreateChild(backHeader, "BackButton");
-            var backButtonRect = backButton.AddComponent<RectTransform>();
+            var backButtonRect = backButton.GetComponent<RectTransform>();
             backButtonRect.sizeDelta = new Vector2(44, 44);
 
             var backButtonImage = backButton.AddComponent<Image>();
@@ -196,7 +196,7 @@ namespace Sc.Editor.Wizard.Generators
 
             // Title placeholder
             var title = UIComponentBuilder.CreateChild(backHeader, "Title");
-            title.AddComponent<RectTransform>();
+            // RectTransform already added by CreateChild
 
             var titleLayout = title.AddComponent<LayoutElement>();
             titleLayout.flexibleWidth = 1;
