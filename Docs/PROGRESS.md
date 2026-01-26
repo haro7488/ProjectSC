@@ -103,9 +103,9 @@ Editor/Wizard/
 
 ---
 
-## 🔨 진행 중: UI-PREFAB
+## ✅ 완료: UI-PREFAB
 
-> **시작일**: 2026-01-22
+> **기간**: 2026-01-22 ~ 2026-01-26
 > **목표**: UI Prefab 규칙화 및 구조 재정립
 > **계획 문서**: [.claude/plans/joyful-dancing-hennessy.md](../.claude/plans/joyful-dancing-hennessy.md)
 
@@ -226,22 +226,34 @@ Editor/Wizard/
 
 ---
 
-### Phase 5: 다른 Screen/Popup 확장 (대기)
+### ✅ Phase 5: Popup 재생성 및 PrefabSync 확장 (완료)
 
-- [ ] 다른 Screen에 PrefabSync 적용
-- [ ] Popup 프리팹 재생성
-- [ ] Addressables 재등록 확인
+> **완료일**: 2026-01-26
+
+| 작업 | 상태 |
+|------|------|
+| CharacterAscensionPopup에 PopupTemplateAttribute 추가 | ✅ |
+| UIComponentBuilder.CreateChild RectTransform 버그 수정 | ✅ |
+| Popup 8개 재생성 | ✅ |
+| LobbyScreen PrefabSync 적용 | ✅ (Phase 4) |
+| TitleScreen - 기존 수동 빌더 유지 | ✅ |
+| 다른 Screen - 템플릿 기본 구조 유지 | ✅ |
+
+**재생성된 Popup (8개)**:
+- ConfirmPopup, CostConfirmPopup, RewardPopup, StageInfoPopup
+- RateDetailPopup, GachaResultPopup, CharacterLevelUpPopup, CharacterAscensionPopup
 
 ---
 
 ## 🚀 다음 단계
 
-**현재**: UI-PREFAB Phase 4 완료 (PrefabSync 시스템)
+**현재**: UI-PREFAB 마일스톤 완료
 
 **이후 가능한 방향**:
-1. 인게임 전투 시스템 (BATTLE-V1)
-2. 기술 부채 해소 (Utility, AudioManager)
-3. 플레이스홀더 완성 (PartySelect, EventMission)
+1. **인게임 전투 시스템 (BATTLE-V1)** - 핵심 게임플레이
+2. **기술 부채 해소** - Utility, AudioManager, SceneLoader
+3. **플레이스홀더 완성** - PartySelect, EventMission, EventShop
+4. **Screen UI 상세화** - 템플릿 기반 Screen에 상세 UI 배치 후 PrefabSync 적용
 
 ---
 
