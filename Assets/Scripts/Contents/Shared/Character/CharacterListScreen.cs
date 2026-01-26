@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Sc.Common.UI;
+using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Character.Widgets;
 using Sc.Core;
 using Sc.Data;
 using Sc.Event.UI;
@@ -25,32 +27,150 @@ namespace Sc.Contents.Character
         /// 선택된 캐릭터 ID
         /// </summary>
         public string SelectedCharacterId;
+
+        /// <summary>
+        /// 현재 탭 (0: 전체, 1: 즐겨찾기)
+        /// </summary>
+        public int CurrentTab;
     }
 
     /// <summary>
     /// 캐릭터 목록 화면 - 보유 캐릭터 리스트
+    /// 스펙: Docs/Specs/Character.md
     /// </summary>
+    [ScreenTemplate(ScreenTemplateType.Standard)]
     public class CharacterListScreen : ScreenWidget<CharacterListScreen, CharacterListState>
     {
-        [Header("UI References")]
-        [SerializeField] private Transform _listContainer;
-        [SerializeField] private GameObject _characterItemPrefab;
+        #region SerializeFields
+
+        [Header("Tab Area")] [SerializeField] private Button _allCharactersTab;
+        [SerializeField] private TMP_Text _allCharactersTabText;
+        [SerializeField] private Button _favoritesTab;
+        [SerializeField] private TMP_Text _favoritesTabText;
+
+        [Header("Filter Area")] [SerializeField]
+        private CharacterFilterWidget _filterWidget;
+
+        [Header("Character Grid")] [SerializeField]
+        private Transform _characterGridContainer;
+
         [SerializeField] private ScrollRect _scrollRect;
+        [SerializeField] private GameObject _characterCardPrefab;
+
+        [Header("Legacy - To Remove")] [SerializeField]
+        private Transform _listContainer;
+
+        [SerializeField] private GameObject _characterItemPrefab;
         [SerializeField] private Button _backButton;
         [SerializeField] private TMP_Text _countText;
 
+        #endregion
+
+        #region Private Fields
+
         private CharacterListState _currentState;
         private readonly List<GameObject> _spawnedItems = new();
+        private readonly List<CharacterCard> _spawnedCards = new();
+
+        #endregion
+
+        #region Lifecycle
 
         protected override void OnInitialize()
         {
             Debug.Log("[CharacterListScreen] OnInitialize");
 
+            InitializeTabs();
+            InitializeFilter();
+            InitializeLegacy();
+        }
+
+        private void InitializeTabs()
+        {
+            if (_allCharactersTab != null)
+            {
+                _allCharactersTab.onClick.AddListener(() => OnTabSelected(0));
+            }
+
+            if (_favoritesTab != null)
+            {
+                _favoritesTab.onClick.AddListener(() => OnTabSelected(1));
+            }
+        }
+
+        private void InitializeFilter()
+        {
+            if (_filterWidget != null)
+            {
+                _filterWidget.OnFilterToggled += OnFilterToggled;
+                _filterWidget.OnSortTypeChanged += OnSortTypeChanged;
+                _filterWidget.OnSortOrderChanged += OnSortOrderChanged;
+            }
+        }
+
+        private void InitializeLegacy()
+        {
+            // 기존 Back 버튼 (ScreenHeader로 대체 예정)
             if (_backButton != null)
             {
                 _backButton.onClick.AddListener(OnBackClicked);
             }
         }
+
+        #endregion
+
+        #region Tab Handlers
+
+        private void OnTabSelected(int tabIndex)
+        {
+            if (_currentState != null)
+            {
+                _currentState.CurrentTab = tabIndex;
+            }
+
+            UpdateTabUI();
+            RefreshList();
+        }
+
+        private void UpdateTabUI()
+        {
+            var isAllTab = _currentState?.CurrentTab == 0;
+
+            // 탭 버튼 시각적 상태 업데이트
+            if (_allCharactersTab != null)
+            {
+                _allCharactersTab.interactable = !isAllTab;
+            }
+
+            if (_favoritesTab != null)
+            {
+                _favoritesTab.interactable = isAllTab;
+            }
+        }
+
+        #endregion
+
+        #region Filter Handlers
+
+        private void OnFilterToggled(bool isOn)
+        {
+            Debug.Log($"[CharacterListScreen] Filter toggled: {isOn}");
+            RefreshList();
+        }
+
+        private void OnSortTypeChanged(SortType sortType)
+        {
+            Debug.Log($"[CharacterListScreen] Sort type changed: {sortType}");
+            RefreshList();
+        }
+
+        private void OnSortOrderChanged(bool isAscending)
+        {
+            Debug.Log($"[CharacterListScreen] Sort order changed: {(isAscending ? "Ascending" : "Descending")}");
+            RefreshList();
+        }
+
+        #endregion
 
         protected override void OnBind(CharacterListState state)
         {
@@ -182,10 +302,10 @@ namespace Sc.Contents.Character
         {
             return rarity switch
             {
-                Rarity.SSR => new Color(1f, 0.84f, 0f, 0.3f),      // 금색
-                Rarity.SR => new Color(0.5f, 0f, 0.5f, 0.3f),      // 보라색
-                Rarity.R => new Color(0f, 0.5f, 1f, 0.3f),         // 파란색
-                _ => new Color(0.5f, 0.5f, 0.5f, 0.3f)             // 회색
+                Rarity.SSR => new Color(1f, 0.84f, 0f, 0.3f), // 금색
+                Rarity.SR => new Color(0.5f, 0f, 0.5f, 0.3f), // 보라색
+                Rarity.R => new Color(0f, 0.5f, 1f, 0.3f), // 파란색
+                _ => new Color(0.5f, 0.5f, 0.5f, 0.3f) // 회색
             };
         }
 
@@ -198,6 +318,7 @@ namespace Sc.Contents.Character
                     Destroy(item);
                 }
             }
+
             _spawnedItems.Clear();
         }
 

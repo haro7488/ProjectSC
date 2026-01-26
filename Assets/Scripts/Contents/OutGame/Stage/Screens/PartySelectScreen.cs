@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using System.Data.Common;
+using System.Linq;
 using Sc.Common.UI;
+using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Stage.Widgets;
 using Sc.Core;
 using Sc.Data;
 using Sc.Event.OutGame;
@@ -16,8 +18,9 @@ namespace Sc.Contents.Stage
     /// <summary>
     /// 파티 선택 화면.
     /// 스테이지 진입 전 파티를 편성합니다.
-    /// 현재는 플레이스홀더 구현입니다.
+    /// 레퍼런스: Docs/Design/Reference/PartySelect.jpg
     /// </summary>
+    [ScreenTemplate(ScreenTemplateType.Standard)]
     public class PartySelectScreen : ScreenWidget<PartySelectScreen, PartySelectScreen.PartySelectState>
     {
         /// <summary>
@@ -41,6 +44,27 @@ namespace Sc.Contents.Stage
             public string PresetGroupId { get; set; }
         }
 
+        #region Widget References
+
+        [Header("Widgets")] [SerializeField] private StageInfoWidget _stageInfoWidget;
+        [SerializeField] private CharacterSelectWidget _characterSelectWidget;
+
+        [Header("Party Slots (Formation)")] [SerializeField]
+        private Transform _frontLineContainer;
+
+        [SerializeField] private Transform _backLineContainer;
+        [SerializeField] private PartySlotWidget[] _partySlots;
+
+        [Header("Battle Preview")] [SerializeField]
+        private Transform _battlePreviewArea;
+
+        [SerializeField] private Transform _partyFormation;
+        [SerializeField] private Transform _enemyFormation;
+
+        #endregion
+
+        #region Legacy Fields (호환성 유지)
+
         [Header("Stage Info")] [SerializeField]
         private TMP_Text _stageNameText;
 
@@ -57,29 +81,102 @@ namespace Sc.Contents.Stage
 
         [SerializeField] private TMP_Text _characterCountText;
 
+        [Header("Quick Actions")] [SerializeField]
+        private Button _autoFormButton;
+
+        [SerializeField] private Button _clearAllButton;
+        [SerializeField] private Button _stageInfoButton;
+        [SerializeField] private Button _formationSettingButton;
+
         [Header("Footer")] [SerializeField] private TMP_Text _staminaCostText;
         [SerializeField] private Button _startButton;
         [SerializeField] private TMP_Text _startButtonText;
+        [SerializeField] private Button _quickBattleButton;
+        [SerializeField] private Button _autoToggleButton;
+        [SerializeField] private TMP_Text _autoToggleText;
 
         [Header("Navigation")] [SerializeField]
         private Button _backButton;
 
+        [SerializeField] private Button _homeButton;
+
+        #endregion
+
         private PartySelectState _currentState;
         private readonly List<string> _selectedCharacterIds = new();
+        private readonly List<PartySlotWidget> _partySlotWidgets = new();
+        private PartySlotWidget _selectedSlot;
         private bool _isStarting;
+        private bool _isAutoMode;
 
         protected override void OnInitialize()
         {
             Debug.Log("[PartySelectScreen] OnInitialize");
 
+            SetupButtons();
+            SetupWidgets();
+            SetupPartySlots();
+        }
+
+        private void SetupButtons()
+        {
             if (_backButton != null)
-            {
                 _backButton.onClick.AddListener(OnBackClicked);
-            }
+
+            if (_homeButton != null)
+                _homeButton.onClick.AddListener(OnHomeClicked);
 
             if (_startButton != null)
-            {
                 _startButton.onClick.AddListener(OnStartClicked);
+
+            if (_autoFormButton != null)
+                _autoFormButton.onClick.AddListener(OnAutoFormClicked);
+
+            if (_clearAllButton != null)
+                _clearAllButton.onClick.AddListener(OnClearAllClicked);
+
+            if (_stageInfoButton != null)
+                _stageInfoButton.onClick.AddListener(OnStageInfoClicked);
+
+            if (_formationSettingButton != null)
+                _formationSettingButton.onClick.AddListener(OnFormationSettingClicked);
+
+            if (_quickBattleButton != null)
+                _quickBattleButton.onClick.AddListener(OnQuickBattleClicked);
+
+            if (_autoToggleButton != null)
+                _autoToggleButton.onClick.AddListener(OnAutoToggleClicked);
+        }
+
+        private void SetupWidgets()
+        {
+            // CharacterSelectWidget 이벤트 연결
+            if (_characterSelectWidget != null)
+            {
+                _characterSelectWidget.OnCharacterSelected += OnCharacterSelected;
+                _characterSelectWidget.OnCharacterDetailRequested += OnCharacterDetailRequested;
+            }
+        }
+
+        private void SetupPartySlots()
+        {
+            _partySlotWidgets.Clear();
+
+            // 배열로 지정된 슬롯 사용
+            if (_partySlots != null && _partySlots.Length > 0)
+            {
+                for (int i = 0; i < _partySlots.Length; i++)
+                {
+                    var slot = _partySlots[i];
+                    if (slot != null)
+                    {
+                        bool isFrontLine = i < 3; // 0,1,2 = 앞줄, 3,4,5 = 뒷줄
+                        slot.Initialize(i, isFrontLine);
+                        slot.OnSlotClicked += OnPartySlotClicked;
+                        slot.OnRemoveRequested += OnPartySlotRemoveRequested;
+                        _partySlotWidgets.Add(slot);
+                    }
+                }
             }
         }
 
@@ -95,11 +192,25 @@ namespace Sc.Contents.Stage
             // 스테이지 정보 표시
             RefreshStageInfo();
 
+            // StageInfoWidget 구성
+            if (_stageInfoWidget != null && _currentState.StageData != null)
+            {
+                _stageInfoWidget.Configure(_currentState.StageData);
+            }
+
             // 파티 슬롯 초기화
             InitializePartySlots();
 
             // 캐릭터 목록 로드
             LoadCharacterList();
+
+            // CharacterSelectWidget 초기화
+            if (_characterSelectWidget != null)
+            {
+                var ownedCharacters = DataManager.Instance?.OwnedCharacters;
+                var characters = ownedCharacters != null ? ownedCharacters.ToList() : new List<OwnedCharacter>();
+                _characterSelectWidget.Initialize(characters);
+            }
 
             // 푸터 갱신
             RefreshFooter();
@@ -335,9 +446,236 @@ namespace Sc.Contents.Stage
             NavigationManager.Instance?.Back();
         }
 
+        private void OnHomeClicked()
+        {
+            Debug.Log("[PartySelectScreen] Home clicked");
+            // TODO: 문자열 기반 네비게이션 구현 필요
+            // 현재는 순환 참조 방지를 위해 스택 팝으로 대체
+            while (NavigationManager.Instance?.ScreenCount > 1)
+            {
+                NavigationManager.Instance?.Back();
+            }
+        }
+
         private void OnHeaderBackClicked(HeaderBackClickedEvent evt)
         {
             OnBackClicked();
+        }
+
+        #endregion
+
+        #region Party Slot Handlers
+
+        private void OnPartySlotClicked(PartySlotWidget slot, int slotIndex)
+        {
+            Debug.Log($"[PartySelectScreen] Party slot clicked: {slotIndex}");
+
+            // 이전 선택 해제
+            _selectedSlot?.SetSelected(false);
+
+            // 새 슬롯 선택
+            _selectedSlot = slot;
+            _selectedSlot.SetSelected(true);
+        }
+
+        private void OnPartySlotRemoveRequested(PartySlotWidget slot, OwnedCharacter character)
+        {
+            Debug.Log($"[PartySelectScreen] Remove character from slot: {character.InstanceId}");
+
+            if (string.IsNullOrEmpty(character.InstanceId)) return;
+
+            // 슬롯에서 캐릭터 제거
+            slot.ClearCharacter();
+            _selectedCharacterIds.Remove(character.InstanceId);
+
+            // CharacterSelectWidget 업데이트
+            _characterSelectWidget?.RemoveAssignedCharacter(character.InstanceId);
+
+            // UI 갱신
+            RefreshPartyPower();
+            RefreshFooter();
+            UpdateStageInfoWidget();
+        }
+
+        #endregion
+
+        #region Character Selection Handlers
+
+        private void OnCharacterSelected(OwnedCharacter character)
+        {
+            Debug.Log($"[PartySelectScreen] Character selected: {character.InstanceId}");
+
+            if (string.IsNullOrEmpty(character.InstanceId)) return;
+
+            // 이미 편성된 캐릭터인 경우
+            if (_selectedCharacterIds.Contains(character.InstanceId))
+            {
+                // 해당 슬롯에서 제거
+                RemoveCharacterFromParty(character.InstanceId);
+            }
+            else
+            {
+                // 선택된 슬롯이 있으면 해당 슬롯에 할당
+                if (_selectedSlot != null && _selectedSlot.CurrentState != PartySlotWidget.SlotState.Locked)
+                {
+                    AssignCharacterToSlot(_selectedSlot, character);
+                }
+                else
+                {
+                    // 빈 슬롯 찾아서 할당
+                    var emptySlot = _partySlotWidgets.FirstOrDefault(s =>
+                        s.CurrentState == PartySlotWidget.SlotState.Empty);
+
+                    if (emptySlot != null)
+                    {
+                        AssignCharacterToSlot(emptySlot, character);
+                    }
+                    else
+                    {
+                        Debug.Log("[PartySelectScreen] No empty slot available");
+                    }
+                }
+            }
+        }
+
+        private void OnCharacterDetailRequested(OwnedCharacter character)
+        {
+            Debug.Log($"[PartySelectScreen] Character detail requested: {character.InstanceId}");
+            // TODO: CharacterDetailPopup 열기
+        }
+
+        private void AssignCharacterToSlot(PartySlotWidget slot, OwnedCharacter character)
+        {
+            // 기존 캐릭터가 있으면 제거
+            if (!string.IsNullOrEmpty(slot.AssignedCharacter.InstanceId))
+            {
+                _selectedCharacterIds.Remove(slot.AssignedCharacter.InstanceId);
+                _characterSelectWidget?.RemoveAssignedCharacter(slot.AssignedCharacter.InstanceId);
+            }
+
+            // 새 캐릭터 할당
+            slot.AssignCharacter(character);
+            _selectedCharacterIds.Add(character.InstanceId);
+            _characterSelectWidget?.AddAssignedCharacter(character.InstanceId);
+
+            // UI 갱신
+            RefreshPartyPower();
+            RefreshFooter();
+            UpdateStageInfoWidget();
+        }
+
+        private void RemoveCharacterFromParty(string characterId)
+        {
+            var slot = _partySlotWidgets.FirstOrDefault(s =>
+                s.AssignedCharacter.InstanceId == characterId);
+
+            if (slot != null)
+            {
+                slot.ClearCharacter();
+                _selectedCharacterIds.Remove(characterId);
+                _characterSelectWidget?.RemoveAssignedCharacter(characterId);
+
+                RefreshPartyPower();
+                RefreshFooter();
+                UpdateStageInfoWidget();
+            }
+        }
+
+        #endregion
+
+        #region Quick Action Handlers
+
+        private void OnAutoFormClicked()
+        {
+            Debug.Log("[PartySelectScreen] Auto form clicked");
+            // TODO: 자동 편성 로직
+            // 전투력 순으로 최적의 캐릭터 자동 선택
+        }
+
+        private void OnClearAllClicked()
+        {
+            Debug.Log("[PartySelectScreen] Clear all clicked");
+
+            foreach (var slot in _partySlotWidgets)
+            {
+                if (!string.IsNullOrEmpty(slot.AssignedCharacter.InstanceId))
+                {
+                    slot.ClearCharacter();
+                }
+            }
+
+            _selectedCharacterIds.Clear();
+            _characterSelectWidget?.SetAssignedCharacters(null);
+
+            RefreshPartyPower();
+            RefreshFooter();
+            UpdateStageInfoWidget();
+        }
+
+        private void OnStageInfoClicked()
+        {
+            Debug.Log("[PartySelectScreen] Stage info clicked");
+            // TODO: StageInfoPopup 열기
+            if (_currentState?.StageData != null)
+            {
+                StageInfoPopup.Open(new StageInfoState
+                {
+                    StageData = _currentState.StageData
+                });
+            }
+        }
+
+        private void OnFormationSettingClicked()
+        {
+            Debug.Log("[PartySelectScreen] Formation setting clicked");
+            // TODO: PresetManagePopup 열기
+        }
+
+        private void OnQuickBattleClicked()
+        {
+            Debug.Log("[PartySelectScreen] Quick battle clicked");
+            // TODO: 빠른 전투 (소탕) 로직
+        }
+
+        private void OnAutoToggleClicked()
+        {
+            _isAutoMode = !_isAutoMode;
+
+            if (_autoToggleText != null)
+            {
+                _autoToggleText.text = _isAutoMode ? "자동 ON" : "자동 OFF";
+            }
+
+            Debug.Log($"[PartySelectScreen] Auto mode: {_isAutoMode}");
+        }
+
+        #endregion
+
+        #region UI Update Helpers
+
+        private void UpdateStageInfoWidget()
+        {
+            if (_stageInfoWidget == null) return;
+
+            int totalPower = CalculateTotalPower();
+            _stageInfoWidget.UpdatePartyStatus(_selectedCharacterIds.Count, totalPower);
+        }
+
+        private int CalculateTotalPower()
+        {
+            int totalPower = 0;
+
+            foreach (var slot in _partySlotWidgets)
+            {
+                if (!string.IsNullOrEmpty(slot.AssignedCharacter.InstanceId))
+                {
+                    // TODO: 실제 전투력 계산 로직 구현
+                    // 현재는 레벨 * 100으로 임시 계산
+                    totalPower += slot.AssignedCharacter.Level * 100;
+                }
+            }
+
+            return totalPower;
         }
 
         #endregion
@@ -359,17 +697,64 @@ namespace Sc.Contents.Stage
 
         protected override void OnRelease()
         {
-            if (_backButton != null)
-            {
-                _backButton.onClick.RemoveListener(OnBackClicked);
-            }
-
-            if (_startButton != null)
-            {
-                _startButton.onClick.RemoveListener(OnStartClicked);
-            }
+            CleanupButtons();
+            CleanupWidgets();
+            CleanupPartySlots();
 
             _selectedCharacterIds.Clear();
+            _partySlotWidgets.Clear();
+            _selectedSlot = null;
+        }
+
+        private void CleanupButtons()
+        {
+            if (_backButton != null)
+                _backButton.onClick.RemoveListener(OnBackClicked);
+
+            if (_homeButton != null)
+                _homeButton.onClick.RemoveListener(OnHomeClicked);
+
+            if (_startButton != null)
+                _startButton.onClick.RemoveListener(OnStartClicked);
+
+            if (_autoFormButton != null)
+                _autoFormButton.onClick.RemoveListener(OnAutoFormClicked);
+
+            if (_clearAllButton != null)
+                _clearAllButton.onClick.RemoveListener(OnClearAllClicked);
+
+            if (_stageInfoButton != null)
+                _stageInfoButton.onClick.RemoveListener(OnStageInfoClicked);
+
+            if (_formationSettingButton != null)
+                _formationSettingButton.onClick.RemoveListener(OnFormationSettingClicked);
+
+            if (_quickBattleButton != null)
+                _quickBattleButton.onClick.RemoveListener(OnQuickBattleClicked);
+
+            if (_autoToggleButton != null)
+                _autoToggleButton.onClick.RemoveListener(OnAutoToggleClicked);
+        }
+
+        private void CleanupWidgets()
+        {
+            if (_characterSelectWidget != null)
+            {
+                _characterSelectWidget.OnCharacterSelected -= OnCharacterSelected;
+                _characterSelectWidget.OnCharacterDetailRequested -= OnCharacterDetailRequested;
+            }
+        }
+
+        private void CleanupPartySlots()
+        {
+            foreach (var slot in _partySlotWidgets)
+            {
+                if (slot != null)
+                {
+                    slot.OnSlotClicked -= OnPartySlotClicked;
+                    slot.OnRemoveRequested -= OnPartySlotRemoveRequested;
+                }
+            }
         }
     }
 }

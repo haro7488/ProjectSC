@@ -1,9 +1,12 @@
-using System.Collections.Generic;
+using System;
 using Sc.Common.UI;
+using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Stage.Widgets;
 using Sc.Data;
 using Sc.Event.UI;
 using Sc.Foundation;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +15,10 @@ namespace Sc.Contents.Stage
     /// <summary>
     /// 인게임 컨텐츠 대시보드.
     /// 컨텐츠 종류(메인스토리, 골드던전, 경험치던전 등)를 선택하는 화면입니다.
+    /// 스펙: Docs/Specs/Stage.md - InGameContentDashboard UI 레이아웃 구조
+    /// 레퍼런스: Docs/Design/Reference/StageDashbaord.jpg
     /// </summary>
+    [ScreenTemplate(ScreenTemplateType.Standard)]
     public class InGameContentDashboard : ScreenWidget<InGameContentDashboard, InGameContentDashboard.DashboardState>
     {
         /// <summary>
@@ -26,38 +32,69 @@ namespace Sc.Contents.Stage
             public InGameContentType? InitialContentType { get; set; }
         }
 
-        [Header("Content List")] [SerializeField]
-        private Transform _contentContainer;
+        #region Widgets
 
-        [SerializeField] private ContentCategoryItem _categoryItemPrefab;
-        [SerializeField] private ScrollRect _scrollRect;
+        [Header("Widgets")]
+        [SerializeField] private ContentProgressWidget _progressWidget;
+        [SerializeField] private QuickActionWidget _quickActionWidget;
 
-        [Header("Navigation")] [SerializeField]
-        private Button _backButton;
+        #endregion
+
+        #region Content Buttons - Left Side
+
+        [Header("Left Side")]
+        [SerializeField] private Button _shortTermClassButton;
+        [SerializeField] private TMP_Text _shortTermClassSeasonText;
+        [SerializeField] private Button _dimensionClashButton;
+        [SerializeField] private TMP_Text _dimensionClashDungeonText;
+
+        #endregion
+
+        #region Content Buttons - Center Area
+
+        [Header("Center Area")]
+        [SerializeField] private Button _nurulingBustersButton;
+        [SerializeField] private Button _pvpButton;
+        [SerializeField] private Button _mainStoryButton;
+        [SerializeField] private TMP_Text _mainStoryProgressText;
+        [SerializeField] private TMP_Text _mainStoryStageNameText;
+        [SerializeField] private TMP_Text _mainStoryTimeRemainingText;
+
+        #endregion
+
+        #region Content Buttons - Right Side
+
+        [Header("Right Side")]
+        [SerializeField] private Button _dungeonButton;
+        [SerializeField] private Button _invasionButton;
+        [SerializeField] private Button _deckFormationButton;
+
+        #endregion
+
+        #region Right Top Area
+
+        [Header("Right Top Area")]
+        [SerializeField] private TMP_Text _stageProgressText;
+        [SerializeField] private Button _stageProgressNavigateButton;
+
+        #endregion
+
+        #region Navigation
+
+        [Header("Navigation")]
+        [SerializeField] private Button _backButton;
+
+        #endregion
 
         private DashboardState _currentState;
-        private readonly List<ContentCategoryItem> _categoryItems = new();
-
-        // 표시할 컨텐츠 목록 (순서대로)
-        private static readonly InGameContentType[] DisplayContents =
-        {
-            InGameContentType.MainStory,
-            InGameContentType.HardMode,
-            InGameContentType.GoldDungeon,
-            InGameContentType.ExpDungeon,
-            InGameContentType.SkillDungeon,
-            InGameContentType.BossRaid,
-            InGameContentType.Tower
-        };
+        private string _currentMainStoryStageId;
 
         protected override void OnInitialize()
         {
             Debug.Log("[InGameContentDashboard] OnInitialize");
 
-            if (_backButton != null)
-            {
-                _backButton.onClick.AddListener(OnBackClicked);
-            }
+            SetupButtonListeners();
+            SetupWidgetCallbacks();
         }
 
         protected override void OnBind(DashboardState state)
@@ -67,9 +104,10 @@ namespace Sc.Contents.Stage
             Debug.Log("[InGameContentDashboard] OnBind");
 
             // Header 설정
-            ScreenHeader.Instance?.Configure("stage_dashboard");
+            ScreenHeader.Instance?.Configure("adventure_title");
 
-            RefreshContentList();
+            RefreshContentButtons();
+            RefreshProgressInfo();
         }
 
         protected override void OnShow()
@@ -90,97 +128,271 @@ namespace Sc.Contents.Stage
 
         public override DashboardState GetState() => _currentState;
 
-        #region Content List
+        #region Setup
 
-        private void RefreshContentList()
+        private void SetupButtonListeners()
         {
-            ClearCategoryItems();
+            // Navigation
+            if (_backButton != null)
+                _backButton.onClick.AddListener(OnBackClicked);
 
-            foreach (var contentType in DisplayContents)
+            // Left Side
+            if (_shortTermClassButton != null)
+                _shortTermClassButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.ShortTermClass));
+            if (_dimensionClashButton != null)
+                _dimensionClashButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.DimensionClash));
+
+            // Center Area
+            if (_nurulingBustersButton != null)
+                _nurulingBustersButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.NurulingBusters));
+            if (_pvpButton != null)
+                _pvpButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.PVP));
+            if (_mainStoryButton != null)
+                _mainStoryButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.MainStory));
+
+            // Right Side
+            if (_dungeonButton != null)
+                _dungeonButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.Dungeon));
+            if (_invasionButton != null)
+                _invasionButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.Invasion));
+            if (_deckFormationButton != null)
+                _deckFormationButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.DeckFormation));
+
+            // Right Top Area
+            if (_stageProgressNavigateButton != null)
+                _stageProgressNavigateButton.onClick.AddListener(OnStageProgressNavigateClicked);
+        }
+
+        private void SetupWidgetCallbacks()
+        {
+            if (_progressWidget != null)
             {
-                CreateCategoryItem(contentType);
+                _progressWidget.OnNavigateClicked += OnProgressWidgetNavigateClicked;
             }
 
-            // 스크롤 초기화
-            if (_scrollRect != null)
+            if (_quickActionWidget != null)
             {
-                _scrollRect.verticalNormalizedPosition = 1f;
+                _quickActionWidget.OnQuickEntryClicked += OnQuickEntryClicked;
+                _quickActionWidget.OnDeckFormationClicked += OnDeckFormationClicked;
             }
         }
 
-        private void CreateCategoryItem(InGameContentType contentType)
+        private void RemoveButtonListeners()
         {
-            if (_categoryItemPrefab == null || _contentContainer == null) return;
+            // Navigation
+            if (_backButton != null)
+                _backButton.onClick.RemoveAllListeners();
 
-            var itemGo = Instantiate(_categoryItemPrefab, _contentContainer);
-            var item = itemGo.GetComponent<ContentCategoryItem>();
+            // Left Side
+            if (_shortTermClassButton != null)
+                _shortTermClassButton.onClick.RemoveAllListeners();
+            if (_dimensionClashButton != null)
+                _dimensionClashButton.onClick.RemoveAllListeners();
 
-            if (item != null)
+            // Center Area
+            if (_nurulingBustersButton != null)
+                _nurulingBustersButton.onClick.RemoveAllListeners();
+            if (_pvpButton != null)
+                _pvpButton.onClick.RemoveAllListeners();
+            if (_mainStoryButton != null)
+                _mainStoryButton.onClick.RemoveAllListeners();
+
+            // Right Side
+            if (_dungeonButton != null)
+                _dungeonButton.onClick.RemoveAllListeners();
+            if (_invasionButton != null)
+                _invasionButton.onClick.RemoveAllListeners();
+            if (_deckFormationButton != null)
+                _deckFormationButton.onClick.RemoveAllListeners();
+
+            // Right Top Area
+            if (_stageProgressNavigateButton != null)
+                _stageProgressNavigateButton.onClick.RemoveAllListeners();
+        }
+
+        private void RemoveWidgetCallbacks()
+        {
+            if (_progressWidget != null)
             {
-                item.Initialize();
+                _progressWidget.OnNavigateClicked -= OnProgressWidgetNavigateClicked;
+            }
 
-                // TODO: 실제 잠금 상태는 UserData에서 확인
-                bool isLocked = IsContentLocked(contentType);
-                bool hasNew = false; // TODO: 새 컨텐츠 확인 로직
-
-                item.Setup(contentType, isLocked, hasNew, OnContentClicked);
-                _categoryItems.Add(item);
+            if (_quickActionWidget != null)
+            {
+                _quickActionWidget.OnQuickEntryClicked -= OnQuickEntryClicked;
+                _quickActionWidget.OnDeckFormationClicked -= OnDeckFormationClicked;
             }
         }
 
-        private void ClearCategoryItems()
+        #endregion
+
+        #region Content Refresh
+
+        private void RefreshContentButtons()
         {
-            foreach (var item in _categoryItems)
+            // TODO: 실제 컨텐츠 상태를 UserData에서 가져와서 설정
+            // 현재는 플레이스홀더 데이터 사용
+
+            // Left Side - Short Term Class (단기 속성반)
+            if (_shortTermClassSeasonText != null)
             {
-                if (item != null)
-                {
-                    Destroy(item.gameObject);
-                }
+                _shortTermClassSeasonText.text = "02/19/11:00 시즌 시작";
             }
 
-            _categoryItems.Clear();
+            // Left Side - Dimension Clash (차원 대충돌)
+            if (_dimensionClashDungeonText != null)
+            {
+                _dimensionClashDungeonText.text = "딜: 리버리";
+            }
+
+            // 버튼 잠금 상태 설정
+            SetButtonLockState(_shortTermClassButton, IsContentLocked(ContentButtonType.ShortTermClass));
+            SetButtonLockState(_dimensionClashButton, IsContentLocked(ContentButtonType.DimensionClash));
+            SetButtonLockState(_nurulingBustersButton, IsContentLocked(ContentButtonType.NurulingBusters));
+            SetButtonLockState(_pvpButton, IsContentLocked(ContentButtonType.PVP));
+            SetButtonLockState(_dungeonButton, IsContentLocked(ContentButtonType.Dungeon));
+            SetButtonLockState(_invasionButton, IsContentLocked(ContentButtonType.Invasion));
         }
 
-        private bool IsContentLocked(InGameContentType contentType)
+        private void RefreshProgressInfo()
         {
-            // TODO: 실제 해금 조건 확인
-            // 현재는 메인스토리만 해금된 것으로 처리
-            return contentType switch
+            // TODO: 실제 진행 정보를 UserData에서 가져와서 설정
+            // 현재는 플레이스홀더 데이터 사용
+
+            // Right Top Area - Stage Progress Widget
+            if (_stageProgressText != null)
             {
-                InGameContentType.MainStory => false,
-                InGameContentType.GoldDungeon => false,
-                InGameContentType.ExpDungeon => false,
+                _stageProgressText.text = "11-10 최후의 방어선! 알프트반선!";
+            }
+
+            // Center - Main Story Progress
+            if (_mainStoryProgressText != null)
+            {
+                _mainStoryProgressText.text = "제 1 엘리베이터 B7 도전중";
+            }
+
+            if (_mainStoryStageNameText != null)
+            {
+                _mainStoryStageNameText.text = "세계수 급착기지";
+            }
+
+            if (_mainStoryTimeRemainingText != null)
+            {
+                _mainStoryTimeRemainingText.text = "06일 17시간 07분";
+            }
+
+            _currentMainStoryStageId = "stage_main_11_10"; // TODO: 실제 스테이지 ID
+
+            // Progress Widget 설정
+            if (_progressWidget != null)
+            {
+                _progressWidget.Configure(
+                    InGameContentType.MainStory,
+                    "제 1 엘리베이터 B7 도전중",
+                    "세계수 급착기지",
+                    _currentMainStoryStageId
+                );
+                _progressWidget.SetTimeRemaining(TimeSpan.FromDays(6).Add(TimeSpan.FromHours(17)).Add(TimeSpan.FromMinutes(7)));
+            }
+
+            // Quick Action Widget 설정
+            if (_quickActionWidget != null)
+            {
+                _quickActionWidget.SetQuickEntryState(false, "빠른전투불가");
+                _quickActionWidget.SetAutoRepeatState(false);
+                _quickActionWidget.SetSkipTicketCount(0);
+            }
+        }
+
+        private void SetButtonLockState(Button button, bool isLocked)
+        {
+            if (button == null) return;
+
+            button.interactable = !isLocked;
+
+            // TODO: 잠금 아이콘/이펙트 표시
+            var canvasGroup = button.GetComponent<CanvasGroup>();
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = isLocked ? 0.5f : 1f;
+            }
+        }
+
+        private bool IsContentLocked(ContentButtonType buttonType)
+        {
+            // TODO: 실제 해금 조건 확인 (UserData 기반)
+            return buttonType switch
+            {
+                ContentButtonType.MainStory => false,
+                ContentButtonType.Dungeon => false,
+                ContentButtonType.DeckFormation => false,
+                ContentButtonType.ShortTermClass => true,
+                ContentButtonType.DimensionClash => true,
+                ContentButtonType.NurulingBusters => true,
+                ContentButtonType.PVP => true,
+                ContentButtonType.Invasion => true,
                 _ => true
             };
         }
 
         #endregion
 
-        #region Content Selection
+        #region Content Button Handlers
 
-        private void OnContentClicked(InGameContentType contentType)
+        private enum ContentButtonType
         {
-            Debug.Log($"[InGameContentDashboard] Content clicked: {contentType}");
+            MainStory,
+            Dungeon,
+            Invasion,
+            ShortTermClass,
+            DimensionClash,
+            NurulingBusters,
+            PVP,
+            DeckFormation
+        }
 
-            // 컨텐츠에 따라 다음 화면 결정
-            switch (contentType)
+        private void OnContentButtonClicked(ContentButtonType buttonType)
+        {
+            Debug.Log($"[InGameContentDashboard] Content button clicked: {buttonType}");
+
+            switch (buttonType)
             {
-                // StageDashboard 스킵하고 바로 StageSelectScreen으로
-                case InGameContentType.MainStory:
-                case InGameContentType.Tower:
-                    OpenStageSelectScreen(contentType);
+                case ContentButtonType.MainStory:
+                    OpenStageSelectScreen(InGameContentType.MainStory);
                     break;
 
-                // StageDashboard 거쳐서 세부 선택
-                case InGameContentType.GoldDungeon:
-                case InGameContentType.ExpDungeon:
-                case InGameContentType.SkillDungeon:
-                case InGameContentType.BossRaid:
-                    OpenStageDashboard(contentType);
+                case ContentButtonType.Dungeon:
+                    OpenStageDashboard(InGameContentType.GoldDungeon);
                     break;
 
-                default:
-                    Debug.LogWarning($"[InGameContentDashboard] Unhandled content type: {contentType}");
+                case ContentButtonType.Invasion:
+                    // TODO: InvasionScreen 구현 시 연결
+                    Debug.Log("[InGameContentDashboard] Invasion not implemented yet");
+                    break;
+
+                case ContentButtonType.ShortTermClass:
+                    // TODO: EventStageScreen 구현 시 연결
+                    Debug.Log("[InGameContentDashboard] ShortTermClass not implemented yet");
+                    break;
+
+                case ContentButtonType.DimensionClash:
+                    // TODO: DimensionRaidScreen 구현 시 연결
+                    Debug.Log("[InGameContentDashboard] DimensionClash not implemented yet");
+                    break;
+
+                case ContentButtonType.NurulingBusters:
+                    // TODO: MinigameScreen 구현 시 연결
+                    Debug.Log("[InGameContentDashboard] NurulingBusters not implemented yet");
+                    break;
+
+                case ContentButtonType.PVP:
+                    // TODO: PVPLobbyScreen 구현 시 연결
+                    Debug.Log("[InGameContentDashboard] PVP not implemented yet");
+                    break;
+
+                case ContentButtonType.DeckFormation:
+                    // TODO: DeckManageScreen 구현 시 연결
+                    Debug.Log("[InGameContentDashboard] DeckFormation not implemented yet");
                     break;
             }
         }
@@ -203,6 +415,34 @@ namespace Sc.Contents.Stage
 
         #endregion
 
+        #region Widget Handlers
+
+        private void OnProgressWidgetNavigateClicked(InGameContentType contentType, string stageId)
+        {
+            Debug.Log($"[InGameContentDashboard] Progress navigate clicked: {contentType}, {stageId}");
+            OpenStageSelectScreen(contentType);
+        }
+
+        private void OnStageProgressNavigateClicked()
+        {
+            Debug.Log("[InGameContentDashboard] Stage progress navigate clicked");
+            OpenStageSelectScreen(InGameContentType.MainStory);
+        }
+
+        private void OnQuickEntryClicked()
+        {
+            Debug.Log("[InGameContentDashboard] Quick entry clicked");
+            // TODO: 빠른 전투 로직
+        }
+
+        private void OnDeckFormationClicked()
+        {
+            Debug.Log("[InGameContentDashboard] Deck formation clicked");
+            OnContentButtonClicked(ContentButtonType.DeckFormation);
+        }
+
+        #endregion
+
         #region Navigation
 
         private void OnBackClicked()
@@ -220,12 +460,8 @@ namespace Sc.Contents.Stage
 
         protected override void OnRelease()
         {
-            if (_backButton != null)
-            {
-                _backButton.onClick.RemoveListener(OnBackClicked);
-            }
-
-            ClearCategoryItems();
+            RemoveButtonListeners();
+            RemoveWidgetCallbacks();
         }
     }
 }

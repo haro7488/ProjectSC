@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sc.Common.UI;
+using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Character.Widgets;
 using Sc.Core;
 using Sc.Data;
 using Sc.Event.UI;
@@ -30,22 +32,92 @@ namespace Sc.Contents.Character
 
     /// <summary>
     /// 캐릭터 상세 화면 - 선택한 캐릭터의 상세 정보 표시
+    ///
+    /// 레이아웃:
+    /// - Header: BackButton + Title + CurrencyHUD
+    /// - LeftMenuArea: 정보, 레벨업, 장비, 스킬, 승급, 보드, 어사이드 버튼
+    /// - CenterArea: CharacterImage, CompanionImage, SwitchButton, DogamButton
+    /// - BottomInfoArea: RarityBadge, NameText, TagGroup
+    /// - RightTopArea: LevelText, StarRating, CombatPowerWidget
+    /// - RightCenterArea: StatTabGroup, StatList, DetailButton
+    /// - RightBottomArea: CostumeWidget
     /// </summary>
+    [ScreenTemplate(ScreenTemplateType.Standard)]
     public class CharacterDetailScreen : ScreenWidget<CharacterDetailScreen, CharacterDetailState>
     {
-        [Header("UI References")]
+        #region Header
+
+        [Header("Header")]
         [SerializeField] private Button _backButton;
         [SerializeField] private TMP_Text _titleText;
+        [SerializeField] private Button _homeButton;
 
-        [Header("캐릭터 기본 정보")]
-        [SerializeField] private TMP_Text _nameText;
+        #endregion
+
+        #region Left Menu Area
+
+        [Header("Left Menu Area")]
+        [SerializeField] private Transform _menuButtonContainer;
+        [SerializeField] private MenuButtonWidget _infoMenuButton;
+        [SerializeField] private MenuButtonWidget _levelUpMenuButton;
+        [SerializeField] private MenuButtonWidget _equipmentMenuButton;
+        [SerializeField] private MenuButtonWidget _skillMenuButton;
+        [SerializeField] private MenuButtonWidget _promotionMenuButton;
+        [SerializeField] private MenuButtonWidget _boardMenuButton;
+        [SerializeField] private MenuButtonWidget _asideMenuButton;
+
+        #endregion
+
+        #region Center Area
+
+        [Header("Center Area - Character Display")]
+        [SerializeField] private Image _characterImage;
+        [SerializeField] private Image _companionImage;
+        [SerializeField] private Button _characterSwitchButton;
+        [SerializeField] private Button _dogamButton;
+
+        #endregion
+
+        #region Bottom Info Area
+
+        [Header("Bottom Info Area")]
+        [SerializeField] private CharacterInfoWidget _characterInfoWidget;
+        [SerializeField] private Image _rarityBadge;
         [SerializeField] private TMP_Text _rarityText;
+        [SerializeField] private TMP_Text _nameText;
+
+        #endregion
+
+        #region Right Top Area
+
+        [Header("Right Top Area - Level & Power")]
+        [SerializeField] private TMP_Text _levelText;
+        [SerializeField] private Transform _starRatingContainer;
+        [SerializeField] private CombatPowerWidget _combatPowerWidget;
+
+        #endregion
+
+        #region Right Center Area
+
+        [Header("Right Center Area - Stats")]
+        [SerializeField] private CharacterStatWidget _characterStatWidget;
+
+        #endregion
+
+        #region Right Bottom Area
+
+        [Header("Right Bottom Area - Costume")]
+        [SerializeField] private CostumeWidget _costumeWidget;
+
+        #endregion
+
+        #region Legacy Fields (Backward Compatibility)
+
+        [Header("Legacy - 기본 정보")]
         [SerializeField] private TMP_Text _classText;
         [SerializeField] private TMP_Text _elementText;
-        [SerializeField] private TMP_Text _levelText;
-        [SerializeField] private Image _characterImage;
 
-        [Header("스탯 정보")]
+        [Header("Legacy - 스탯 정보")]
         [SerializeField] private TMP_Text _hpText;
         [SerializeField] private TMP_Text _atkText;
         [SerializeField] private TMP_Text _defText;
@@ -53,38 +125,121 @@ namespace Sc.Contents.Character
         [SerializeField] private TMP_Text _critRateText;
         [SerializeField] private TMP_Text _critDamageText;
 
-        [Header("추가 정보")]
+        [Header("Legacy - 추가 정보")]
         [SerializeField] private TMP_Text _descriptionText;
         [SerializeField] private TMP_Text _ascensionText;
         [SerializeField] private TMP_Text _powerText;
 
-        [Header("강화 버튼")]
+        [Header("Legacy - 강화 버튼")]
         [SerializeField] private Button _levelUpButton;
         [SerializeField] private Button _ascensionButton;
         [SerializeField] private TMP_Text _levelUpButtonText;
         [SerializeField] private TMP_Text _ascensionButtonText;
 
+        #endregion
+
         private CharacterDetailState _currentState;
         private OwnedCharacter? _ownedCharacter;
         private CharacterData _masterData;
+
+        private MenuButtonType _currentMenuTab = MenuButtonType.Info;
 
         protected override void OnInitialize()
         {
             Debug.Log("[CharacterDetailScreen] OnInitialize");
 
+            // Header buttons
             if (_backButton != null)
             {
                 _backButton.onClick.AddListener(OnBackClicked);
             }
+            if (_homeButton != null)
+            {
+                _homeButton.onClick.AddListener(OnHomeClicked);
+            }
 
+            // Menu buttons
+            InitializeMenuButtons();
+
+            // Center area buttons
+            if (_characterSwitchButton != null)
+            {
+                _characterSwitchButton.onClick.AddListener(OnCharacterSwitchClicked);
+            }
+            if (_dogamButton != null)
+            {
+                _dogamButton.onClick.AddListener(OnDogamClicked);
+            }
+
+            // Widgets initialization
+            InitializeWidgets();
+
+            // Legacy buttons
             if (_levelUpButton != null)
             {
                 _levelUpButton.onClick.AddListener(OnLevelUpClicked);
             }
-
             if (_ascensionButton != null)
             {
                 _ascensionButton.onClick.AddListener(OnAscensionClicked);
+            }
+        }
+
+        private void InitializeMenuButtons()
+        {
+            // 메뉴 버튼 이벤트 연결
+            var menuButtons = new[]
+            {
+                _infoMenuButton,
+                _levelUpMenuButton,
+                _equipmentMenuButton,
+                _skillMenuButton,
+                _promotionMenuButton,
+                _boardMenuButton,
+                _asideMenuButton
+            };
+
+            foreach (var menuButton in menuButtons)
+            {
+                if (menuButton != null)
+                {
+                    menuButton.Initialize();
+                    menuButton.OnClicked += OnMenuButtonClicked;
+                }
+            }
+
+            // 기본 선택 (정보 탭)
+            SelectMenuTab(MenuButtonType.Info);
+        }
+
+        private void InitializeWidgets()
+        {
+            // CharacterInfoWidget
+            if (_characterInfoWidget != null)
+            {
+                _characterInfoWidget.Initialize();
+            }
+
+            // CharacterStatWidget
+            if (_characterStatWidget != null)
+            {
+                _characterStatWidget.Initialize();
+                _characterStatWidget.OnFavoriteToggled += OnFavoriteToggled;
+                _characterStatWidget.OnInfoClicked += OnStatInfoClicked;
+                _characterStatWidget.OnDetailClicked += OnStatDetailClicked;
+            }
+
+            // CombatPowerWidget
+            if (_combatPowerWidget != null)
+            {
+                _combatPowerWidget.Initialize();
+            }
+
+            // CostumeWidget
+            if (_costumeWidget != null)
+            {
+                _costumeWidget.Initialize();
+                _costumeWidget.OnClicked += OnCostumeClicked;
             }
         }
 
@@ -179,49 +334,6 @@ namespace Sc.Contents.Character
                 return;
             }
 
-            // 타이틀
-            if (_titleText != null)
-            {
-                _titleText.text = "캐릭터 상세";
-            }
-
-            // 기본 정보
-            if (_nameText != null)
-            {
-                _nameText.text = _masterData.Name;
-            }
-
-            if (_rarityText != null)
-            {
-                _rarityText.text = GetRarityText(_masterData.Rarity);
-                _rarityText.color = GetRarityColor(_masterData.Rarity);
-            }
-
-            if (_classText != null)
-            {
-                _classText.text = GetClassText(_masterData.CharacterClass);
-            }
-
-            if (_elementText != null)
-            {
-                _elementText.text = GetElementText(_masterData.Element);
-                _elementText.color = GetElementColor(_masterData.Element);
-            }
-
-            // 레벨 (보유 캐릭터 데이터)
-            if (_levelText != null)
-            {
-                var level = _ownedCharacter?.Level ?? 1;
-                _levelText.text = $"Lv. {level}";
-            }
-
-            // 돌파 단계
-            if (_ascensionText != null)
-            {
-                var ascension = _ownedCharacter?.Ascension ?? 0;
-                _ascensionText.text = $"돌파 {ascension}단계";
-            }
-
             // 실제 스탯 계산 (레벨 보정 + 돌파 보너스 적용)
             CharacterStats stats;
             int power = 0;
@@ -247,7 +359,111 @@ namespace Sc.Contents.Character
                 power = PowerCalculator.Calculate(stats);
             }
 
-            // 스탯 정보
+            // === New Widget Updates ===
+
+            // 타이틀 (캐릭터 이름)
+            if (_titleText != null)
+            {
+                _titleText.text = _masterData.Name;
+            }
+
+            // 레벨 (우측 상단)
+            if (_levelText != null)
+            {
+                var level = _ownedCharacter?.Level ?? 1;
+                _levelText.text = $"Lv. {level}";
+            }
+
+            // Star Rating (돌파 단계)
+            UpdateStarRating(_ownedCharacter?.Ascension ?? 0);
+
+            // CombatPowerWidget
+            if (_combatPowerWidget != null)
+            {
+                _combatPowerWidget.SetCombatPower(power);
+            }
+
+            // CharacterStatWidget
+            if (_characterStatWidget != null)
+            {
+                var statData = new CharacterStatData
+                {
+                    HP = stats.HP,
+                    SP = 400, // TODO: SP 데이터 추가
+                    PhysicalAttack = stats.ATK,
+                    MagicAttack = (int)(stats.ATK * 0.2f), // 임시 값
+                    PhysicalDefense = stats.DEF,
+                    MagicDefense = stats.DEF,
+                    CritRate = stats.CritRate,
+                    CritDamage = stats.CritDamage,
+                    Speed = stats.SPD
+                };
+                _characterStatWidget.Configure(statData);
+            }
+
+            // CharacterInfoWidget (하단 정보)
+            if (_characterInfoWidget != null)
+            {
+                var infoData = new CharacterInfoData
+                {
+                    CharacterId = _masterData.Id,
+                    Name = _masterData.Name,
+                    Rarity = GetRarityValue(_masterData.Rarity),
+                    Level = _ownedCharacter?.Level ?? 1,
+                    Ascension = _ownedCharacter?.Ascension ?? 0,
+                    Element = ConvertElement(_masterData.Element),
+                    Role = ConvertRole(_masterData.CharacterClass),
+                    Personality = PersonalityType.Active, // TODO: 데이터에서 가져오기
+                    Attack = AttackType.Physical, // TODO: 데이터에서 가져오기
+                    Position = PositionType.Back // TODO: 데이터에서 가져오기
+                };
+                _characterInfoWidget.Configure(infoData);
+            }
+
+            // CostumeWidget
+            if (_costumeWidget != null)
+            {
+                _costumeWidget.SetCharacterName(_masterData.Name);
+            }
+
+            // === Legacy UI Updates ===
+
+            // 기본 정보 (레거시)
+            if (_nameText != null)
+            {
+                _nameText.text = _masterData.Name;
+            }
+
+            if (_rarityText != null)
+            {
+                _rarityText.text = GetRarityText(_masterData.Rarity);
+                _rarityText.color = GetRarityColor(_masterData.Rarity);
+            }
+
+            if (_rarityBadge != null)
+            {
+                _rarityBadge.color = GetRarityColor(_masterData.Rarity);
+            }
+
+            if (_classText != null)
+            {
+                _classText.text = GetClassText(_masterData.CharacterClass);
+            }
+
+            if (_elementText != null)
+            {
+                _elementText.text = GetElementText(_masterData.Element);
+                _elementText.color = GetElementColor(_masterData.Element);
+            }
+
+            // 돌파 단계 (레거시)
+            if (_ascensionText != null)
+            {
+                var ascension = _ownedCharacter?.Ascension ?? 0;
+                _ascensionText.text = $"돌파 {ascension}단계";
+            }
+
+            // 스탯 정보 (레거시)
             if (_hpText != null)
             {
                 _hpText.text = $"HP: {stats.HP:N0}";
@@ -278,7 +494,7 @@ namespace Sc.Contents.Character
                 _critDamageText.text = $"치명피해: {stats.CritDamage:P0}";
             }
 
-            // 전투력
+            // 전투력 (레거시)
             if (_powerText != null)
             {
                 _powerText.text = $"전투력: {power:N0}";
@@ -298,6 +514,55 @@ namespace Sc.Contents.Character
             {
                 _characterImage.color = GetRarityBackgroundColor(_masterData.Rarity);
             }
+        }
+
+        private void UpdateStarRating(int ascension)
+        {
+            if (_starRatingContainer == null) return;
+
+            for (int i = 0; i < _starRatingContainer.childCount; i++)
+            {
+                var star = _starRatingContainer.GetChild(i);
+                star.gameObject.SetActive(i < ascension);
+            }
+        }
+
+        private int GetRarityValue(Rarity rarity)
+        {
+            return rarity switch
+            {
+                Rarity.SSR => 5,
+                Rarity.SR => 4,
+                Rarity.R => 3,
+                _ => 2
+            };
+        }
+
+        private ElementType ConvertElement(Element element)
+        {
+            return element switch
+            {
+                Element.Fire => ElementType.Fire,
+                Element.Water => ElementType.Water,
+                Element.Wind => ElementType.Wind,
+                Element.Light => ElementType.Light,
+                Element.Dark => ElementType.Dark,
+                _ => ElementType.None
+            };
+        }
+
+        private RoleType ConvertRole(CharacterClass characterClass)
+        {
+            return characterClass switch
+            {
+                CharacterClass.Warrior => RoleType.Attacker,
+                CharacterClass.Mage => RoleType.Attacker,
+                CharacterClass.Archer => RoleType.Attacker,
+                CharacterClass.Healer => RoleType.Healer,
+                CharacterClass.Tank => RoleType.Defender,
+                CharacterClass.Assassin => RoleType.Attacker,
+                _ => RoleType.None
+            };
         }
 
         private void SetEmptyState()
@@ -403,10 +668,130 @@ namespace Sc.Contents.Character
             NavigationManager.Instance?.Back();
         }
 
+        private void OnHomeClicked()
+        {
+            Debug.Log("[CharacterDetailScreen] Home clicked");
+            // TODO: NavigationManager.Instance?.NavigateTo("LobbyScreen");
+        }
+
         private void OnHeaderBackClicked(HeaderBackClickedEvent evt)
         {
             OnBackClicked();
         }
+
+        #region Menu Button Handlers
+
+        private void OnMenuButtonClicked(MenuButtonType menuType)
+        {
+            Debug.Log($"[CharacterDetailScreen] Menu button clicked: {menuType}");
+            SelectMenuTab(menuType);
+        }
+
+        private void SelectMenuTab(MenuButtonType menuType)
+        {
+            _currentMenuTab = menuType;
+
+            // 모든 메뉴 버튼 선택 상태 업데이트
+            var menuButtons = new (MenuButtonWidget button, MenuButtonType type)[]
+            {
+                (_infoMenuButton, MenuButtonType.Info),
+                (_levelUpMenuButton, MenuButtonType.LevelUp),
+                (_equipmentMenuButton, MenuButtonType.Equipment),
+                (_skillMenuButton, MenuButtonType.Skill),
+                (_promotionMenuButton, MenuButtonType.Promotion),
+                (_boardMenuButton, MenuButtonType.Board),
+                (_asideMenuButton, MenuButtonType.Aside)
+            };
+
+            foreach (var (button, type) in menuButtons)
+            {
+                if (button != null)
+                {
+                    button.SetSelected(type == menuType);
+                }
+            }
+
+            // 메뉴별 화면 전환 처리
+            HandleMenuNavigation(menuType);
+        }
+
+        private void HandleMenuNavigation(MenuButtonType menuType)
+        {
+            switch (menuType)
+            {
+                case MenuButtonType.Info:
+                    // 현재 화면 (정보 탭)
+                    break;
+                case MenuButtonType.LevelUp:
+                    OnLevelUpClicked();
+                    break;
+                case MenuButtonType.Equipment:
+                    // TODO: 장비 화면 이동
+                    Debug.Log("[CharacterDetailScreen] Navigate to Equipment screen");
+                    break;
+                case MenuButtonType.Skill:
+                    // TODO: 스킬 화면 이동
+                    Debug.Log("[CharacterDetailScreen] Navigate to Skill screen");
+                    break;
+                case MenuButtonType.Promotion:
+                    OnAscensionClicked();
+                    break;
+                case MenuButtonType.Board:
+                    // TODO: 보드 화면 이동
+                    Debug.Log("[CharacterDetailScreen] Navigate to Board screen");
+                    break;
+                case MenuButtonType.Aside:
+                    // TODO: 어사이드 화면 이동
+                    Debug.Log("[CharacterDetailScreen] Navigate to Aside screen");
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Center Area Handlers
+
+        private void OnCharacterSwitchClicked()
+        {
+            Debug.Log("[CharacterDetailScreen] Character switch clicked");
+            // TODO: 다음/이전 캐릭터로 전환
+        }
+
+        private void OnDogamClicked()
+        {
+            Debug.Log("[CharacterDetailScreen] Dogam (Encyclopedia) clicked");
+            // TODO: 캐릭터 도감 화면으로 이동
+        }
+
+        #endregion
+
+        #region Widget Event Handlers
+
+        private void OnFavoriteToggled(bool isFavorite)
+        {
+            Debug.Log($"[CharacterDetailScreen] Favorite toggled: {isFavorite}");
+            // TODO: 서버에 즐겨찾기 상태 업데이트 요청
+        }
+
+        private void OnStatInfoClicked()
+        {
+            Debug.Log("[CharacterDetailScreen] Stat info clicked");
+            // TODO: 스탯 설명 팝업 표시
+        }
+
+        private void OnStatDetailClicked()
+        {
+            Debug.Log("[CharacterDetailScreen] Stat detail clicked");
+            // TODO: 전체 스탯 상세 팝업 표시
+        }
+
+        private void OnCostumeClicked()
+        {
+            Debug.Log("[CharacterDetailScreen] Costume clicked");
+            // TODO: 코스튬 화면으로 이동
+        }
+
+        #endregion
 
         private void OnLevelUpClicked()
         {

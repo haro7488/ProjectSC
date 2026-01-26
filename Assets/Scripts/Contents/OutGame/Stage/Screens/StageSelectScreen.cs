@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sc.Common.UI;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Stage.Widgets;
 using Sc.Core;
 using Sc.Data;
 using Sc.Event.OutGame;
@@ -49,6 +50,16 @@ namespace Sc.Contents.Stage
 
         [Header("Stage List")]
         [SerializeField] private StageListPanel _stageListPanel;
+
+        [Header("Map View")]
+        [SerializeField] private ChapterSelectWidget _chapterSelectWidget;
+        [SerializeField] private StageMapWidget _stageMapWidget;
+        [SerializeField] private TMP_Text _stageProgressText;
+
+        [Header("Footer Widgets")]
+        [SerializeField] private StarProgressBarWidget _starProgressBar;
+        [SerializeField] private DifficultyTabWidget _difficultyTabWidget;
+        [SerializeField] private Button _worldMapButton;
 
         [Header("Stage Detail")]
         [SerializeField] private GameObject _detailPanel;
@@ -104,6 +115,51 @@ namespace Sc.Contents.Stage
             {
                 _stageInfoButton.onClick.AddListener(OnStageInfoClicked);
             }
+
+            // Map Widget 초기화
+            InitializeMapWidgets();
+
+            // Footer Widget 초기화
+            InitializeFooterWidgets();
+        }
+
+        private void InitializeMapWidgets()
+        {
+            // ChapterSelectWidget 이벤트 연결
+            if (_chapterSelectWidget != null)
+            {
+                _chapterSelectWidget.OnChapterChanged += OnChapterChanged;
+            }
+
+            // StageMapWidget 이벤트 연결
+            if (_stageMapWidget != null)
+            {
+                _stageMapWidget.OnStageSelected += OnStageSelected;
+                _stageMapWidget.OnStageEnterRequested += OnStageEnterRequested;
+            }
+        }
+
+        private void InitializeFooterWidgets()
+        {
+            // DifficultyTabWidget 이벤트 연결
+            if (_difficultyTabWidget != null)
+            {
+                _difficultyTabWidget.OnDifficultyChanged += OnDifficultyChanged;
+                _difficultyTabWidget.OnWorldMapClicked += OnWorldMapClicked;
+                _difficultyTabWidget.Initialize(Difficulty.Normal);
+            }
+
+            // StarProgressBar 이벤트 연결
+            if (_starProgressBar != null)
+            {
+                _starProgressBar.OnMilestoneClicked += OnMilestoneClicked;
+            }
+
+            // WorldMapButton 이벤트 연결
+            if (_worldMapButton != null)
+            {
+                _worldMapButton.onClick.AddListener(OnWorldMapClicked);
+            }
         }
 
         protected override void OnBind(StageSelectState state)
@@ -125,11 +181,35 @@ namespace Sc.Contents.Stage
             // 컨텐츠 모듈 초기화
             InitializeContentModule();
 
+            // 챕터 선택 위젯 초기화
+            InitializeChapterSelect();
+
             // 스테이지 목록 로드
             LoadStageList();
 
             // 입장 제한 표시
             RefreshEntryLimit();
+
+            // 별 진행도 초기화
+            RefreshStarProgress();
+        }
+
+        private void InitializeChapterSelect()
+        {
+            if (_chapterSelectWidget == null) return;
+
+            // 카테고리 데이터베이스에서 챕터 목록 가져오기
+            var categoryDb = DataManager.Instance?.GetDatabase<StageCategoryDatabase>();
+            if (categoryDb != null)
+            {
+                var chapters = categoryDb.GetSortedByContentType(_currentState.ContentType);
+                _chapterSelectWidget.Initialize(chapters, _currentCategoryId);
+            }
+            else
+            {
+                // 기본 챕터 번호로 초기화
+                _chapterSelectWidget.Initialize(1, 12, 10);
+            }
         }
 
         protected override void OnShow()
@@ -531,6 +611,115 @@ namespace Sc.Contents.Stage
 
         #endregion
 
+        #region Map Widget Event Handlers
+
+        private void OnChapterChanged(string chapterId)
+        {
+            Debug.Log($"[StageSelectScreen] Chapter changed: {chapterId}");
+            _currentCategoryId = chapterId;
+
+            // 스테이지 목록 다시 로드
+            LoadStageList();
+
+            // 별 진행도 갱신
+            RefreshStarProgress();
+        }
+
+        private void OnStageEnterRequested(StageData stage)
+        {
+            if (stage == null) return;
+
+            Debug.Log($"[StageSelectScreen] Stage enter requested: {stage.Id}");
+            _selectedStage = stage;
+
+            // 파티 선택 화면으로 이동
+            OnEnterClicked();
+        }
+
+        #endregion
+
+        #region Footer Widget Event Handlers
+
+        private void OnDifficultyChanged(Difficulty difficulty)
+        {
+            Debug.Log($"[StageSelectScreen] Difficulty changed: {difficulty}");
+
+            // 난이도에 따른 스테이지 목록 갱신
+            LoadStageListForDifficulty(difficulty);
+        }
+
+        private void OnWorldMapClicked()
+        {
+            Debug.Log("[StageSelectScreen] World map clicked");
+            // TODO: 월드맵 화면으로 이동
+            // WorldMapScreen.Open();
+        }
+
+        private void OnMilestoneClicked(int milestoneIndex, int requiredStars)
+        {
+            Debug.Log($"[StageSelectScreen] Milestone clicked: index={milestoneIndex}, requiredStars={requiredStars}");
+            // TODO: 마일스톤 보상 수령 처리
+        }
+
+        private void LoadStageListForDifficulty(Difficulty difficulty)
+        {
+            // Difficulty에 따른 스테이지 필터링
+            var stages = GetStagesForContent(_currentState.ContentType, _currentCategoryId)
+                .Where(s => s.Difficulty == difficulty)
+                .ToList();
+
+            if (_stageListPanel != null)
+            {
+                _stageListPanel.SetStages(stages, _currentState.SelectedStageId);
+            }
+
+            // 맵 위젯에도 갱신
+            if (_stageMapWidget != null)
+            {
+                _stageMapWidget.Initialize(stages, _currentState.SelectedStageId);
+            }
+
+            // 첫 번째 스테이지 선택
+            if (stages.Count > 0)
+            {
+                OnStageSelected(stages[0]);
+            }
+        }
+
+        private void RefreshStarProgress()
+        {
+            if (_starProgressBar == null) return;
+
+            // 현재 챕터의 별 진행도 계산
+            var stages = GetStagesForContent(_currentState.ContentType, _currentCategoryId);
+            int maxStars = stages.Count * 3;
+            int currentStars = 0;
+
+            foreach (var stage in stages)
+            {
+                if (DataManager.Instance != null)
+                {
+                    var clearInfo = DataManager.Instance.StageProgress.FindClearInfo(stage.Id);
+                    if (clearInfo.HasValue)
+                    {
+                        currentStars += clearInfo.Value.Stars;
+                    }
+                }
+            }
+
+            // 마일스톤 목록 (예시)
+            var milestones = new System.Collections.Generic.List<(int requiredStars, int reward)>
+            {
+                (10, 25),
+                (20, 50),
+                (30, 100)
+            };
+
+            _starProgressBar.Initialize(currentStars, maxStars, milestones);
+        }
+
+        #endregion
+
         #region Helpers
 
         private string GetContentTitle(InGameContentType contentType)
@@ -587,6 +776,35 @@ namespace Sc.Contents.Stage
             if (_stageInfoButton != null)
             {
                 _stageInfoButton.onClick.RemoveListener(OnStageInfoClicked);
+            }
+
+            // Map Widget 이벤트 해제
+            if (_chapterSelectWidget != null)
+            {
+                _chapterSelectWidget.OnChapterChanged -= OnChapterChanged;
+            }
+
+            if (_stageMapWidget != null)
+            {
+                _stageMapWidget.OnStageSelected -= OnStageSelected;
+                _stageMapWidget.OnStageEnterRequested -= OnStageEnterRequested;
+            }
+
+            // Footer Widget 이벤트 해제
+            if (_difficultyTabWidget != null)
+            {
+                _difficultyTabWidget.OnDifficultyChanged -= OnDifficultyChanged;
+                _difficultyTabWidget.OnWorldMapClicked -= OnWorldMapClicked;
+            }
+
+            if (_starProgressBar != null)
+            {
+                _starProgressBar.OnMilestoneClicked -= OnMilestoneClicked;
+            }
+
+            if (_worldMapButton != null)
+            {
+                _worldMapButton.onClick.RemoveListener(OnWorldMapClicked);
             }
 
             // 컨텐츠 모듈 해제

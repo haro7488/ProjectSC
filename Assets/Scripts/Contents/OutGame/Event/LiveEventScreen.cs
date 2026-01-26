@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Sc.Common.UI;
 using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Event.Widgets;
 using Sc.Core;
 using Sc.Data;
 using Sc.Event.OutGame;
@@ -23,15 +24,26 @@ namespace Sc.Contents.Event
         /// 유예 기간 이벤트 포함 여부
         /// </summary>
         public bool IncludeGracePeriod = true;
+
+        /// <summary>
+        /// 초기 선택할 이벤트 ID (옵션)
+        /// </summary>
+        public string InitialEventId;
     }
 
     /// <summary>
-    /// 라이브 이벤트 화면 - 활성 이벤트 목록
+    /// 라이브 이벤트 화면 - 활성 이벤트 목록 + 상세 정보.
+    /// 좌측: 이벤트 배너 목록 (EventListWidget)
+    /// 우측: 선택된 이벤트 상세 (EventDetailWidget)
+    /// Reference: Docs/Design/Reference/LiveEvent.jpg
     /// </summary>
     [ScreenTemplate(ScreenTemplateType.Standard)]
     public class LiveEventScreen : ScreenWidget<LiveEventScreen, LiveEventState>
     {
-        [Header("UI References")] [SerializeField]
+        [Header("Widgets")] [SerializeField] private EventListWidget _eventListWidget;
+        [SerializeField] private EventDetailWidget _eventDetailWidget;
+
+        [Header("Legacy UI References (deprecated)")] [SerializeField]
         private Transform _eventListContainer;
 
         [SerializeField] private EventBannerItem _bannerItemPrefab;
@@ -42,11 +54,24 @@ namespace Sc.Contents.Event
         private LiveEventState _currentState;
         private readonly List<EventBannerItem> _spawnedBanners = new();
         private bool _isLoading;
+        private List<LiveEventInfo> _cachedEvents;
 
         protected override void OnInitialize()
         {
             Debug.Log("[LiveEventScreen] OnInitialize");
 
+            // Widget 이벤트 연결
+            if (_eventListWidget != null)
+            {
+                _eventListWidget.OnBannerSelected += OnEventSelected;
+            }
+
+            if (_eventDetailWidget != null)
+            {
+                _eventDetailWidget.OnEnterClicked += OnEnterDetailClicked;
+            }
+
+            // Legacy back button
             if (_backButton != null)
             {
                 _backButton.onClick.AddListener(OnBackClicked);
@@ -147,6 +172,27 @@ namespace Sc.Contents.Event
 
         private void RefreshEventList(List<LiveEventInfo> events)
         {
+            _cachedEvents = events;
+
+            // 새 Widget 사용
+            if (_eventListWidget != null)
+            {
+                _eventListWidget.SetEvents(events);
+
+                // 초기 선택 이벤트 처리
+                if (!string.IsNullOrEmpty(_currentState?.InitialEventId))
+                {
+                    var initialEvent = events.Find(e => e.EventId == _currentState.InitialEventId);
+                    if (initialEvent != null)
+                    {
+                        _eventListWidget.SelectEvent(initialEvent);
+                    }
+                }
+
+                return;
+            }
+
+            // Legacy: 기존 코드 (Widget 미사용 시)
             ClearBanners();
             HideEmpty();
 
@@ -195,8 +241,45 @@ namespace Sc.Contents.Event
             });
         }
 
+        /// <summary>
+        /// 이벤트 선택 시 (EventListWidget에서 호출)
+        /// </summary>
+        private void OnEventSelected(LiveEventInfo eventInfo)
+        {
+            Debug.Log($"[LiveEventScreen] Event selected: {eventInfo.EventId}");
+
+            // 상세 위젯 갱신
+            if (_eventDetailWidget != null)
+            {
+                _eventDetailWidget.SetEvent(eventInfo);
+            }
+        }
+
+        /// <summary>
+        /// 상세 화면 진입 버튼 클릭 (EventDetailWidget에서 호출)
+        /// </summary>
+        private void OnEnterDetailClicked(LiveEventInfo eventInfo)
+        {
+            Debug.Log($"[LiveEventScreen] Enter detail clicked: {eventInfo.EventId}");
+
+            // EventDetailScreen으로 이동
+            EventDetailScreen.Open(new EventDetailState
+            {
+                EventId = eventInfo.EventId,
+                EventInfo = eventInfo
+            });
+        }
+
         private void SetLoadingState(bool isLoading)
         {
+            // Widget 사용 시
+            if (_eventListWidget != null)
+            {
+                _eventListWidget.SetLoadingState(isLoading);
+                return;
+            }
+
+            // Legacy
             if (_loadingIndicator != null)
             {
                 _loadingIndicator.SetActive(isLoading);
@@ -210,6 +293,15 @@ namespace Sc.Contents.Event
 
         private void ShowEmpty(string message)
         {
+            // Widget 사용 시
+            if (_eventListWidget != null)
+            {
+                _eventListWidget.ShowEmptyState(message);
+                _eventDetailWidget?.Clear();
+                return;
+            }
+
+            // Legacy
             if (_emptyText != null)
             {
                 _emptyText.text = message;
@@ -224,6 +316,14 @@ namespace Sc.Contents.Event
 
         private void HideEmpty()
         {
+            // Widget 사용 시
+            if (_eventListWidget != null)
+            {
+                _eventListWidget.HideEmptyState();
+                return;
+            }
+
+            // Legacy
             if (_emptyText != null)
             {
                 _emptyText.gameObject.SetActive(false);

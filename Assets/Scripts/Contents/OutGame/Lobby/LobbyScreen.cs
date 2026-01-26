@@ -2,10 +2,12 @@ using Cysharp.Threading.Tasks;
 using Sc.Common.UI;
 using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Character;
 using Sc.Contents.Event;
 using Sc.Contents.Gacha;
 using Sc.Contents.Lobby.Widgets;
 using Sc.Contents.Shop;
+using Sc.Contents.Stage;
 using Sc.Core;
 using Sc.Foundation;
 using Sc.LocalServer;
@@ -66,13 +68,13 @@ namespace Sc.Contents.Lobby
             Debug.Log("[LobbyScreen] OnInitialize");
 
             InitializeEventBanner();
-            // InitializePassButtons();
-            // InitializeQuickMenu();
-            // InitializeCharacterDisplay();
-            // InitializeInGameDashboard();
-            // InitializeBottomNav();
-            // InitializeTaskRunner();
-            // RegisterBadgeProviders();
+            InitializePassButtons();
+            InitializeQuickMenu();
+            InitializeCharacterDisplay();
+            InitializeInGameDashboard();
+            InitializeBottomNav();
+            InitializeTaskRunner();
+            RegisterBadgeProviders();
         }
 
         protected override void OnBind(EmptyScreenState state)
@@ -122,7 +124,7 @@ namespace Sc.Contents.Lobby
 
             CleanupEventHandlers();
         }
-        
+
         #endregion
 
         #region Initialization
@@ -355,8 +357,42 @@ namespace Sc.Contents.Lobby
                 return;
             }
 
-            // TODO: NavigationManager를 통한 화면 이동
             Debug.Log($"[LobbyScreen] Navigate to: {screenName}");
+
+            switch (screenName)
+            {
+                case "GachaScreen":
+                    GachaScreen.Open();
+                    break;
+                case "GachaHistoryScreen":
+                    GachaHistoryScreen.Open();
+                    break;
+                case "ShopScreen":
+                    ShopScreen.Open();
+                    break;
+                case "CharacterListScreen":
+                    CharacterListScreen.Open();
+                    break;
+                case "CharacterDetailScreen":
+                    // CharacterDetailScreen은 캐릭터 ID가 필요하므로 기본값 사용
+                    CharacterDetailScreen.Open(new CharacterDetailState());
+                    break;
+                case "StageSelectScreen":
+                    StageSelectScreen.Open();
+                    break;
+                case "PartySelectScreen":
+                    PartySelectScreen.Open();
+                    break;
+                case "LiveEventScreen":
+                    LiveEventScreen.Open();
+                    break;
+                case "EventDetailScreen":
+                    EventDetailScreen.Open(new EventDetailState());
+                    break;
+                default:
+                    Debug.LogWarning($"[LobbyScreen] Unknown screen: {screenName}");
+                    break;
+            }
         }
 
         #endregion

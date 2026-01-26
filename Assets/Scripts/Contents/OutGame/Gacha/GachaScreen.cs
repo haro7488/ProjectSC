@@ -31,6 +31,16 @@ namespace Sc.Contents.Gacha
     [ScreenTemplate(ScreenTemplateType.Standard)]
     public class GachaScreen : ScreenWidget<GachaScreen, GachaState>
     {
+        #region Widget References
+
+        [Header("위젯")]
+        [SerializeField] private GachaBannerWidget _bannerWidget;
+        [SerializeField] private GachaPullButtonWidget _pullButtonWidget;
+
+        #endregion
+
+        #region Legacy Fields (호환성 유지)
+
         [Header("배너 영역")]
         [SerializeField] private Transform _bannerContainer;
         [SerializeField] private GameObject _bannerItemPrefab;
@@ -43,6 +53,11 @@ namespace Sc.Contents.Gacha
         [SerializeField] private TMP_Text _singleCostText;
         [SerializeField] private TMP_Text _multiCostText;
 
+        [Header("배너 정보")]
+        [SerializeField] private TMP_Text _bannerTitleText;
+        [SerializeField] private TMP_Text _bannerPeriodText;
+        [SerializeField] private TMP_Text _bannerDescriptionText;
+
         [Header("정보 표시")]
         [SerializeField] private TMP_Text _poolNameText;
         [SerializeField] private TMP_Text _pityCountText;
@@ -50,12 +65,27 @@ namespace Sc.Contents.Gacha
         [SerializeField] private Slider _pityProgressBar;
         [SerializeField] private TMP_Text _pityProgressText;
 
+        [Header("천장 정보")]
+        [SerializeField] private TMP_Text _pityLabel;
+        [SerializeField] private Button _exchangeButton;
+
         [Header("추가 버튼")]
         [SerializeField] private Button _rateDetailButton;
         [SerializeField] private Button _historyButton;
+        [SerializeField] private Button _characterInfoButton;
+
+        [Header("메뉴 버튼 그룹")]
+        [SerializeField] private Button _gachaMenuButton;
+        [SerializeField] private Button _specialMenuButton;
+        [SerializeField] private Button _cardMenuButton;
+
+        [Header("캐릭터 디스플레이")]
+        [SerializeField] private Transform _characterDisplay;
 
         [Header("로딩")]
         [SerializeField] private GameObject _loadingIndicator;
+
+        #endregion
 
         private GachaState _currentState;
         private bool _isPulling;
@@ -66,6 +96,20 @@ namespace Sc.Contents.Gacha
         {
             Debug.Log("[GachaScreen] OnInitialize");
 
+            // Widget 이벤트 연결
+            if (_bannerWidget != null)
+            {
+                _bannerWidget.OnBannerSelected += OnBannerSelected;
+            }
+
+            if (_pullButtonWidget != null)
+            {
+                _pullButtonWidget.OnFreePullClicked += OnFreePullClicked;
+                _pullButtonWidget.OnSinglePullClicked += OnSinglePullClicked;
+                _pullButtonWidget.OnMultiPullClicked += OnMultiPullClicked;
+            }
+
+            // Legacy 버튼 이벤트 (Widget 없을 때 대체)
             if (_singlePullButton != null)
             {
                 _singlePullButton.onClick.AddListener(OnSinglePullClicked);
@@ -90,6 +134,63 @@ namespace Sc.Contents.Gacha
             {
                 _historyButton.onClick.AddListener(OnHistoryClicked);
             }
+
+            if (_characterInfoButton != null)
+            {
+                _characterInfoButton.onClick.AddListener(OnCharacterInfoClicked);
+            }
+
+            if (_exchangeButton != null)
+            {
+                _exchangeButton.onClick.AddListener(OnExchangeClicked);
+            }
+
+            // 메뉴 버튼
+            if (_gachaMenuButton != null)
+            {
+                _gachaMenuButton.onClick.AddListener(() => OnMenuSelected(GachaMenuType.Gacha));
+            }
+
+            if (_specialMenuButton != null)
+            {
+                _specialMenuButton.onClick.AddListener(() => OnMenuSelected(GachaMenuType.Special));
+            }
+
+            if (_cardMenuButton != null)
+            {
+                _cardMenuButton.onClick.AddListener(() => OnMenuSelected(GachaMenuType.Card));
+            }
+        }
+
+        private void OnFreePullClicked()
+        {
+            Debug.Log("[GachaScreen] Free pull clicked");
+            TryExecuteGacha(GachaPullType.Single, isFree: true);
+        }
+
+        private void OnCharacterInfoClicked()
+        {
+            Debug.Log("[GachaScreen] Character info clicked");
+            // TODO: CharacterDetailPopup 열기 (풀 내 캐릭터 목록)
+        }
+
+        private void OnExchangeClicked()
+        {
+            Debug.Log("[GachaScreen] Exchange clicked");
+            // TODO: PityExchangePopup 열기 (신앙심 교환)
+        }
+
+        private void OnMenuSelected(GachaMenuType menuType)
+        {
+            Debug.Log($"[GachaScreen] Menu selected: {menuType}");
+            // TODO: 메뉴 타입에 따른 화면 전환
+        }
+
+        private enum GachaMenuType
+        {
+            Gacha,
+            Special,
+            Card
         }
 
         protected override void OnBind(GachaState state)
@@ -379,16 +480,16 @@ namespace Sc.Contents.Gacha
         private void OnSinglePullClicked()
         {
             Debug.Log("[GachaScreen] Single pull clicked");
-            TryExecuteGacha(GachaPullType.Single);
+            TryExecuteGacha(GachaPullType.Single, isFree: false);
         }
 
         private void OnMultiPullClicked()
         {
             Debug.Log("[GachaScreen] Multi pull clicked");
-            TryExecuteGacha(GachaPullType.Multi);
+            TryExecuteGacha(GachaPullType.Multi, isFree: false);
         }
 
-        private void TryExecuteGacha(GachaPullType pullType)
+        private void TryExecuteGacha(GachaPullType pullType, bool isFree = false)
         {
             if (_isPulling || _selectedPool == null) return;
 
@@ -397,7 +498,7 @@ namespace Sc.Contents.Gacha
                 : _selectedPool.CostAmount10;
 
             // 무료 소환이면 확인 없이 바로 실행
-            if (cost == 0)
+            if (isFree || cost == 0)
             {
                 ExecuteGacha(pullType);
                 return;

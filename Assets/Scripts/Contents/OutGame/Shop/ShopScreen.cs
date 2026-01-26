@@ -3,6 +3,7 @@ using System.Linq;
 using Sc.Common.UI;
 using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
+using Sc.Contents.Shop.Widgets;
 using Sc.Core;
 using Sc.Data;
 using Sc.Event.OutGame;
@@ -36,34 +37,51 @@ namespace Sc.Contents.Shop
             public ShopProductType InitialTab { get; set; } = ShopProductType.Currency;
         }
 
-        [Header("Tab")] [SerializeField] private TabGroupWidget _tabGroup;
+        [Header("Shopkeeper Display")]
+        [SerializeField] private Image _shopkeeperImage;
+        [SerializeField] private TMP_Text _dialogueText;
 
-        [Header("Product List")] [SerializeField]
-        private Transform _productContainer;
+        [Header("Tab")]
+        [SerializeField] private TabGroupWidget _tabGroup;
+        [SerializeField] private ShopTabButton[] _tabButtons;
 
+        [Header("Product Grid")]
+        [SerializeField] private Transform _productContainer;
         [SerializeField] private ShopProductItem _productItemPrefab;
-
+        [SerializeField] private ShopProductCard _productCardPrefab;
         [SerializeField] private ScrollRect _scrollRect;
 
-        [Header("Currency Display")] [SerializeField]
-        private TMP_Text _goldText;
+        [Header("Category Shortcuts")]
+        [SerializeField] private Transform _categoryShortcutContainer;
+        [SerializeField] private CategoryShortcut[] _categoryShortcuts;
 
+        [Header("Currency Display")]
+        [SerializeField] private TMP_Text _goldText;
         [SerializeField] private TMP_Text _gemText;
 
-        [Header("Empty State")] [SerializeField]
-        private GameObject _emptyStateObject;
+        [Header("Footer")]
+        [SerializeField] private TMP_Text _refreshTimerText;
+        [SerializeField] private Toggle _selectAllToggle;
+        [SerializeField] private TMP_Text _selectAllText;
+        [SerializeField] private Button _bulkPurchaseButton;
 
+        [Header("Empty State")]
+        [SerializeField] private GameObject _emptyStateObject;
         [SerializeField] private TMP_Text _emptyStateText;
 
-        [Header("Navigation")] [SerializeField]
-        private Button _backButton;
+        [Header("Navigation")]
+        [SerializeField] private Button _backButton;
+        [SerializeField] private Button _homeButton;
 
         private ShopState _currentState;
         private IShopProvider _provider;
         private List<ShopProductType> _availableTypes;
         private ShopProductType _currentType;
         private readonly List<ShopProductItem> _productItems = new();
+        private readonly List<ShopProductCard> _productCards = new();
+        private readonly HashSet<ShopProductCard> _selectedCards = new();
         private bool _isPurchasing;
+        private bool _isSelectMode;
 
         protected override void OnInitialize()
         {
@@ -78,6 +96,46 @@ namespace Sc.Contents.Shop
             if (_backButton != null)
             {
                 _backButton.onClick.AddListener(OnBackClicked);
+            }
+
+            if (_selectAllToggle != null)
+            {
+                _selectAllToggle.onValueChanged.AddListener(OnSelectAllToggleChanged);
+            }
+
+            if (_bulkPurchaseButton != null)
+            {
+                _bulkPurchaseButton.onClick.AddListener(OnBulkPurchaseClicked);
+            }
+
+            InitializeTabButtons();
+            InitializeCategoryShortcuts();
+        }
+
+        private void InitializeTabButtons()
+        {
+            if (_tabButtons == null) return;
+
+            for (int i = 0; i < _tabButtons.Length; i++)
+            {
+                var tab = _tabButtons[i];
+                if (tab != null)
+                {
+                    tab.OnClicked += OnTabButtonClicked;
+                }
+            }
+        }
+
+        private void InitializeCategoryShortcuts()
+        {
+            if (_categoryShortcuts == null) return;
+
+            foreach (var shortcut in _categoryShortcuts)
+            {
+                if (shortcut != null)
+                {
+                    shortcut.OnClicked += OnCategoryShortcutClicked;
+                }
             }
         }
 
@@ -190,7 +248,26 @@ namespace Sc.Contents.Shop
 
             _currentType = _availableTypes[index];
             Debug.Log($"[ShopScreen] Tab changed to: {_currentType}");
+
+            // 탭 버튼 선택 상태 업데이트
+            UpdateTabButtonSelection(index);
+
             RefreshProductList();
+        }
+
+        private void OnTabButtonClicked(int index)
+        {
+            _tabGroup?.SelectTab(index);
+        }
+
+        private void UpdateTabButtonSelection(int selectedIndex)
+        {
+            if (_tabButtons == null) return;
+
+            for (int i = 0; i < _tabButtons.Length; i++)
+            {
+                _tabButtons[i]?.SetSelected(i == selectedIndex);
+            }
         }
 
         #endregion
@@ -251,6 +328,17 @@ namespace Sc.Contents.Shop
             }
 
             _productItems.Clear();
+
+            foreach (var card in _productCards)
+            {
+                if (card != null)
+                {
+                    Destroy(card.gameObject);
+                }
+            }
+
+            _productCards.Clear();
+            _selectedCards.Clear();
         }
 
         private void OnProductClicked(ShopProductData product)
@@ -356,6 +444,163 @@ namespace Sc.Contents.Shop
             {
                 item?.SetInteractable(!_isPurchasing);
             }
+
+            foreach (var card in _productCards)
+            {
+                card?.SetInteractable(!_isPurchasing);
+            }
+        }
+
+        #endregion
+
+        #region Select All / Bulk Purchase
+
+        private void OnSelectAllToggleChanged(bool isOn)
+        {
+            _isSelectMode = isOn;
+
+            UpdateSelectAllText();
+            UpdateSelectMode();
+
+            if (isOn)
+            {
+                SelectAllCards();
+            }
+            else
+            {
+                DeselectAllCards();
+            }
+        }
+
+        private void UpdateSelectAllText()
+        {
+            if (_selectAllText != null)
+            {
+                _selectAllText.text = _isSelectMode ? "모두 선택 ON" : "모두 선택 OFF";
+            }
+        }
+
+        private void UpdateSelectMode()
+        {
+            foreach (var card in _productCards)
+            {
+                card?.SetSelectMode(_isSelectMode);
+            }
+        }
+
+        private void SelectAllCards()
+        {
+            _selectedCards.Clear();
+            foreach (var card in _productCards)
+            {
+                if (card != null && !card.IsSoldOut)
+                {
+                    card.SetSelected(true);
+                    _selectedCards.Add(card);
+                }
+            }
+        }
+
+        private void DeselectAllCards()
+        {
+            foreach (var card in _productCards)
+            {
+                card?.SetSelected(false);
+            }
+            _selectedCards.Clear();
+        }
+
+        private void OnCardSelected(ShopProductCard card, bool isSelected)
+        {
+            if (isSelected)
+            {
+                _selectedCards.Add(card);
+            }
+            else
+            {
+                _selectedCards.Remove(card);
+            }
+
+            Debug.Log($"[ShopScreen] Selected cards: {_selectedCards.Count}");
+        }
+
+        private void OnBulkPurchaseClicked()
+        {
+            if (_selectedCards.Count == 0)
+            {
+                Debug.Log("[ShopScreen] No cards selected for bulk purchase");
+                return;
+            }
+
+            if (_isPurchasing)
+            {
+                Debug.Log("[ShopScreen] Already purchasing");
+                return;
+            }
+
+            // 선택된 상품들의 총 비용 계산
+            int totalCost = 0;
+            CostType costType = CostType.Gold;
+
+            foreach (var card in _selectedCards)
+            {
+                if (card?.ProductData != null)
+                {
+                    totalCost += card.ProductData.Price;
+                    costType = card.ProductData.CostType;
+                }
+            }
+
+            var currentAmount = GetCurrentCurrency(costType);
+
+            var state = new CostConfirmState
+            {
+                Title = "일괄 구매 확인",
+                Message = $"{_selectedCards.Count}개 상품을 구매하시겠습니까?",
+                CostType = costType,
+                CostAmount = totalCost,
+                CurrentAmount = currentAmount,
+                ConfirmText = "구매",
+                CancelText = "취소",
+                OnConfirm = ExecuteBulkPurchase,
+                OnCancel = () => Debug.Log("[ShopScreen] Bulk purchase cancelled")
+            };
+
+            CostConfirmPopup.Open(state);
+        }
+
+        private void ExecuteBulkPurchase()
+        {
+            if (_isPurchasing || _selectedCards.Count == 0) return;
+
+            // TODO: 일괄 구매 요청 구현
+            // 현재는 개별 구매로 처리
+            foreach (var card in _selectedCards.ToList())
+            {
+                if (card?.ProductData != null)
+                {
+                    ExecutePurchase(card.ProductData);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Category Shortcuts
+
+        private void OnCategoryShortcutClicked(CategoryShortcut shortcut)
+        {
+            if (shortcut == null) return;
+
+            var targetCategory = shortcut.TargetCategory;
+            Debug.Log($"[ShopScreen] Category shortcut clicked: {targetCategory}");
+
+            // 해당 카테고리 탭으로 이동
+            int tabIndex = _availableTypes?.IndexOf(targetCategory) ?? -1;
+            if (tabIndex >= 0)
+            {
+                _tabGroup?.SelectTab(tabIndex);
+            }
         }
 
         #endregion
@@ -433,9 +678,48 @@ namespace Sc.Contents.Shop
                 _tabGroup.OnTabChanged -= OnTabChanged;
             }
 
+            if (_selectAllToggle != null)
+            {
+                _selectAllToggle.onValueChanged.RemoveListener(OnSelectAllToggleChanged);
+            }
+
+            if (_bulkPurchaseButton != null)
+            {
+                _bulkPurchaseButton.onClick.RemoveListener(OnBulkPurchaseClicked);
+            }
+
+            CleanupTabButtons();
+            CleanupCategoryShortcuts();
             ClearProductItems();
+
             _provider = null;
             _availableTypes = null;
+        }
+
+        private void CleanupTabButtons()
+        {
+            if (_tabButtons == null) return;
+
+            foreach (var tab in _tabButtons)
+            {
+                if (tab != null)
+                {
+                    tab.OnClicked -= OnTabButtonClicked;
+                }
+            }
+        }
+
+        private void CleanupCategoryShortcuts()
+        {
+            if (_categoryShortcuts == null) return;
+
+            foreach (var shortcut in _categoryShortcuts)
+            {
+                if (shortcut != null)
+                {
+                    shortcut.OnClicked -= OnCategoryShortcutClicked;
+                }
+            }
         }
     }
 }
