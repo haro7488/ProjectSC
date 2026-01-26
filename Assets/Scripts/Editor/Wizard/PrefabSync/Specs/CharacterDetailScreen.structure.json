@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/CharacterDetailScreen.prefab",
     "componentType": "CharacterDetailScreen",
     "componentNamespace": "Sc.Contents.Character",
-    "generatedAt": "2026-01-26T21:34:09",
+    "generatedAt": "2026-01-27T00:56:04",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/CharacterDetailScreenPrefabBuilder.cs"
   },
   "hierarchy": {

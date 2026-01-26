@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/InGameContentDashboard.prefab",
     "componentType": "",
     "componentNamespace": "",
-    "generatedAt": "2026-01-26T21:34:12",
+    "generatedAt": "2026-01-27T00:56:06",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/InGameContentDashboardPrefabBuilder.cs"
   },
   "hierarchy": {
@@ -51,11 +51,6 @@
           "interactable": true,
           "blocksRaycasts": true
         }
-      },
-      {
-        "type": "InGameContentDashboard",
-        "fullType": "Sc.Contents.Stage.InGameContentDashboard",
-        "properties": {}
       }
     ],
     "children": [

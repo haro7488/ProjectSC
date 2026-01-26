@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/LiveEventScreen.prefab",
     "componentType": "LiveEventScreen",
     "componentNamespace": "Sc.Contents.Event",
-    "generatedAt": "2026-01-26T21:34:13",
+    "generatedAt": "2026-01-27T00:56:07",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/LiveEventScreenPrefabBuilder.cs"
   },
   "hierarchy": {

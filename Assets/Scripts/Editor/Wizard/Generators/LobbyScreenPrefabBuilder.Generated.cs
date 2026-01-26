@@ -12,7 +12,7 @@ namespace Sc.Editor.Wizard.Generators
     /// <summary>
     /// LobbyScreen 프리팹 빌더 (자동 생성됨).
     /// Generated from: Assets/Prefabs/UI/Screens/LobbyScreen.prefab
-    /// Generated at: 2026-01-26 21:48:12
+    /// Generated at: 2026-01-26 23:09:59
     /// </summary>
     public static class LobbyScreenPrefabBuilder
     {
@@ -3305,6 +3305,35 @@ namespace Sc.Editor.Wizard.Generators
 
             var so = new SerializedObject(component);
 
+            // _eventBannerCarousel
+            so.FindProperty("_eventBannerCarousel").objectReferenceValue = FindChild(root, "SafeArea/Content/LeftTopArea/EventBannerCarousel")?.GetComponent<EventBannerCarousel>();
+
+            // _passButtons (array)
+            var passButtonsProp = so.FindProperty("_passButtons");
+            passButtonsProp.arraySize = 4;
+            passButtonsProp.GetArrayElementAtIndex(0).objectReferenceValue = FindChild(root, "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_LevelPass")?.GetComponent<PassButton>();
+            passButtonsProp.GetArrayElementAtIndex(1).objectReferenceValue = FindChild(root, "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_StoryPass")?.GetComponent<PassButton>();
+            passButtonsProp.GetArrayElementAtIndex(2).objectReferenceValue = FindChild(root, "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_TrialPass")?.GetComponent<PassButton>();
+            passButtonsProp.GetArrayElementAtIndex(3).objectReferenceValue = FindChild(root, "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_StepUpPackage")?.GetComponent<PassButton>();
+
+            // _stageProgressWidget
+            so.FindProperty("_stageProgressWidget").objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/StageProgressWidget")?.GetComponent<StageProgressWidget>();
+
+            // _quickMenuButtons (array)
+            var quickMenuButtonsProp = so.FindProperty("_quickMenuButtons");
+            quickMenuButtonsProp.arraySize = 8;
+            quickMenuButtonsProp.GetArrayElementAtIndex(0).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_LiveEventScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(1).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_FarmScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(2).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_FriendScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(3).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_QuestScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(4).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_PowerUpScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(5).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_MonthlyScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(6).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_ReturnScreen")?.GetComponent<QuickMenuButton>();
+            quickMenuButtonsProp.GetArrayElementAtIndex(7).objectReferenceValue = FindChild(root, "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_MissionScreen")?.GetComponent<QuickMenuButton>();
+
+            // _characterDisplay
+            so.FindProperty("_characterDisplay").objectReferenceValue = FindChild(root, "SafeArea/Content/CenterArea/CharacterDisplay")?.GetComponent<CharacterDisplayWidget>();
+
             // _inGameDashboard
             so.FindProperty("_inGameDashboard").objectReferenceValue = FindChild(root, "SafeArea/Content/RightBottomArea/InGameContentDashboard");
 
@@ -3316,6 +3345,13 @@ namespace Sc.Editor.Wizard.Generators
 
             // _adventureButton
             so.FindProperty("_adventureButton").objectReferenceValue = FindChild(root, "SafeArea/Content/RightBottomArea/InGameContentDashboard/AdventureButton")?.GetComponent<Button>();
+
+            // _contentNavButtons (array)
+            var contentNavButtonsProp = so.FindProperty("_contentNavButtons");
+            contentNavButtonsProp.arraySize = 3;
+            contentNavButtonsProp.GetArrayElementAtIndex(0).objectReferenceValue = FindChild(root, "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_GachaScreen")?.GetComponent<ContentNavButton>();
+            contentNavButtonsProp.GetArrayElementAtIndex(1).objectReferenceValue = FindChild(root, "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_ShopScreen")?.GetComponent<ContentNavButton>();
+            contentNavButtonsProp.GetArrayElementAtIndex(2).objectReferenceValue = FindChild(root, "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_CharacterListScreen")?.GetComponent<ContentNavButton>();
 
             // _bottomNavScroll
             so.FindProperty("_bottomNavScroll").objectReferenceValue = FindChild(root, "SafeArea/Content/BottomNav")?.GetComponent<ScrollRect>();

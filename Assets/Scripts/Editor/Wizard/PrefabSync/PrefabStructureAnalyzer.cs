@@ -170,6 +170,13 @@ namespace Sc.Editor.Wizard.PrefabSync
                 children = new List<HierarchyNode>()
             };
 
+            // 위젯 컴포넌트가 있으면 SerializeField 분석
+            var widgetComponent = FindWidgetComponent(go, isRoot: string.IsNullOrEmpty(parentPath));
+            if (widgetComponent != null)
+            {
+                node.widgetFields = AnalyzeWidgetFields(widgetComponent, transform);
+            }
+
             // 자식 순회
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -324,6 +331,124 @@ namespace Sc.Editor.Wizard.PrefabSync
         #endregion
 
         #region SerializedField Analysis
+
+        /// <summary>
+        /// 위젯 컴포넌트 찾기 (루트가 아닌 하위 노드에서만).
+        /// </summary>
+        private static Component FindWidgetComponent(GameObject go, bool isRoot)
+        {
+            // 루트 노드는 스킵 (serializedFields에서 처리됨)
+            if (isRoot) return null;
+
+            foreach (var comp in go.GetComponents<Component>())
+            {
+                if (comp == null) continue;
+                var type = comp.GetType();
+                var ns = type.Namespace ?? "";
+
+                // Sc.* 네임스페이스의 위젯 타입
+                if (ns.StartsWith("Sc.") && IsWidgetType(type.Name))
+                {
+                    return comp;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 위젯 타입인지 확인.
+        /// </summary>
+        private static bool IsWidgetType(string typeName)
+        {
+            return typeName.EndsWith("Widget") ||
+                   typeName.EndsWith("Carousel") ||
+                   typeName.EndsWith("Button") ||
+                   typeName.EndsWith("Display");
+        }
+
+        /// <summary>
+        /// 위젯 컴포넌트의 SerializeField 분석 (위젯 기준 상대 경로 사용).
+        /// </summary>
+        private static List<SerializedFieldMapping> AnalyzeWidgetFields(Component widgetComponent, Transform widgetRoot)
+        {
+            var result = new List<SerializedFieldMapping>();
+            var type = widgetComponent.GetType();
+            var so = new SerializedObject(widgetComponent);
+
+            // SerializeField 속성이 있는 private 필드들 찾기
+            var fields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
+                .Where(f => f.GetCustomAttribute<SerializeField>() != null)
+                .ToList();
+
+            foreach (var field in fields)
+            {
+                var prop = so.FindProperty(field.Name);
+                if (prop == null) continue;
+
+                // ObjectReference 타입만 처리 (Unity 오브젝트 참조)
+                if (!prop.isArray && prop.propertyType != SerializedPropertyType.ObjectReference)
+                    continue;
+
+                var mapping = new SerializedFieldMapping
+                {
+                    fieldName = field.Name,
+                    fieldType = field.FieldType.Name,
+                    isArray = prop.isArray
+                };
+
+                if (prop.isArray)
+                {
+                    // 배열 요소 타입 확인
+                    var elementType = field.FieldType.IsArray
+                        ? field.FieldType.GetElementType()
+                        : field.FieldType.GenericTypeArguments.FirstOrDefault();
+
+                    if (elementType == null || !IsUnityObjectType(elementType))
+                        continue;
+
+                    mapping.arrayPaths = new List<string>();
+                    for (int i = 0; i < prop.arraySize; i++)
+                    {
+                        var element = prop.GetArrayElementAtIndex(i);
+                        var path = GetPathFromProperty(element, widgetRoot);
+                        if (path != null)
+                            mapping.arrayPaths.Add(path);
+                    }
+
+                    if (mapping.arrayPaths.Count > 0)
+                    {
+                        mapping.targetType = elementType.Name;
+                        result.Add(mapping);
+                    }
+                }
+                else
+                {
+                    mapping.targetPath = GetPathFromProperty(prop, widgetRoot);
+
+                    if (prop.objectReferenceValue != null)
+                    {
+                        mapping.targetType = prop.objectReferenceValue.GetType().Name;
+                    }
+
+                    // 유효한 매핑만 추가
+                    if (!string.IsNullOrEmpty(mapping.targetPath))
+                    {
+                        result.Add(mapping);
+                    }
+                }
+            }
+
+            return result.Count > 0 ? result : null;
+        }
+
+        /// <summary>
+        /// Unity 오브젝트 타입인지 확인.
+        /// </summary>
+        private static bool IsUnityObjectType(Type type)
+        {
+            return typeof(UnityEngine.Object).IsAssignableFrom(type);
+        }
 
         private static List<SerializedFieldMapping> AnalyzeSerializedFields(Component mainComponent, Transform root)
         {

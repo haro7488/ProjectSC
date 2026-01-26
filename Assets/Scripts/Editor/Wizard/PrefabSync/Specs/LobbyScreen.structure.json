@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/LobbyScreen.prefab",
     "componentType": "LobbyScreen",
     "componentNamespace": "Sc.Contents.Lobby",
-    "generatedAt": "2026-01-26T21:48:12",
+    "generatedAt": "2026-01-27T00:56:07",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/LobbyScreenPrefabBuilder.cs"
   },
   "hierarchy": {
@@ -449,6 +449,12 @@
                           "raycastTarget": true,
                           "type": "Simple"
                         }
+                      },
+                      {
+                        "type": "EventBannerCarousel",
+                        "fullType": "Sc.Contents.Lobby.Widgets.EventBannerCarousel",
+                        "isMainComponent": true,
+                        "properties": {}
                       }
                     ],
                     "children": [
@@ -739,6 +745,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "PassButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.PassButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -1054,6 +1066,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "PassButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.PassButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -1369,6 +1387,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "PassButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.PassButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -1684,6 +1708,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "PassButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.PassButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -2058,6 +2088,12 @@
                           "childForceExpandWidth": true,
                           "childForceExpandHeight": true
                         }
+                      },
+                      {
+                        "type": "StageProgressWidget",
+                        "fullType": "Sc.Contents.Lobby.Widgets.StageProgressWidget",
+                        "isMainComponent": true,
+                        "properties": {}
                       }
                     ],
                     "children": [
@@ -2337,6 +2373,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -2652,6 +2694,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -2967,6 +3015,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -3282,6 +3336,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -3597,6 +3657,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -3912,6 +3978,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -4227,6 +4299,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -4542,6 +4620,12 @@
                               "childForceExpandWidth": true,
                               "childForceExpandHeight": true
                             }
+                          },
+                          {
+                            "type": "QuickMenuButton",
+                            "fullType": "Sc.Contents.Lobby.Widgets.QuickMenuButton",
+                            "isMainComponent": true,
+                            "properties": {}
                           }
                         ],
                         "children": [
@@ -4858,7 +4942,14 @@
                         0.0
                       ]
                     },
-                    "components": [],
+                    "components": [
+                      {
+                        "type": "CharacterDisplayWidget",
+                        "fullType": "Sc.Contents.Lobby.Widgets.CharacterDisplayWidget",
+                        "isMainComponent": true,
+                        "properties": {}
+                      }
+                    ],
                     "children": [
                       {
                         "name": "Content",
@@ -5637,6 +5728,12 @@
                                   "childForceExpandWidth": true,
                                   "childForceExpandHeight": true
                                 }
+                              },
+                              {
+                                "type": "ContentNavButton",
+                                "fullType": "Sc.Contents.Lobby.Widgets.ContentNavButton",
+                                "isMainComponent": true,
+                                "properties": {}
                               }
                             ],
                             "children": [
@@ -6011,6 +6108,12 @@
                                   "childForceExpandWidth": true,
                                   "childForceExpandHeight": true
                                 }
+                              },
+                              {
+                                "type": "ContentNavButton",
+                                "fullType": "Sc.Contents.Lobby.Widgets.ContentNavButton",
+                                "isMainComponent": true,
+                                "properties": {}
                               }
                             ],
                             "children": [
@@ -6385,6 +6488,12 @@
                                   "childForceExpandWidth": true,
                                   "childForceExpandHeight": true
                                 }
+                              },
+                              {
+                                "type": "ContentNavButton",
+                                "fullType": "Sc.Contents.Lobby.Widgets.ContentNavButton",
+                                "isMainComponent": true,
+                                "properties": {}
                               }
                             ],
                             "children": [
@@ -7092,6 +7201,52 @@
   },
   "serializedFields": [
     {
+      "fieldName": "_eventBannerCarousel",
+      "fieldType": "EventBannerCarousel",
+      "targetPath": "SafeArea/Content/LeftTopArea/EventBannerCarousel",
+      "targetType": "EventBannerCarousel"
+    },
+    {
+      "fieldName": "_passButtons",
+      "fieldType": "PassButton[]",
+      "targetPath": "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_LevelPass",
+      "isArray": true,
+      "arrayPaths": [
+        "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_LevelPass",
+        "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_StoryPass",
+        "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_TrialPass",
+        "SafeArea/Content/LeftTopArea/PassButtonGroup/PassButton_StepUpPackage"
+      ]
+    },
+    {
+      "fieldName": "_stageProgressWidget",
+      "fieldType": "StageProgressWidget",
+      "targetPath": "SafeArea/Content/RightTopArea/StageProgressWidget",
+      "targetType": "StageProgressWidget"
+    },
+    {
+      "fieldName": "_quickMenuButtons",
+      "fieldType": "QuickMenuButton[]",
+      "targetPath": "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_LiveEventScreen",
+      "isArray": true,
+      "arrayPaths": [
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_LiveEventScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_FarmScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_FriendScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_QuestScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_PowerUpScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_MonthlyScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_ReturnScreen",
+        "SafeArea/Content/RightTopArea/QuickMenuGrid/QuickMenuButton_MissionScreen"
+      ]
+    },
+    {
+      "fieldName": "_characterDisplay",
+      "fieldType": "CharacterDisplayWidget",
+      "targetPath": "SafeArea/Content/CenterArea/CharacterDisplay",
+      "targetType": "CharacterDisplayWidget"
+    },
+    {
       "fieldName": "_inGameDashboard",
       "fieldType": "GameObject",
       "targetPath": "SafeArea/Content/RightBottomArea/InGameContentDashboard",
@@ -7114,6 +7269,17 @@
       "fieldType": "Button",
       "targetPath": "SafeArea/Content/RightBottomArea/InGameContentDashboard/AdventureButton",
       "targetType": "Button"
+    },
+    {
+      "fieldName": "_contentNavButtons",
+      "fieldType": "ContentNavButton[]",
+      "targetPath": "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_GachaScreen",
+      "isArray": true,
+      "arrayPaths": [
+        "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_GachaScreen",
+        "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_ShopScreen",
+        "SafeArea/Content/BottomNav/Viewport/Content/ContentNavButton_CharacterListScreen"
+      ]
     },
     {
       "fieldName": "_bottomNavScroll",

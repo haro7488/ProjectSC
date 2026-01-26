@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/GachaHistoryScreen.prefab",
     "componentType": "GachaHistoryScreen",
     "componentNamespace": "Sc.Contents.Gacha",
-    "generatedAt": "2026-01-26T21:34:11",
+    "generatedAt": "2026-01-27T00:56:05",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/GachaHistoryScreenPrefabBuilder.cs"
   },
   "hierarchy": {

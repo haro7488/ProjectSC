@@ -11,7 +11,7 @@ namespace Sc.Editor.Wizard.Generators
     /// <summary>
     /// LiveEventScreen 프리팹 빌더 (자동 생성됨).
     /// Generated from: Assets/Prefabs/UI/Screens/LiveEventScreen.prefab
-    /// Generated at: 2026-01-26 21:34:13
+    /// Generated at: 2026-01-27 00:56:07
     /// </summary>
     public static class LiveEventScreenPrefabBuilder
     {

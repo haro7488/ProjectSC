@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/EventDetailScreen.prefab",
     "componentType": "EventDetailScreen",
     "componentNamespace": "Sc.Contents.Event",
-    "generatedAt": "2026-01-26T21:34:11",
+    "generatedAt": "2026-01-27T00:56:05",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/EventDetailScreenPrefabBuilder.cs"
   },
   "hierarchy": {
@@ -365,9 +365,7 @@
                 "properties": {
                   "horizontal": false,
                   "vertical": true,
-                  "movementType": "Elastic",
-                  "viewport": "Viewport",
-                  "content": "Viewport/Content"
+                  "movementType": "Elastic"
                 }
               }
             ],

@@ -1,0 +1,1660 @@
+{
+  "metadata": {
+    "prefabName": "TitleScreen",
+    "prefabPath": "Assets/Prefabs/UI/Screens/TitleScreen.prefab",
+    "componentType": "TitleScreen",
+    "componentNamespace": "Sc.Contents.Title",
+    "generatedAt": "2026-01-27T00:56:09",
+    "builderPath": "Assets/Scripts/Editor/Wizard/Generators/TitleScreenPrefabBuilder.cs"
+  },
+  "hierarchy": {
+    "name": "TitleScreen",
+    "path": "TitleScreen",
+    "active": true,
+    "rect": {
+      "anchor": "Stretch",
+      "anchorMin": [
+        0.0,
+        0.0
+      ],
+      "anchorMax": [
+        1.0,
+        1.0
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "sizeDelta": [
+        0.0,
+        0.0
+      ],
+      "anchoredPosition": [
+        0.0,
+        0.0
+      ],
+      "offsetMin": [
+        0.0,
+        0.0
+      ],
+      "offsetMax": [
+        0.0,
+        0.0
+      ]
+    },
+    "components": [
+      {
+        "type": "CanvasGroup",
+        "fullType": "UnityEngine.CanvasGroup",
+        "properties": {
+          "alpha": 1.0,
+          "interactable": true,
+          "blocksRaycasts": true
+        }
+      },
+      {
+        "type": "TitleScreen",
+        "fullType": "Sc.Contents.Title.TitleScreen",
+        "isMainComponent": true,
+        "properties": {}
+      }
+    ],
+    "children": [
+      {
+        "name": "Background",
+        "path": "TitleScreen/Background",
+        "active": true,
+        "rect": {
+          "anchor": "Stretch",
+          "anchorMin": [
+            0.0,
+            0.0
+          ],
+          "anchorMax": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "sizeDelta": [
+            0.0,
+            0.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            0.0
+          ],
+          "offsetMin": [
+            0.0,
+            0.0
+          ],
+          "offsetMax": [
+            0.0,
+            0.0
+          ]
+        },
+        "components": [
+          {
+            "type": "CanvasRenderer",
+            "fullType": "UnityEngine.CanvasRenderer",
+            "properties": {}
+          },
+          {
+            "type": "Image",
+            "fullType": "UnityEngine.UI.Image",
+            "properties": {
+              "color": "#05050CFF",
+              "raycastTarget": false,
+              "type": "Simple"
+            }
+          }
+        ],
+        "children": [
+          {
+            "name": "GradientOverlay",
+            "path": "TitleScreen/Background/GradientOverlay",
+            "active": true,
+            "rect": {
+              "anchor": "Stretch",
+              "anchorMin": [
+                0.0,
+                0.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                0.0,
+                0.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                0.0,
+                0.0
+              ],
+              "offsetMax": [
+                0.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#0A0814FF",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "Vignette",
+            "path": "TitleScreen/Background/Vignette",
+            "active": true,
+            "rect": {
+              "anchor": "Stretch",
+              "anchorMin": [
+                0.0,
+                0.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                0.0,
+                0.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                0.0,
+                0.0
+              ],
+              "offsetMax": [
+                0.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00000099",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "AmbientEffects",
+        "path": "TitleScreen/AmbientEffects",
+        "active": true,
+        "rect": {
+          "anchor": "Stretch",
+          "anchorMin": [
+            0.0,
+            0.0
+          ],
+          "anchorMax": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "sizeDelta": [
+            0.0,
+            0.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            0.0
+          ],
+          "offsetMin": [
+            0.0,
+            0.0
+          ],
+          "offsetMax": [
+            0.0,
+            0.0
+          ]
+        },
+        "components": [],
+        "children": [
+          {
+            "name": "TopGlow",
+            "path": "TitleScreen/AmbientEffects/TopGlow",
+            "active": true,
+            "rect": {
+              "anchor": "TopCenter",
+              "anchorMin": [
+                0.5,
+                1.0
+              ],
+              "anchorMax": [
+                0.5,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                1.0
+              ],
+              "sizeDelta": [
+                800.0,
+                400.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -400.0,
+                -400.0
+              ],
+              "offsetMax": [
+                400.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#0080B226",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "CenterGlow",
+            "path": "TitleScreen/AmbientEffects/CenterGlow",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.5,
+                0.6
+              ],
+              "anchorMax": [
+                0.5,
+                0.6
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                600.0,
+                300.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -300.0,
+                -150.0
+              ],
+              "offsetMax": [
+                300.0,
+                150.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#CC4C8014",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "BottomGlow",
+            "path": "TitleScreen/AmbientEffects/BottomGlow",
+            "active": true,
+            "rect": {
+              "anchor": "BottomCenter",
+              "anchorMin": [
+                0.5,
+                0.0
+              ],
+              "anchorMax": [
+                0.5,
+                0.0
+              ],
+              "pivot": [
+                0.5,
+                0.0
+              ],
+              "sizeDelta": [
+                500.0,
+                200.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                100.0
+              ],
+              "offsetMin": [
+                -250.0,
+                100.0
+              ],
+              "offsetMax": [
+                250.0,
+                300.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00B4DC50",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "ParticleSpot",
+            "path": "TitleScreen/AmbientEffects/ParticleSpot",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.2,
+                0.7
+              ],
+              "anchorMax": [
+                0.2,
+                0.7
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                8.0,
+                8.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -4.0,
+                -4.0
+              ],
+              "offsetMax": [
+                4.0,
+                4.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00D4FF99",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "ParticleSpot",
+            "path": "TitleScreen/AmbientEffects/ParticleSpot",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.8,
+                0.8
+              ],
+              "anchorMax": [
+                0.8,
+                0.8
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                6.0,
+                6.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -3.0,
+                -3.0
+              ],
+              "offsetMax": [
+                3.0,
+                3.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#FF50A099",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "ParticleSpot",
+            "path": "TitleScreen/AmbientEffects/ParticleSpot",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.15,
+                0.3
+              ],
+              "anchorMax": [
+                0.15,
+                0.3
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                5.0,
+                5.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -2.5,
+                -2.5
+              ],
+              "offsetMax": [
+                2.5,
+                2.5
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#FFC86499",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "ParticleSpot",
+            "path": "TitleScreen/AmbientEffects/ParticleSpot",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.85,
+                0.4
+              ],
+              "anchorMax": [
+                0.85,
+                0.4
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                7.0,
+                7.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -3.5,
+                -3.5
+              ],
+              "offsetMax": [
+                3.5,
+                3.5
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00D4FF99",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "ParticleSpot",
+            "path": "TitleScreen/AmbientEffects/ParticleSpot",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.3,
+                0.5
+              ],
+              "anchorMax": [
+                0.3,
+                0.5
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                4.0,
+                4.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -2.0,
+                -2.0
+              ],
+              "offsetMax": [
+                2.0,
+                2.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#FF50A099",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "ParticleSpot",
+            "path": "TitleScreen/AmbientEffects/ParticleSpot",
+            "active": true,
+            "rect": {
+              "anchor": "Custom",
+              "anchorMin": [
+                0.7,
+                0.6
+              ],
+              "anchorMax": [
+                0.7,
+                0.6
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                5.0,
+                5.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -2.5,
+                -2.5
+              ],
+              "offsetMax": [
+                2.5,
+                2.5
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#FFC86499",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "LogoArea",
+        "path": "TitleScreen/LogoArea",
+        "active": true,
+        "rect": {
+          "anchor": "TopCenter",
+          "anchorMin": [
+            0.5,
+            1.0
+          ],
+          "anchorMax": [
+            0.5,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            1.0
+          ],
+          "sizeDelta": [
+            500.0,
+            200.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            -180.0
+          ],
+          "offsetMin": [
+            -250.0,
+            -380.0
+          ],
+          "offsetMax": [
+            250.0,
+            -180.0
+          ]
+        },
+        "components": [],
+        "children": [
+          {
+            "name": "LogoGlow",
+            "path": "TitleScreen/LogoArea/LogoGlow",
+            "active": true,
+            "rect": {
+              "anchor": "Center",
+              "anchorMin": [
+                0.5,
+                0.5
+              ],
+              "anchorMax": [
+                0.5,
+                0.5
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                600.0,
+                180.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -300.0,
+                -90.0
+              ],
+              "offsetMax": [
+                300.0,
+                90.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00B2FF1A",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "LogoImage",
+            "path": "TitleScreen/LogoArea/LogoImage",
+            "active": true,
+            "rect": {
+              "anchor": "TopCenter",
+              "anchorMin": [
+                0.5,
+                1.0
+              ],
+              "anchorMax": [
+                0.5,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                1.0
+              ],
+              "sizeDelta": [
+                500.0,
+                120.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -250.0,
+                -120.0
+              ],
+              "offsetMax": [
+                250.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#FFFFFF08",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": [
+              {
+                "name": "TitleText",
+                "path": "TitleScreen/LogoArea/LogoImage/TitleText",
+                "active": true,
+                "rect": {
+                  "anchor": "Stretch",
+                  "anchorMin": [
+                    0.0,
+                    0.0
+                  ],
+                  "anchorMax": [
+                    1.0,
+                    1.0
+                  ],
+                  "pivot": [
+                    0.5,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    0.0,
+                    0.0
+                  ],
+                  "anchoredPosition": [
+                    0.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    0.0,
+                    0.0
+                  ],
+                  "offsetMax": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "TextMeshProUGUI",
+                    "fullType": "TMPro.TextMeshProUGUI",
+                    "properties": {
+                      "text": "PROJECT SC",
+                      "fontSize": 72.0,
+                      "color": "#FFFFFFFF",
+                      "alignment": "Center",
+                      "fontStyle": "Bold",
+                      "raycastTarget": true,
+                      "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                    }
+                  }
+                ],
+                "children": []
+              }
+            ]
+          },
+          {
+            "name": "Subtitle",
+            "path": "TitleScreen/LogoArea/Subtitle",
+            "active": true,
+            "rect": {
+              "anchor": "BottomCenter",
+              "anchorMin": [
+                0.5,
+                0.0
+              ],
+              "anchorMax": [
+                0.5,
+                0.0
+              ],
+              "pivot": [
+                0.5,
+                1.0
+              ],
+              "sizeDelta": [
+                400.0,
+                30.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                10.0
+              ],
+              "offsetMin": [
+                -200.0,
+                -20.0
+              ],
+              "offsetMax": [
+                200.0,
+                10.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "TextMeshProUGUI",
+                "fullType": "TMPro.TextMeshProUGUI",
+                "properties": {
+                  "text": "SUBCULTURE COLLECTION RPG",
+                  "fontSize": 14.0,
+                  "color": "#FFFFFF66",
+                  "alignment": "Center",
+                  "fontStyle": "Normal",
+                  "raycastTarget": true,
+                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "LeftLine",
+            "path": "TitleScreen/LogoArea/LeftLine",
+            "active": true,
+            "rect": {
+              "anchor": "LeftCenter",
+              "anchorMin": [
+                0.0,
+                0.5
+              ],
+              "anchorMax": [
+                0.0,
+                0.5
+              ],
+              "pivot": [
+                1.0,
+                0.5
+              ],
+              "sizeDelta": [
+                80.0,
+                2.0
+              ],
+              "anchoredPosition": [
+                -30.0,
+                0.0
+              ],
+              "offsetMin": [
+                -110.0,
+                -1.0
+              ],
+              "offsetMax": [
+                -30.0,
+                1.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00D4FF66",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "RightLine",
+            "path": "TitleScreen/LogoArea/RightLine",
+            "active": true,
+            "rect": {
+              "anchor": "RightCenter",
+              "anchorMin": [
+                1.0,
+                0.5
+              ],
+              "anchorMax": [
+                1.0,
+                0.5
+              ],
+              "pivot": [
+                0.0,
+                0.5
+              ],
+              "sizeDelta": [
+                80.0,
+                2.0
+              ],
+              "anchoredPosition": [
+                30.0,
+                0.0
+              ],
+              "offsetMin": [
+                30.0,
+                -1.0
+              ],
+              "offsetMax": [
+                110.0,
+                1.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00D4FF66",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "TouchArea",
+        "path": "TitleScreen/TouchArea",
+        "active": true,
+        "rect": {
+          "anchor": "Stretch",
+          "anchorMin": [
+            0.0,
+            0.0
+          ],
+          "anchorMax": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "sizeDelta": [
+            0.0,
+            0.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            0.0
+          ],
+          "offsetMin": [
+            0.0,
+            0.0
+          ],
+          "offsetMax": [
+            0.0,
+            0.0
+          ]
+        },
+        "components": [
+          {
+            "type": "CanvasRenderer",
+            "fullType": "UnityEngine.CanvasRenderer",
+            "properties": {}
+          },
+          {
+            "type": "Image",
+            "fullType": "UnityEngine.UI.Image",
+            "properties": {
+              "color": "#00000000",
+              "raycastTarget": true,
+              "type": "Simple"
+            }
+          },
+          {
+            "type": "Button",
+            "fullType": "UnityEngine.UI.Button",
+            "properties": {
+              "interactable": true,
+              "transition": "ColorTint"
+            }
+          }
+        ],
+        "children": []
+      },
+      {
+        "name": "TouchToStartContainer",
+        "path": "TitleScreen/TouchToStartContainer",
+        "active": true,
+        "rect": {
+          "anchor": "BottomCenter",
+          "anchorMin": [
+            0.5,
+            0.0
+          ],
+          "anchorMax": [
+            0.5,
+            0.0
+          ],
+          "pivot": [
+            0.5,
+            0.0
+          ],
+          "sizeDelta": [
+            400.0,
+            60.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            200.0
+          ],
+          "offsetMin": [
+            -200.0,
+            200.0
+          ],
+          "offsetMax": [
+            200.0,
+            260.0
+          ]
+        },
+        "components": [],
+        "children": [
+          {
+            "name": "TextGlow",
+            "path": "TitleScreen/TouchToStartContainer/TextGlow",
+            "active": true,
+            "rect": {
+              "anchor": "Center",
+              "anchorMin": [
+                0.5,
+                0.5
+              ],
+              "anchorMax": [
+                0.5,
+                0.5
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                300.0,
+                40.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                -150.0,
+                -20.0
+              ],
+              "offsetMax": [
+                150.0,
+                20.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#00CCFF26",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "TouchText",
+            "path": "TitleScreen/TouchToStartContainer/TouchText",
+            "active": true,
+            "rect": {
+              "anchor": "Stretch",
+              "anchorMin": [
+                0.0,
+                0.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                0.0,
+                0.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                0.0,
+                0.0
+              ],
+              "offsetMax": [
+                0.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "TextMeshProUGUI",
+                "fullType": "TMPro.TextMeshProUGUI",
+                "properties": {
+                  "text": "TOUCH TO START",
+                  "fontSize": 24.0,
+                  "color": "#00D4FFFF",
+                  "alignment": "Center",
+                  "fontStyle": "Bold",
+                  "raycastTarget": true,
+                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "LeftBracket",
+            "path": "TitleScreen/TouchToStartContainer/LeftBracket",
+            "active": true,
+            "rect": {
+              "anchor": "LeftCenter",
+              "anchorMin": [
+                0.0,
+                0.5
+              ],
+              "anchorMax": [
+                0.0,
+                0.5
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                20.0,
+                30.0
+              ],
+              "anchoredPosition": [
+                20.0,
+                0.0
+              ],
+              "offsetMin": [
+                10.0,
+                -15.0
+              ],
+              "offsetMax": [
+                30.0,
+                15.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "TextMeshProUGUI",
+                "fullType": "TMPro.TextMeshProUGUI",
+                "properties": {
+                  "text": "[",
+                  "fontSize": 28.0,
+                  "color": "#00D4FF80",
+                  "alignment": "Center",
+                  "fontStyle": "Normal",
+                  "raycastTarget": true,
+                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                }
+              }
+            ],
+            "children": []
+          },
+          {
+            "name": "RightBracket",
+            "path": "TitleScreen/TouchToStartContainer/RightBracket",
+            "active": true,
+            "rect": {
+              "anchor": "RightCenter",
+              "anchorMin": [
+                1.0,
+                0.5
+              ],
+              "anchorMax": [
+                1.0,
+                0.5
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                20.0,
+                30.0
+              ],
+              "anchoredPosition": [
+                -20.0,
+                0.0
+              ],
+              "offsetMin": [
+                -30.0,
+                -15.0
+              ],
+              "offsetMax": [
+                -10.0,
+                15.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "TextMeshProUGUI",
+                "fullType": "TMPro.TextMeshProUGUI",
+                "properties": {
+                  "text": "]",
+                  "fontSize": 28.0,
+                  "color": "#00D4FF80",
+                  "alignment": "Center",
+                  "fontStyle": "Normal",
+                  "raycastTarget": true,
+                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                }
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "ResetAccountButton",
+        "path": "TitleScreen/ResetAccountButton",
+        "active": true,
+        "rect": {
+          "anchor": "TopRight",
+          "anchorMin": [
+            1.0,
+            1.0
+          ],
+          "anchorMax": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            1.0,
+            1.0
+          ],
+          "sizeDelta": [
+            40.0,
+            40.0
+          ],
+          "anchoredPosition": [
+            -20.0,
+            -20.0
+          ],
+          "offsetMin": [
+            -60.0,
+            -60.0
+          ],
+          "offsetMax": [
+            -20.0,
+            -20.0
+          ]
+        },
+        "components": [
+          {
+            "type": "CanvasRenderer",
+            "fullType": "UnityEngine.CanvasRenderer",
+            "properties": {}
+          },
+          {
+            "type": "Image",
+            "fullType": "UnityEngine.UI.Image",
+            "properties": {
+              "color": "#FFFFFF0D",
+              "raycastTarget": true,
+              "type": "Simple"
+            }
+          },
+          {
+            "type": "Button",
+            "fullType": "UnityEngine.UI.Button",
+            "properties": {
+              "interactable": true,
+              "transition": "ColorTint"
+            }
+          }
+        ],
+        "children": [
+          {
+            "name": "Icon",
+            "path": "TitleScreen/ResetAccountButton/Icon",
+            "active": true,
+            "rect": {
+              "anchor": "Stretch",
+              "anchorMin": [
+                0.0,
+                0.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                0.0,
+                0.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                0.0,
+                0.0
+              ],
+              "offsetMax": [
+                0.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "TextMeshProUGUI",
+                "fullType": "TMPro.TextMeshProUGUI",
+                "properties": {
+                  "text": "R",
+                  "fontSize": 16.0,
+                  "color": "#FFFFFF33",
+                  "alignment": "Center",
+                  "fontStyle": "Bold",
+                  "raycastTarget": true,
+                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                }
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "VersionInfo",
+        "path": "TitleScreen/VersionInfo",
+        "active": true,
+        "rect": {
+          "anchor": "BottomRight",
+          "anchorMin": [
+            1.0,
+            0.0
+          ],
+          "anchorMax": [
+            1.0,
+            0.0
+          ],
+          "pivot": [
+            1.0,
+            0.0
+          ],
+          "sizeDelta": [
+            200.0,
+            40.0
+          ],
+          "anchoredPosition": [
+            -20.0,
+            20.0
+          ],
+          "offsetMin": [
+            -220.0,
+            20.0
+          ],
+          "offsetMax": [
+            -20.0,
+            60.0
+          ]
+        },
+        "components": [
+          {
+            "type": "CanvasRenderer",
+            "fullType": "UnityEngine.CanvasRenderer",
+            "properties": {}
+          },
+          {
+            "type": "TextMeshProUGUI",
+            "fullType": "TMPro.TextMeshProUGUI",
+            "properties": {
+              "text": "v0.1.0",
+              "fontSize": 12.0,
+              "color": "#FFFFFF33",
+              "alignment": "BottomRight",
+              "fontStyle": "Normal",
+              "raycastTarget": true,
+              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+            }
+          }
+        ],
+        "children": []
+      }
+    ]
+  },
+  "serializedFields": [
+    {
+      "fieldName": "_touchArea",
+      "fieldType": "Button",
+      "targetPath": "TouchArea",
+      "targetType": "Button"
+    },
+    {
+      "fieldName": "_touchToStartText",
+      "fieldType": "TMP_Text",
+      "targetPath": "TouchToStartContainer/TouchText",
+      "targetType": "TextMeshProUGUI"
+    },
+    {
+      "fieldName": "_resetAccountButton",
+      "fieldType": "Button",
+      "targetPath": "ResetAccountButton",
+      "targetType": "Button"
+    }
+  ],
+  "theme": {
+    "colors": {
+      "Dark_DEB21215": "#05050CFF",
+      "Dark_D98A8A8D": "#0A0814FF",
+      "Dark_1F8CCCCD": "#00000099",
+      "Glass_ECC00001": "#0080B226",
+      "Transparent_D43B4120": "#CC4C8014",
+      "Glass_EC55B5B3": "#00B4DC50",
+      "Color_ED3F9F99": "#00D4FF99",
+      "Red_D5466661": "#FF50A099",
+      "Red_D29DDDDB": "#FFC86499",
+      "Glass_EDCAAAAA": "#00B2FF1A",
+      "Transparent_D01AE147": "#FFFFFF08",
+      "Light_D1A00000": "#FFFFFFFF",
+      "Glass_D1066666": "#FFFFFF66",
+      "Glass_EDD53532": "#00D4FF66",
+      "Transparent_00000000": "#00000000",
+      "Glass_EDDFFFF9": "#00CCFF26",
+      "Color_ED735354": "#00D4FFFF",
+      "Color_ED335354": "#00D4FF80",
+      "Transparent_D0C66666": "#FFFFFF0D",
+      "Glass_D1466666": "#FFFFFF33"
+    },
+    "constants": {
+      "FontSize_72": 72.0,
+      "FontSize_14": 14.0,
+      "FontSize_24": 24.0,
+      "FontSize_28": 28.0,
+      "FontSize_16": 16.0,
+      "FontSize_12": 12.0
+    },
+    "fonts": {}
+  }
+}

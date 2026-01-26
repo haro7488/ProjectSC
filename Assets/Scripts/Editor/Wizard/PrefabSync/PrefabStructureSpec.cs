@@ -43,6 +43,12 @@ namespace Sc.Editor.Wizard.PrefabSync
         public RectInfo rect;
         public List<ComponentInfo> components;
         public List<HierarchyNode> children;
+
+        /// <summary>
+        /// 이 노드의 위젯 컴포넌트에 대한 SerializeField 매핑.
+        /// 루트가 아닌 하위 위젯(EventBannerCarousel, PassButton 등)의 필드 연결에 사용.
+        /// </summary>
+        public List<SerializedFieldMapping> widgetFields;
     }
 
     [Serializable]

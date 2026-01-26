@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Popups/StageInfoPopup.prefab",
     "componentType": "StageInfoPopup",
     "componentNamespace": "Sc.Contents.Stage",
-    "generatedAt": "2026-01-26T21:34:21",
+    "generatedAt": "2026-01-27T00:56:13",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/StageInfoPopupPrefabBuilder.cs"
   },
   "hierarchy": {
@@ -115,7 +115,7 @@
             "fullType": "UnityEngine.UI.Button",
             "properties": {
               "interactable": true,
-              "transition": "None"
+              "transition": "ColorTint"
             }
           }
         ],
@@ -430,9 +430,7 @@
                 "properties": {
                   "horizontal": false,
                   "vertical": true,
-                  "movementType": "Elastic",
-                  "viewport": "Viewport",
-                  "content": "Viewport/Content"
+                  "movementType": "Elastic"
                 }
               }
             ],
@@ -572,7 +570,7 @@
   "serializedFields": [],
   "theme": {
     "colors": {
-      "Dark_1F999999": "#000000B2",
+      "Dark_1F995959": "#000000B2",
       "Color_DACA2A2D": "#19192DD9",
       "Light_D1A00000": "#FFFFFFFF",
       "Transparent_D0E04040": "#FFFFFF08",

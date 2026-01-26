@@ -375,6 +375,12 @@ namespace Sc.Editor.Wizard.PrefabSync
                 }
             }
 
+            // 위젯 필드 연결
+            if (node.widgetFields?.Count > 0)
+            {
+                GenerateWidgetFieldConnections(sb, node);
+            }
+
             sb.AppendLine();
             sb.AppendLine("            return go;");
             sb.AppendLine("        }");
@@ -511,6 +517,71 @@ namespace Sc.Editor.Wizard.PrefabSync
                         break;
                 }
             }
+        }
+
+        /// <summary>
+        /// 위젯 SerializeField 연결 코드 생성.
+        /// </summary>
+        private static void GenerateWidgetFieldConnections(StringBuilder sb, HierarchyNode node)
+        {
+            if (node.widgetFields == null || node.widgetFields.Count == 0) return;
+
+            // 위젯 컴포넌트 타입 찾기
+            var widgetComp = node.components?.FirstOrDefault(c =>
+                !string.IsNullOrEmpty(c.fullType) && c.fullType.StartsWith("Sc."));
+
+            if (widgetComp == null) return;
+
+            sb.AppendLine();
+            sb.AppendLine("            // Connect widget SerializeFields");
+            sb.AppendLine($"            var widgetComp = go.GetComponent<{widgetComp.type}>();");
+            sb.AppendLine("            if (widgetComp != null)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var widgetSo = new SerializedObject(widgetComp);");
+
+            foreach (var field in node.widgetFields)
+            {
+                if (field.isArray && field.arrayPaths?.Count > 0)
+                {
+                    // 배열 필드 처리
+                    var propName = ToCamelCase(field.fieldName.TrimStart('_'));
+                    sb.AppendLine(
+                        $"                var {propName}Prop = widgetSo.FindProperty(\"{field.fieldName}\");");
+                    sb.AppendLine($"                {propName}Prop.arraySize = {field.arrayPaths.Count};");
+
+                    for (int i = 0; i < field.arrayPaths.Count; i++)
+                    {
+                        var getter = GetWidgetFieldGetter(field.targetType, $"\"{field.arrayPaths[i]}\"");
+                        sb.AppendLine(
+                            $"                {propName}Prop.GetArrayElementAtIndex({i}).objectReferenceValue = {getter};");
+                    }
+                }
+                else if (!string.IsNullOrEmpty(field.targetPath))
+                {
+                    // 단일 필드 처리
+                    var getter = GetWidgetFieldGetter(field.targetType, $"\"{field.targetPath}\"");
+                    sb.AppendLine(
+                        $"                widgetSo.FindProperty(\"{field.fieldName}\").objectReferenceValue = {getter};");
+                }
+            }
+
+            sb.AppendLine("                widgetSo.ApplyModifiedPropertiesWithoutUndo();");
+            sb.AppendLine("            }");
+        }
+
+        /// <summary>
+        /// 위젯 필드의 getter 표현식 생성.
+        /// </summary>
+        private static string GetWidgetFieldGetter(string targetType, string pathExpr)
+        {
+            if (string.IsNullOrEmpty(targetType) || targetType == "GameObject")
+                return $"go.transform.Find({pathExpr})?.gameObject";
+            if (targetType == "Transform")
+                return $"go.transform.Find({pathExpr})";
+            if (targetType == "RectTransform")
+                return $"go.transform.Find({pathExpr}) as RectTransform";
+
+            return $"go.transform.Find({pathExpr})?.GetComponent<{targetType}>()";
         }
 
         private static void GenerateImageSetup(StringBuilder sb, ComponentInfo comp)

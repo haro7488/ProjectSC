@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Popups/GachaResultPopup.prefab",
     "componentType": "GachaResultPopup",
     "componentNamespace": "Sc.Contents.Gacha",
-    "generatedAt": "2026-01-26T21:34:19",
+    "generatedAt": "2026-01-27T00:56:12",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/GachaResultPopupPrefabBuilder.cs"
   },
   "hierarchy": {
