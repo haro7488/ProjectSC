@@ -1,0 +1,3665 @@
+{
+  "metadata": {
+    "prefabName": "InventoryScreen",
+    "prefabPath": "Assets/Prefabs/UI/Screens/InventoryScreen.prefab",
+    "componentType": "InventoryScreen",
+    "componentNamespace": "Sc.Contents.Inventory",
+    "generatedAt": "2026-01-27T11:55:23",
+    "builderPath": "Assets/Scripts/Editor/Wizard/Generators/InventoryScreenPrefabBuilder.cs"
+  },
+  "hierarchy": {
+    "name": "InventoryScreen",
+    "path": "InventoryScreen",
+    "active": true,
+    "rect": {
+      "anchor": "Stretch",
+      "anchorMin": [
+        0.0,
+        0.0
+      ],
+      "anchorMax": [
+        1.0,
+        1.0
+      ],
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "sizeDelta": [
+        0.0,
+        0.0
+      ],
+      "anchoredPosition": [
+        0.0,
+        0.0
+      ],
+      "offsetMin": [
+        0.0,
+        0.0
+      ],
+      "offsetMax": [
+        0.0,
+        0.0
+      ]
+    },
+    "components": [
+      {
+        "type": "CanvasGroup",
+        "fullType": "UnityEngine.CanvasGroup",
+        "properties": {
+          "alpha": 1.0,
+          "interactable": true,
+          "blocksRaycasts": true
+        }
+      },
+      {
+        "type": "InventoryScreen",
+        "fullType": "Sc.Contents.Inventory.InventoryScreen",
+        "isMainComponent": true,
+        "properties": {}
+      }
+    ],
+    "children": [
+      {
+        "name": "Background",
+        "path": "InventoryScreen/Background",
+        "active": true,
+        "rect": {
+          "anchor": "Stretch",
+          "anchorMin": [
+            0.0,
+            0.0
+          ],
+          "anchorMax": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "sizeDelta": [
+            0.0,
+            0.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            0.0
+          ],
+          "offsetMin": [
+            0.0,
+            0.0
+          ],
+          "offsetMax": [
+            0.0,
+            0.0
+          ]
+        },
+        "components": [
+          {
+            "type": "CanvasRenderer",
+            "fullType": "UnityEngine.CanvasRenderer",
+            "properties": {}
+          },
+          {
+            "type": "Image",
+            "fullType": "UnityEngine.UI.Image",
+            "properties": {
+              "color": "#C8E6C8FF",
+              "raycastTarget": false,
+              "type": "Simple"
+            }
+          }
+        ],
+        "children": [
+          {
+            "name": "Pattern",
+            "path": "InventoryScreen/Background/Pattern",
+            "active": true,
+            "rect": {
+              "anchor": "Stretch",
+              "anchorMin": [
+                0.0,
+                0.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                0.0,
+                0.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                0.0,
+                0.0
+              ],
+              "offsetMax": [
+                0.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#DCF0DCFF",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "SafeArea",
+        "path": "InventoryScreen/SafeArea",
+        "active": true,
+        "rect": {
+          "anchor": "Stretch",
+          "anchorMin": [
+            0.0,
+            0.0
+          ],
+          "anchorMax": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "sizeDelta": [
+            0.0,
+            0.0
+          ],
+          "anchoredPosition": [
+            0.0,
+            0.0
+          ],
+          "offsetMin": [
+            0.0,
+            0.0
+          ],
+          "offsetMax": [
+            0.0,
+            0.0
+          ]
+        },
+        "components": [],
+        "children": [
+          {
+            "name": "Header",
+            "path": "InventoryScreen/SafeArea/Header",
+            "active": true,
+            "rect": {
+              "anchor": "TopStretch",
+              "anchorMin": [
+                0.0,
+                1.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                1.0
+              ],
+              "sizeDelta": [
+                0.0,
+                60.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                0.0
+              ],
+              "offsetMin": [
+                0.0,
+                -60.0
+              ],
+              "offsetMax": [
+                0.0,
+                0.0
+              ]
+            },
+            "components": [
+              {
+                "type": "CanvasRenderer",
+                "fullType": "UnityEngine.CanvasRenderer",
+                "properties": {}
+              },
+              {
+                "type": "Image",
+                "fullType": "UnityEngine.UI.Image",
+                "properties": {
+                  "color": "#FFFFFFFF",
+                  "raycastTarget": false,
+                  "type": "Simple"
+                }
+              }
+            ],
+            "children": [
+              {
+                "name": "BackButton",
+                "path": "InventoryScreen/SafeArea/Header/BackButton",
+                "active": true,
+                "rect": {
+                  "anchor": "LeftCenter",
+                  "anchorMin": [
+                    0.0,
+                    0.5
+                  ],
+                  "anchorMax": [
+                    0.0,
+                    0.5
+                  ],
+                  "pivot": [
+                    0.0,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    40.0,
+                    40.0
+                  ],
+                  "anchoredPosition": [
+                    10.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    10.0,
+                    -20.0
+                  ],
+                  "offsetMax": [
+                    50.0,
+                    20.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "Image",
+                    "fullType": "UnityEngine.UI.Image",
+                    "properties": {
+                      "color": "#F0F0F0FF",
+                      "raycastTarget": true,
+                      "type": "Simple"
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "fullType": "UnityEngine.UI.Button",
+                    "properties": {
+                      "interactable": true,
+                      "transition": "ColorTint"
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "name": "Text",
+                    "path": "InventoryScreen/SafeArea/Header/BackButton/Text",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        0.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "TextMeshProUGUI",
+                        "fullType": "TMPro.TextMeshProUGUI",
+                        "properties": {
+                          "text": "<",
+                          "fontSize": 18.0,
+                          "color": "#282828FF",
+                          "alignment": "Center",
+                          "fontStyle": "Bold",
+                          "raycastTarget": false,
+                          "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                        }
+                      }
+                    ],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "TitleText",
+                "path": "InventoryScreen/SafeArea/Header/TitleText",
+                "active": true,
+                "rect": {
+                  "anchor": "Center",
+                  "anchorMin": [
+                    0.5,
+                    0.5
+                  ],
+                  "anchorMax": [
+                    0.5,
+                    0.5
+                  ],
+                  "pivot": [
+                    0.5,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    200.0,
+                    40.0
+                  ],
+                  "anchoredPosition": [
+                    0.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    -100.0,
+                    -20.0
+                  ],
+                  "offsetMax": [
+                    100.0,
+                    20.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "TextMeshProUGUI",
+                    "fullType": "TMPro.TextMeshProUGUI",
+                    "properties": {
+                      "text": "배낭",
+                      "fontSize": 24.0,
+                      "color": "#282828FF",
+                      "alignment": "Center",
+                      "fontStyle": "Bold",
+                      "raycastTarget": false,
+                      "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                    }
+                  }
+                ],
+                "children": []
+              },
+              {
+                "name": "CurrencyHUD",
+                "path": "InventoryScreen/SafeArea/Header/CurrencyHUD",
+                "active": true,
+                "rect": {
+                  "anchor": "RightCenter",
+                  "anchorMin": [
+                    1.0,
+                    0.5
+                  ],
+                  "anchorMax": [
+                    1.0,
+                    0.5
+                  ],
+                  "pivot": [
+                    1.0,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    400.0,
+                    40.0
+                  ],
+                  "anchoredPosition": [
+                    -60.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    -460.0,
+                    -20.0
+                  ],
+                  "offsetMax": [
+                    -60.0,
+                    20.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "Image",
+                    "fullType": "UnityEngine.UI.Image",
+                    "properties": {
+                      "color": "#F5F5F5FF",
+                      "raycastTarget": false,
+                      "type": "Simple"
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "name": "Text",
+                    "path": "InventoryScreen/SafeArea/Header/CurrencyHUD/Text",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        0.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "TextMeshProUGUI",
+                        "fullType": "TMPro.TextMeshProUGUI",
+                        "properties": {
+                          "text": "G: 94,572 | S: 102/102 | P: 1,809",
+                          "fontSize": 12.0,
+                          "color": "#646464FF",
+                          "alignment": "Center",
+                          "fontStyle": "Normal",
+                          "raycastTarget": false,
+                          "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                        }
+                      }
+                    ],
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "HomeButton",
+                "path": "InventoryScreen/SafeArea/Header/HomeButton",
+                "active": true,
+                "rect": {
+                  "anchor": "RightCenter",
+                  "anchorMin": [
+                    1.0,
+                    0.5
+                  ],
+                  "anchorMax": [
+                    1.0,
+                    0.5
+                  ],
+                  "pivot": [
+                    1.0,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    40.0,
+                    40.0
+                  ],
+                  "anchoredPosition": [
+                    -10.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    -50.0,
+                    -20.0
+                  ],
+                  "offsetMax": [
+                    -10.0,
+                    20.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "Image",
+                    "fullType": "UnityEngine.UI.Image",
+                    "properties": {
+                      "color": "#F0F0F0FF",
+                      "raycastTarget": true,
+                      "type": "Simple"
+                    }
+                  },
+                  {
+                    "type": "Button",
+                    "fullType": "UnityEngine.UI.Button",
+                    "properties": {
+                      "interactable": true,
+                      "transition": "ColorTint"
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "name": "Text",
+                    "path": "InventoryScreen/SafeArea/Header/HomeButton/Text",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        0.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "TextMeshProUGUI",
+                        "fullType": "TMPro.TextMeshProUGUI",
+                        "properties": {
+                          "text": "H",
+                          "fontSize": 18.0,
+                          "color": "#282828FF",
+                          "alignment": "Center",
+                          "fontStyle": "Bold",
+                          "raycastTarget": false,
+                          "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                        }
+                      }
+                    ],
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Content",
+            "path": "InventoryScreen/SafeArea/Content",
+            "active": true,
+            "rect": {
+              "anchor": "Stretch",
+              "anchorMin": [
+                0.0,
+                0.0
+              ],
+              "anchorMax": [
+                1.0,
+                1.0
+              ],
+              "pivot": [
+                0.5,
+                0.5
+              ],
+              "sizeDelta": [
+                0.0,
+                -60.0
+              ],
+              "anchoredPosition": [
+                0.0,
+                -30.0
+              ],
+              "offsetMin": [
+                0.0,
+                0.0
+              ],
+              "offsetMax": [
+                0.0,
+                -60.0
+              ]
+            },
+            "components": [],
+            "children": [
+              {
+                "name": "LeftSideTab",
+                "path": "InventoryScreen/SafeArea/Content/LeftSideTab",
+                "active": true,
+                "rect": {
+                  "anchor": "LeftStretch",
+                  "anchorMin": [
+                    0.0,
+                    0.0
+                  ],
+                  "anchorMax": [
+                    0.0,
+                    1.0
+                  ],
+                  "pivot": [
+                    0.0,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    120.0,
+                    0.0
+                  ],
+                  "anchoredPosition": [
+                    0.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    0.0,
+                    0.0
+                  ],
+                  "offsetMax": [
+                    120.0,
+                    0.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "Image",
+                    "fullType": "UnityEngine.UI.Image",
+                    "properties": {
+                      "color": "#FFFFFFFF",
+                      "raycastTarget": false,
+                      "type": "Simple"
+                    }
+                  },
+                  {
+                    "type": "VerticalLayoutGroup",
+                    "fullType": "UnityEngine.UI.VerticalLayoutGroup",
+                    "properties": {
+                      "spacing": 8.0,
+                      "padding": [
+                        8,
+                        8,
+                        8,
+                        8
+                      ],
+                      "childAlignment": "UpperCenter",
+                      "childControlWidth": true,
+                      "childControlHeight": false,
+                      "childForceExpandWidth": true,
+                      "childForceExpandHeight": false
+                    }
+                  },
+                  {
+                    "type": "InventoryTabWidget",
+                    "fullType": "Sc.Contents.Inventory.Widgets.InventoryTabWidget",
+                    "isMainComponent": true,
+                    "properties": {}
+                  }
+                ],
+                "children": [
+                  {
+                    "name": "Tab_사용",
+                    "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_사용",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Center",
+                      "anchorMin": [
+                        0.5,
+                        0.5
+                      ],
+                      "anchorMax": [
+                        0.5,
+                        0.5
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        60.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        -30.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        30.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "Image",
+                        "fullType": "UnityEngine.UI.Image",
+                        "properties": {
+                          "color": "#64B464FF",
+                          "raycastTarget": true,
+                          "type": "Simple"
+                        }
+                      },
+                      {
+                        "type": "Button",
+                        "fullType": "UnityEngine.UI.Button",
+                        "properties": {
+                          "interactable": true,
+                          "transition": "ColorTint"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "Background",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_사용/Background",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#00000000",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "Label",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_사용/Label",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "사용",
+                              "fontSize": 14.0,
+                              "color": "#FFFFFFFF",
+                              "alignment": "Center",
+                              "fontStyle": "Bold",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "SelectedIndicator",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_사용/SelectedIndicator",
+                        "active": true,
+                        "rect": {
+                          "anchor": "LeftCenter",
+                          "anchorMin": [
+                            0.0,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.0,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.0,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            4.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            4.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#64B464FF",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Tab_성장",
+                    "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_성장",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Center",
+                      "anchorMin": [
+                        0.5,
+                        0.5
+                      ],
+                      "anchorMax": [
+                        0.5,
+                        0.5
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        60.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        -30.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        30.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "Image",
+                        "fullType": "UnityEngine.UI.Image",
+                        "properties": {
+                          "color": "#F0F0F0FF",
+                          "raycastTarget": true,
+                          "type": "Simple"
+                        }
+                      },
+                      {
+                        "type": "Button",
+                        "fullType": "UnityEngine.UI.Button",
+                        "properties": {
+                          "interactable": true,
+                          "transition": "ColorTint"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "Background",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_성장/Background",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#00000000",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "Label",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_성장/Label",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "성장",
+                              "fontSize": 14.0,
+                              "color": "#505050FF",
+                              "alignment": "Center",
+                              "fontStyle": "Bold",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "SelectedIndicator",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_성장/SelectedIndicator",
+                        "rect": {
+                          "anchor": "LeftCenter",
+                          "anchorMin": [
+                            0.0,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.0,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.0,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            4.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            4.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#64B464FF",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Tab_장비",
+                    "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_장비",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Center",
+                      "anchorMin": [
+                        0.5,
+                        0.5
+                      ],
+                      "anchorMax": [
+                        0.5,
+                        0.5
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        60.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        -30.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        30.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "Image",
+                        "fullType": "UnityEngine.UI.Image",
+                        "properties": {
+                          "color": "#F0F0F0FF",
+                          "raycastTarget": true,
+                          "type": "Simple"
+                        }
+                      },
+                      {
+                        "type": "Button",
+                        "fullType": "UnityEngine.UI.Button",
+                        "properties": {
+                          "interactable": true,
+                          "transition": "ColorTint"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "Background",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_장비/Background",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#00000000",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "Label",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_장비/Label",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "장비",
+                              "fontSize": 14.0,
+                              "color": "#505050FF",
+                              "alignment": "Center",
+                              "fontStyle": "Bold",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "SelectedIndicator",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_장비/SelectedIndicator",
+                        "rect": {
+                          "anchor": "LeftCenter",
+                          "anchorMin": [
+                            0.0,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.0,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.0,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            4.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            4.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#64B464FF",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Tab_교단",
+                    "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_교단",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Center",
+                      "anchorMin": [
+                        0.5,
+                        0.5
+                      ],
+                      "anchorMax": [
+                        0.5,
+                        0.5
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        60.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        -30.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        30.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "Image",
+                        "fullType": "UnityEngine.UI.Image",
+                        "properties": {
+                          "color": "#F0F0F0FF",
+                          "raycastTarget": true,
+                          "type": "Simple"
+                        }
+                      },
+                      {
+                        "type": "Button",
+                        "fullType": "UnityEngine.UI.Button",
+                        "properties": {
+                          "interactable": true,
+                          "transition": "ColorTint"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "Background",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_교단/Background",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#00000000",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "Label",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_교단/Label",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "교단",
+                              "fontSize": 14.0,
+                              "color": "#505050FF",
+                              "alignment": "Center",
+                              "fontStyle": "Bold",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "SelectedIndicator",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_교단/SelectedIndicator",
+                        "rect": {
+                          "anchor": "LeftCenter",
+                          "anchorMin": [
+                            0.0,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.0,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.0,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            4.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            4.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#64B464FF",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "name": "Tab_연성카드",
+                    "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_연성카드",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Center",
+                      "anchorMin": [
+                        0.5,
+                        0.5
+                      ],
+                      "anchorMax": [
+                        0.5,
+                        0.5
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        60.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        -30.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        30.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "Image",
+                        "fullType": "UnityEngine.UI.Image",
+                        "properties": {
+                          "color": "#F0F0F0FF",
+                          "raycastTarget": true,
+                          "type": "Simple"
+                        }
+                      },
+                      {
+                        "type": "Button",
+                        "fullType": "UnityEngine.UI.Button",
+                        "properties": {
+                          "interactable": true,
+                          "transition": "ColorTint"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "Background",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_연성카드/Background",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#00000000",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "Label",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_연성카드/Label",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "연성카드",
+                              "fontSize": 14.0,
+                              "color": "#505050FF",
+                              "alignment": "Center",
+                              "fontStyle": "Bold",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "SelectedIndicator",
+                        "path": "InventoryScreen/SafeArea/Content/LeftSideTab/Tab_연성카드/SelectedIndicator",
+                        "rect": {
+                          "anchor": "LeftCenter",
+                          "anchorMin": [
+                            0.0,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.0,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.0,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            4.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            4.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#64B464FF",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "MainArea",
+                "path": "InventoryScreen/SafeArea/Content/MainArea",
+                "active": true,
+                "rect": {
+                  "anchor": "Stretch",
+                  "anchorMin": [
+                    0.0,
+                    0.0
+                  ],
+                  "anchorMax": [
+                    1.0,
+                    1.0
+                  ],
+                  "pivot": [
+                    0.5,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    -420.0,
+                    0.0
+                  ],
+                  "anchoredPosition": [
+                    -90.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    120.0,
+                    0.0
+                  ],
+                  "offsetMax": [
+                    -300.0,
+                    0.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "Image",
+                    "fullType": "UnityEngine.UI.Image",
+                    "properties": {
+                      "color": "#FFFFFFFF",
+                      "raycastTarget": false,
+                      "type": "Simple"
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "name": "FilterBar",
+                    "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar",
+                    "active": true,
+                    "rect": {
+                      "anchor": "TopStretch",
+                      "anchorMin": [
+                        0.0,
+                        1.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        1.0
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        50.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        -50.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        0.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "CanvasRenderer",
+                        "fullType": "UnityEngine.CanvasRenderer",
+                        "properties": {}
+                      },
+                      {
+                        "type": "Image",
+                        "fullType": "UnityEngine.UI.Image",
+                        "properties": {
+                          "color": "#F5F5F5FF",
+                          "raycastTarget": false,
+                          "type": "Simple"
+                        }
+                      },
+                      {
+                        "type": "HorizontalLayoutGroup",
+                        "fullType": "UnityEngine.UI.HorizontalLayoutGroup",
+                        "properties": {
+                          "spacing": 8.0,
+                          "padding": [
+                            16,
+                            16,
+                            5,
+                            5
+                          ],
+                          "childAlignment": "MiddleLeft",
+                          "childControlWidth": false,
+                          "childControlHeight": true,
+                          "childForceExpandWidth": false,
+                          "childForceExpandHeight": false
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "CategoryDropdown",
+                        "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/CategoryDropdown",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            150.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -75.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            75.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredWidth": 150.0,
+                              "preferredHeight": 40.0
+                            }
+                          },
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#FFFFFFFF",
+                              "raycastTarget": true,
+                              "type": "Simple"
+                            }
+                          },
+                          {
+                            "type": "TMP_Dropdown",
+                            "fullType": "TMPro.TMP_Dropdown",
+                            "properties": {}
+                          }
+                        ],
+                        "children": [
+                          {
+                            "name": "Label",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/CategoryDropdown/Label",
+                            "active": true,
+                            "rect": {
+                              "anchor": "Stretch",
+                              "anchorMin": [
+                                0.0,
+                                0.0
+                              ],
+                              "anchorMax": [
+                                1.0,
+                                1.0
+                              ],
+                              "pivot": [
+                                0.5,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                -40.0,
+                                -4.0
+                              ],
+                              "anchoredPosition": [
+                                -10.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                10.0,
+                                2.0
+                              ],
+                              "offsetMax": [
+                                -30.0,
+                                -2.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "TextMeshProUGUI",
+                                "fullType": "TMPro.TextMeshProUGUI",
+                                "properties": {
+                                  "text": "",
+                                  "fontSize": 14.0,
+                                  "color": "#282828FF",
+                                  "alignment": "Left",
+                                  "fontStyle": "Normal",
+                                  "raycastTarget": false,
+                                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                                }
+                              }
+                            ],
+                            "children": []
+                          },
+                          {
+                            "name": "Arrow",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/CategoryDropdown/Arrow",
+                            "active": true,
+                            "rect": {
+                              "anchor": "RightCenter",
+                              "anchorMin": [
+                                1.0,
+                                0.5
+                              ],
+                              "anchorMax": [
+                                1.0,
+                                0.5
+                              ],
+                              "pivot": [
+                                1.0,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                16.0,
+                                16.0
+                              ],
+                              "anchoredPosition": [
+                                -10.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                -26.0,
+                                -8.0
+                              ],
+                              "offsetMax": [
+                                -10.0,
+                                8.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "Image",
+                                "fullType": "UnityEngine.UI.Image",
+                                "properties": {
+                                  "color": "#646464FF",
+                                  "raycastTarget": false,
+                                  "type": "Simple"
+                                }
+                              }
+                            ],
+                            "children": []
+                          },
+                          {
+                            "name": "Template",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/CategoryDropdown/Template",
+                            "components": [],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "name": "SortDropdown",
+                        "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/SortDropdown",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            120.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -60.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            60.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredWidth": 120.0,
+                              "preferredHeight": 40.0
+                            }
+                          },
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#FFFFFFFF",
+                              "raycastTarget": true,
+                              "type": "Simple"
+                            }
+                          },
+                          {
+                            "type": "TMP_Dropdown",
+                            "fullType": "TMPro.TMP_Dropdown",
+                            "properties": {}
+                          }
+                        ],
+                        "children": [
+                          {
+                            "name": "Label",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/SortDropdown/Label",
+                            "active": true,
+                            "rect": {
+                              "anchor": "Stretch",
+                              "anchorMin": [
+                                0.0,
+                                0.0
+                              ],
+                              "anchorMax": [
+                                1.0,
+                                1.0
+                              ],
+                              "pivot": [
+                                0.5,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                -40.0,
+                                -4.0
+                              ],
+                              "anchoredPosition": [
+                                -10.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                10.0,
+                                2.0
+                              ],
+                              "offsetMax": [
+                                -30.0,
+                                -2.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "TextMeshProUGUI",
+                                "fullType": "TMPro.TextMeshProUGUI",
+                                "properties": {
+                                  "text": "",
+                                  "fontSize": 14.0,
+                                  "color": "#282828FF",
+                                  "alignment": "Left",
+                                  "fontStyle": "Normal",
+                                  "raycastTarget": false,
+                                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                                }
+                              }
+                            ],
+                            "children": []
+                          },
+                          {
+                            "name": "Arrow",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/SortDropdown/Arrow",
+                            "active": true,
+                            "rect": {
+                              "anchor": "RightCenter",
+                              "anchorMin": [
+                                1.0,
+                                0.5
+                              ],
+                              "anchorMax": [
+                                1.0,
+                                0.5
+                              ],
+                              "pivot": [
+                                1.0,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                16.0,
+                                16.0
+                              ],
+                              "anchoredPosition": [
+                                -10.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                -26.0,
+                                -8.0
+                              ],
+                              "offsetMax": [
+                                -10.0,
+                                8.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "Image",
+                                "fullType": "UnityEngine.UI.Image",
+                                "properties": {
+                                  "color": "#646464FF",
+                                  "raycastTarget": false,
+                                  "type": "Simple"
+                                }
+                              }
+                            ],
+                            "children": []
+                          },
+                          {
+                            "name": "Template",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/SortDropdown/Template",
+                            "components": [],
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "name": "Spacer",
+                        "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/Spacer",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            100.0,
+                            100.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -50.0,
+                            -50.0
+                          ],
+                          "offsetMax": [
+                            50.0,
+                            50.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "flexibleWidth": 1.0
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "SettingsButton",
+                        "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/SettingsButton",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            40.0,
+                            40.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -20.0,
+                            -20.0
+                          ],
+                          "offsetMax": [
+                            20.0,
+                            20.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredWidth": 40.0,
+                              "preferredHeight": 40.0
+                            }
+                          },
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#FFFFFFFF",
+                              "raycastTarget": true,
+                              "type": "Simple"
+                            }
+                          },
+                          {
+                            "type": "Button",
+                            "fullType": "UnityEngine.UI.Button",
+                            "properties": {
+                              "interactable": true,
+                              "transition": "ColorTint"
+                            }
+                          }
+                        ],
+                        "children": [
+                          {
+                            "name": "Icon",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/FilterBar/SettingsButton/Icon",
+                            "active": true,
+                            "rect": {
+                              "anchor": "Stretch",
+                              "anchorMin": [
+                                0.0,
+                                0.0
+                              ],
+                              "anchorMax": [
+                                1.0,
+                                1.0
+                              ],
+                              "pivot": [
+                                0.5,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                0.0,
+                                0.0
+                              ],
+                              "anchoredPosition": [
+                                0.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                0.0,
+                                0.0
+                              ],
+                              "offsetMax": [
+                                0.0,
+                                0.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "TextMeshProUGUI",
+                                "fullType": "TMPro.TextMeshProUGUI",
+                                "properties": {
+                                  "text": "⚙",
+                                  "fontSize": 18.0,
+                                  "color": "#646464FF",
+                                  "alignment": "Center",
+                                  "fontStyle": "Normal",
+                                  "raycastTarget": false,
+                                  "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                                }
+                              }
+                            ],
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "ItemGridArea",
+                    "path": "InventoryScreen/SafeArea/Content/MainArea/ItemGridArea",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        -50.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        -25.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        -50.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "ScrollRect",
+                        "fullType": "UnityEngine.UI.ScrollRect",
+                        "properties": {
+                          "horizontal": false,
+                          "vertical": true,
+                          "movementType": "Elastic",
+                          "viewport": "Viewport",
+                          "content": "Viewport/Content"
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "Viewport",
+                        "path": "InventoryScreen/SafeArea/Content/MainArea/ItemGridArea/Viewport",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#00000000",
+                              "raycastTarget": true,
+                              "type": "Simple"
+                            }
+                          },
+                          {
+                            "type": "Mask",
+                            "fullType": "UnityEngine.UI.Mask",
+                            "properties": {
+                              "showMaskGraphic": false
+                            }
+                          }
+                        ],
+                        "children": [
+                          {
+                            "name": "Content",
+                            "path": "InventoryScreen/SafeArea/Content/MainArea/ItemGridArea/Viewport/Content",
+                            "active": true,
+                            "rect": {
+                              "anchor": "TopStretch",
+                              "anchorMin": [
+                                0.0,
+                                1.0
+                              ],
+                              "anchorMax": [
+                                1.0,
+                                1.0
+                              ],
+                              "pivot": [
+                                0.5,
+                                1.0
+                              ],
+                              "sizeDelta": [
+                                0.0,
+                                500.0
+                              ],
+                              "anchoredPosition": [
+                                0.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                0.0,
+                                -500.0
+                              ],
+                              "offsetMax": [
+                                0.0,
+                                0.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "GridLayoutGroup",
+                                "fullType": "UnityEngine.UI.GridLayoutGroup",
+                                "properties": {
+                                  "cellSize": [
+                                    80.0,
+                                    80.0
+                                  ],
+                                  "spacing": [
+                                    8.0,
+                                    8.0
+                                  ],
+                                  "startCorner": "UpperLeft",
+                                  "startAxis": "Horizontal",
+                                  "childAlignment": "UpperLeft",
+                                  "constraint": "FixedColumnCount",
+                                  "constraintCount": 7,
+                                  "padding": [
+                                    16,
+                                    16,
+                                    16,
+                                    16
+                                  ]
+                                }
+                              },
+                              {
+                                "type": "ContentSizeFitter",
+                                "fullType": "UnityEngine.UI.ContentSizeFitter",
+                                "properties": {
+                                  "horizontalFit": "Unconstrained",
+                                  "verticalFit": "PreferredSize"
+                                }
+                              }
+                            ],
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "EmptyState",
+                    "path": "InventoryScreen/SafeArea/Content/MainArea/EmptyState",
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        -50.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        -25.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        -50.0
+                      ]
+                    },
+                    "components": [],
+                    "children": [
+                      {
+                        "name": "Text",
+                        "path": "InventoryScreen/SafeArea/Content/MainArea/EmptyState/Text",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "보유한 아이템이 없습니다.",
+                              "fontSize": 16.0,
+                              "color": "#969696FF",
+                              "alignment": "Center",
+                              "fontStyle": "Normal",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "ItemDetailPanel",
+                "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel",
+                "active": true,
+                "rect": {
+                  "anchor": "RightStretch",
+                  "anchorMin": [
+                    1.0,
+                    0.0
+                  ],
+                  "anchorMax": [
+                    1.0,
+                    1.0
+                  ],
+                  "pivot": [
+                    1.0,
+                    0.5
+                  ],
+                  "sizeDelta": [
+                    300.0,
+                    0.0
+                  ],
+                  "anchoredPosition": [
+                    0.0,
+                    0.0
+                  ],
+                  "offsetMin": [
+                    -300.0,
+                    0.0
+                  ],
+                  "offsetMax": [
+                    0.0,
+                    0.0
+                  ]
+                },
+                "components": [
+                  {
+                    "type": "CanvasRenderer",
+                    "fullType": "UnityEngine.CanvasRenderer",
+                    "properties": {}
+                  },
+                  {
+                    "type": "Image",
+                    "fullType": "UnityEngine.UI.Image",
+                    "properties": {
+                      "color": "#FFFFFFFF",
+                      "raycastTarget": false,
+                      "type": "Simple"
+                    }
+                  },
+                  {
+                    "type": "ItemDetailWidget",
+                    "fullType": "Sc.Contents.Inventory.Widgets.ItemDetailWidget",
+                    "isMainComponent": true,
+                    "properties": {}
+                  }
+                ],
+                "children": [
+                  {
+                    "name": "EmptyState",
+                    "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/EmptyState",
+                    "active": true,
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        0.0
+                      ]
+                    },
+                    "components": [],
+                    "children": [
+                      {
+                        "name": "Text",
+                        "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/EmptyState/Text",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Stretch",
+                          "anchorMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchorMax": [
+                            1.0,
+                            1.0
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            0.0,
+                            0.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMax": [
+                            0.0,
+                            0.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "아이템을 선택해주세요",
+                              "fontSize": 14.0,
+                              "color": "#969696FF",
+                              "alignment": "Center",
+                              "fontStyle": "Normal",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "name": "DetailView",
+                    "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView",
+                    "rect": {
+                      "anchor": "Stretch",
+                      "anchorMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchorMax": [
+                        1.0,
+                        1.0
+                      ],
+                      "pivot": [
+                        0.5,
+                        0.5
+                      ],
+                      "sizeDelta": [
+                        0.0,
+                        0.0
+                      ],
+                      "anchoredPosition": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMin": [
+                        0.0,
+                        0.0
+                      ],
+                      "offsetMax": [
+                        0.0,
+                        0.0
+                      ]
+                    },
+                    "components": [
+                      {
+                        "type": "VerticalLayoutGroup",
+                        "fullType": "UnityEngine.UI.VerticalLayoutGroup",
+                        "properties": {
+                          "spacing": 12.0,
+                          "padding": [
+                            16,
+                            16,
+                            16,
+                            16
+                          ],
+                          "childAlignment": "UpperCenter",
+                          "childControlWidth": true,
+                          "childControlHeight": false,
+                          "childForceExpandWidth": true,
+                          "childForceExpandHeight": false
+                        }
+                      }
+                    ],
+                    "children": [
+                      {
+                        "name": "ItemImage",
+                        "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ItemImage",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            120.0,
+                            120.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -60.0,
+                            -60.0
+                          ],
+                          "offsetMax": [
+                            60.0,
+                            60.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredHeight": 120.0
+                            }
+                          },
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "Image",
+                            "fullType": "UnityEngine.UI.Image",
+                            "properties": {
+                              "color": "#96C8FFFF",
+                              "raycastTarget": false,
+                              "type": "Simple"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "ItemName",
+                        "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ItemName",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            100.0,
+                            100.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -50.0,
+                            -50.0
+                          ],
+                          "offsetMax": [
+                            50.0,
+                            50.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredHeight": 30.0
+                            }
+                          },
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "Item Name",
+                              "fontSize": 16.0,
+                              "color": "#282828FF",
+                              "alignment": "Center",
+                              "fontStyle": "Bold",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "ItemDescription",
+                        "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ItemDescription",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            100.0,
+                            100.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -50.0,
+                            -50.0
+                          ],
+                          "offsetMax": [
+                            50.0,
+                            50.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredHeight": 100.0
+                            }
+                          },
+                          {
+                            "type": "CanvasRenderer",
+                            "fullType": "UnityEngine.CanvasRenderer",
+                            "properties": {}
+                          },
+                          {
+                            "type": "TextMeshProUGUI",
+                            "fullType": "TMPro.TextMeshProUGUI",
+                            "properties": {
+                              "text": "Item description...",
+                              "fontSize": 12.0,
+                              "color": "#646464FF",
+                              "alignment": "TopLeft",
+                              "fontStyle": "Normal",
+                              "raycastTarget": false,
+                              "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                            }
+                          }
+                        ],
+                        "children": []
+                      },
+                      {
+                        "name": "ActionButtons",
+                        "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ActionButtons",
+                        "active": true,
+                        "rect": {
+                          "anchor": "Center",
+                          "anchorMin": [
+                            0.5,
+                            0.5
+                          ],
+                          "anchorMax": [
+                            0.5,
+                            0.5
+                          ],
+                          "pivot": [
+                            0.5,
+                            0.5
+                          ],
+                          "sizeDelta": [
+                            100.0,
+                            100.0
+                          ],
+                          "anchoredPosition": [
+                            0.0,
+                            0.0
+                          ],
+                          "offsetMin": [
+                            -50.0,
+                            -50.0
+                          ],
+                          "offsetMax": [
+                            50.0,
+                            50.0
+                          ]
+                        },
+                        "components": [
+                          {
+                            "type": "LayoutElement",
+                            "fullType": "UnityEngine.UI.LayoutElement",
+                            "properties": {
+                              "preferredHeight": 80.0
+                            }
+                          },
+                          {
+                            "type": "VerticalLayoutGroup",
+                            "fullType": "UnityEngine.UI.VerticalLayoutGroup",
+                            "properties": {
+                              "spacing": 8.0,
+                              "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                              ],
+                              "childAlignment": "UpperLeft",
+                              "childControlWidth": true,
+                              "childControlHeight": false,
+                              "childForceExpandWidth": true,
+                              "childForceExpandHeight": false
+                            }
+                          }
+                        ],
+                        "children": [
+                          {
+                            "name": "UseButton",
+                            "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ActionButtons/UseButton",
+                            "active": true,
+                            "rect": {
+                              "anchor": "Center",
+                              "anchorMin": [
+                                0.5,
+                                0.5
+                              ],
+                              "anchorMax": [
+                                0.5,
+                                0.5
+                              ],
+                              "pivot": [
+                                0.5,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                100.0,
+                                100.0
+                              ],
+                              "anchoredPosition": [
+                                0.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                -50.0,
+                                -50.0
+                              ],
+                              "offsetMax": [
+                                50.0,
+                                50.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "LayoutElement",
+                                "fullType": "UnityEngine.UI.LayoutElement",
+                                "properties": {
+                                  "preferredHeight": 36.0
+                                }
+                              },
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "Image",
+                                "fullType": "UnityEngine.UI.Image",
+                                "properties": {
+                                  "color": "#64B464FF",
+                                  "raycastTarget": true,
+                                  "type": "Simple"
+                                }
+                              },
+                              {
+                                "type": "Button",
+                                "fullType": "UnityEngine.UI.Button",
+                                "properties": {
+                                  "interactable": true,
+                                  "transition": "ColorTint"
+                                }
+                              }
+                            ],
+                            "children": [
+                              {
+                                "name": "Text",
+                                "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ActionButtons/UseButton/Text",
+                                "active": true,
+                                "rect": {
+                                  "anchor": "Stretch",
+                                  "anchorMin": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "anchorMax": [
+                                    1.0,
+                                    1.0
+                                  ],
+                                  "pivot": [
+                                    0.5,
+                                    0.5
+                                  ],
+                                  "sizeDelta": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "anchoredPosition": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "offsetMin": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "offsetMax": [
+                                    0.0,
+                                    0.0
+                                  ]
+                                },
+                                "components": [
+                                  {
+                                    "type": "CanvasRenderer",
+                                    "fullType": "UnityEngine.CanvasRenderer",
+                                    "properties": {}
+                                  },
+                                  {
+                                    "type": "TextMeshProUGUI",
+                                    "fullType": "TMPro.TextMeshProUGUI",
+                                    "properties": {
+                                      "text": "사용",
+                                      "fontSize": 14.0,
+                                      "color": "#FFFFFFFF",
+                                      "alignment": "Center",
+                                      "fontStyle": "Bold",
+                                      "raycastTarget": false,
+                                      "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                                    }
+                                  }
+                                ],
+                                "children": []
+                              }
+                            ]
+                          },
+                          {
+                            "name": "SellButton",
+                            "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ActionButtons/SellButton",
+                            "active": true,
+                            "rect": {
+                              "anchor": "Center",
+                              "anchorMin": [
+                                0.5,
+                                0.5
+                              ],
+                              "anchorMax": [
+                                0.5,
+                                0.5
+                              ],
+                              "pivot": [
+                                0.5,
+                                0.5
+                              ],
+                              "sizeDelta": [
+                                100.0,
+                                100.0
+                              ],
+                              "anchoredPosition": [
+                                0.0,
+                                0.0
+                              ],
+                              "offsetMin": [
+                                -50.0,
+                                -50.0
+                              ],
+                              "offsetMax": [
+                                50.0,
+                                50.0
+                              ]
+                            },
+                            "components": [
+                              {
+                                "type": "LayoutElement",
+                                "fullType": "UnityEngine.UI.LayoutElement",
+                                "properties": {
+                                  "preferredHeight": 36.0
+                                }
+                              },
+                              {
+                                "type": "CanvasRenderer",
+                                "fullType": "UnityEngine.CanvasRenderer",
+                                "properties": {}
+                              },
+                              {
+                                "type": "Image",
+                                "fullType": "UnityEngine.UI.Image",
+                                "properties": {
+                                  "color": "#64B464FF",
+                                  "raycastTarget": true,
+                                  "type": "Simple"
+                                }
+                              },
+                              {
+                                "type": "Button",
+                                "fullType": "UnityEngine.UI.Button",
+                                "properties": {
+                                  "interactable": true,
+                                  "transition": "ColorTint"
+                                }
+                              }
+                            ],
+                            "children": [
+                              {
+                                "name": "Text",
+                                "path": "InventoryScreen/SafeArea/Content/ItemDetailPanel/DetailView/ActionButtons/SellButton/Text",
+                                "active": true,
+                                "rect": {
+                                  "anchor": "Stretch",
+                                  "anchorMin": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "anchorMax": [
+                                    1.0,
+                                    1.0
+                                  ],
+                                  "pivot": [
+                                    0.5,
+                                    0.5
+                                  ],
+                                  "sizeDelta": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "anchoredPosition": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "offsetMin": [
+                                    0.0,
+                                    0.0
+                                  ],
+                                  "offsetMax": [
+                                    0.0,
+                                    0.0
+                                  ]
+                                },
+                                "components": [
+                                  {
+                                    "type": "CanvasRenderer",
+                                    "fullType": "UnityEngine.CanvasRenderer",
+                                    "properties": {}
+                                  },
+                                  {
+                                    "type": "TextMeshProUGUI",
+                                    "fullType": "TMPro.TextMeshProUGUI",
+                                    "properties": {
+                                      "text": "판매",
+                                      "fontSize": 14.0,
+                                      "color": "#FFFFFFFF",
+                                      "alignment": "Center",
+                                      "fontStyle": "Bold",
+                                      "raycastTarget": false,
+                                      "font": "Assets/TextMesh Pro/Resources/Fonts & Materials/PretendardVariable SDF.asset"
+                                    }
+                                  }
+                                ],
+                                "children": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "serializedFields": [
+    {
+      "fieldName": "_tabWidget",
+      "fieldType": "InventoryTabWidget",
+      "targetPath": "SafeArea/Content/LeftSideTab",
+      "targetType": "InventoryTabWidget"
+    },
+    {
+      "fieldName": "_categoryDropdown",
+      "fieldType": "TMP_Dropdown",
+      "targetPath": "SafeArea/Content/MainArea/FilterBar/CategoryDropdown",
+      "targetType": "TMP_Dropdown"
+    },
+    {
+      "fieldName": "_sortDropdown",
+      "fieldType": "TMP_Dropdown",
+      "targetPath": "SafeArea/Content/MainArea/FilterBar/SortDropdown",
+      "targetType": "TMP_Dropdown"
+    },
+    {
+      "fieldName": "_settingsButton",
+      "fieldType": "Button",
+      "targetPath": "SafeArea/Content/MainArea/FilterBar/SettingsButton",
+      "targetType": "Button"
+    },
+    {
+      "fieldName": "_itemGridContainer",
+      "fieldType": "Transform",
+      "targetPath": "SafeArea/Content/MainArea/ItemGridArea/Viewport/Content",
+      "targetType": "RectTransform"
+    },
+    {
+      "fieldName": "_itemScrollRect",
+      "fieldType": "ScrollRect",
+      "targetPath": "SafeArea/Content/MainArea/ItemGridArea",
+      "targetType": "ScrollRect"
+    },
+    {
+      "fieldName": "_itemDetailWidget",
+      "fieldType": "ItemDetailWidget",
+      "targetPath": "SafeArea/Content/ItemDetailPanel",
+      "targetType": "ItemDetailWidget"
+    },
+    {
+      "fieldName": "_emptyStateObject",
+      "fieldType": "GameObject",
+      "targetPath": "SafeArea/Content/MainArea/EmptyState",
+      "targetType": "GameObject"
+    },
+    {
+      "fieldName": "_emptyStateText",
+      "fieldType": "TMP_Text",
+      "targetPath": "SafeArea/Content/MainArea/EmptyState/Text",
+      "targetType": "TextMeshProUGUI"
+    },
+    {
+      "fieldName": "_backButton",
+      "fieldType": "Button",
+      "targetPath": "SafeArea/Header/BackButton",
+      "targetType": "Button"
+    },
+    {
+      "fieldName": "_homeButton",
+      "fieldType": "Button",
+      "targetPath": "SafeArea/Header/HomeButton",
+      "targetType": "Button"
+    }
+  ],
+  "theme": {
+    "colors": {
+      "Color_D2C16167": "#C8E6C8FF",
+      "Color_D288282E": "#DCF0DCFF",
+      "Light_D1A00000": "#FFFFFFFF",
+      "Light_D2AF0F09": "#F0F0F0FF",
+      "Color_D6EA0A0D": "#282828FF",
+      "Light_D2BF5F53": "#F5F5F5FF",
+      "Color_D599D9DF": "#646464FF",
+      "Green_D268282F": "#64B464FF",
+      "Transparent_00000000": "#00000000",
+      "Color_D44A0A0D": "#505050FF",
+      "Color_D349696E": "#969696FF",
+      "Blue_D215B5B3": "#96C8FFFF"
+    },
+    "constants": {
+      "FontSize_18": 18.0,
+      "FontSize_24": 24.0,
+      "FontSize_12": 12.0,
+      "Spacing_8": 8.0,
+      "FontSize_14": 14.0,
+      "FontSize_16": 16.0,
+      "Spacing_12": 12.0
+    },
+    "fonts": {}
+  }
+}
