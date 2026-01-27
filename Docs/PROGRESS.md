@@ -212,6 +212,32 @@ Editor/Wizard/
 | `PrefabSync/PrefabStructureAnalyzer.cs` | Prefab → JSON 변환 | ✅ |
 | `PrefabSync/PrefabBuilderGenerator.cs` | JSON → C# Builder 생성 | ✅ |
 | `PrefabSync/PrefabSyncWindow.cs` | 통합 에디터 윈도우 | ✅ |
+| `PrefabSync/ManualBuilderExecutor.cs` | 수동 빌더 실행 및 파이프라인 | ✅ |
+
+#### 기능 목록
+
+| # | 기능 | 입력 | 출력 |
+|---|------|------|------|
+| 1 | Prefab → JSON Spec | 프리팹 | JSON |
+| 2 | JSON Spec → Generated Code | JSON | .Generated.cs |
+| 3 | **Build from Manual** | 수동 Builder | Prefab → JSON |
+| 4 | Full Sync (1+2) | 프리팹 | JSON + Generated |
+| 5 | **Full Pipeline (3+1+2)** | 수동 Builder | Prefab + JSON + Generated |
+
+#### PrefabGenerator 동작 순서 (2026-01-27)
+
+```
+1. Generated 빌더 검색 ({TypeName}PrefabBuilder_Generated)
+   ↓ 있으면 사용
+2. Manual 빌더 검색 ({TypeName}PrefabBuilder)
+   ↓ 있으면 사용
+3. 템플릿 팩토리 사용 (ScreenTemplateFactory / PopupTemplateFactory)
+   + 경고 로그 출력
+```
+
+- Generated 클래스 이름: `{Name}PrefabBuilder_Generated`
+- Manual 클래스 이름: `{Name}PrefabBuilder`
+- 빈 Manual 빌더 8개 삭제됨 (Generated로 대체)
 
 #### 해결된 이슈
 
@@ -245,20 +271,20 @@ Editor/Wizard/
 
 ---
 
-## ✅ 완료: SCREEN-PREFAB
+## 🔨 진행 중: SCREEN-PREFAB
 
-> **기간**: 2026-01-26 ~ 2026-01-27
+> **기간**: 2026-01-26 ~
 > **목표**: Reference 이미지 기반 Screen 프리팹 상세 구현
 
 ### 개요
 
 ```
-[Reference Image] → [스펙 문서] → [PrefabBuilder] → [Prefab]
-                         ↓
-                    PrefabSync 적용
+[Reference Image] → [스펙 문서] → [ManualBuilder] → [Prefab]
+                         ↓                ↓
+                    UI 레이아웃      PrefabSync 적용
 ```
 
-### Phase 1: 계획 수립 및 문서화
+### ✅ Phase 1: 계획 수립 및 문서화 (완료)
 
 | 작업 | 상태 |
 |------|------|
@@ -268,38 +294,70 @@ Editor/Wizard/
 
 **계획 문서**: [SCREEN_PREFAB_PLAN.md](Design/SCREEN_PREFAB_PLAN.md)
 
-### Phase 2: Screen별 PrefabBuilder 구현
+### ✅ Phase 2: UI 레이아웃 스펙 문서화 (완료)
 
-| Reference | Screen | 스펙 문서 | 상태 |
-|-----------|--------|-----------|------|
-| Lobby.jpg | LobbyScreen | Lobby.md | ✅ 완료 |
-| CharacterList.jpg | CharacterListScreen | Character.md | ✅ 완료 |
-| CharacterDetail.jpg | CharacterDetailScreen | Character.md | ✅ 완료 |
-| Shop.jpg | ShopScreen | Shop.md | ✅ 완료 |
-| Gacha.jpg | GachaScreen | Gacha.md | ✅ 완료 |
-| LiveEvent.jpg | LiveEventScreen | LiveEvent.md | ✅ 완료 |
-| StageSelectScreen.jpg | StageSelectScreen | Stage.md | ✅ 완료 |
-| PartySelect.jpg | PartySelectScreen | Stage.md | ✅ 완료 |
-| StageDashbaord.jpg | InGameContentDashboard | Stage.md | ✅ 완료 |
-| Inventory.jpg | InventoryScreen | Inventory.md | ✅ 완료 (신규) |
+| Reference | Screen | 스펙 문서 | 문서화 |
+|-----------|--------|-----------|--------|
+| Lobby.jpg | LobbyScreen | Lobby.md | ✅ |
+| CharacterList.jpg | CharacterListScreen | Character.md | ✅ |
+| CharacterDetail.jpg | CharacterDetailScreen | Character.md | ✅ |
+| Shop.jpg | ShopScreen | Shop.md | ✅ |
+| Gacha.jpg | GachaScreen | Gacha.md | ✅ |
+| LiveEvent.jpg | LiveEventScreen | LiveEvent.md | ✅ |
+| StageSelectScreen.jpg | StageSelectScreen | Stage.md | ✅ |
+| PartySelect.jpg | PartySelectScreen | Stage.md | ✅ |
+| StageDashbaord.jpg | InGameContentDashboard | Stage.md | ✅ |
+| Inventory.jpg | InventoryScreen | Inventory.md | ✅ |
 
-### Phase 3: PrefabSync 적용 (선택)
+### ✅ Phase 3: ManualBuilder 구현 (완료)
+
+> **작업 지시서**: [Docs/Design/Tasks/MANUAL_BUILDER_OVERVIEW.md](Design/Tasks/MANUAL_BUILDER_OVERVIEW.md)
+
+#### 이미 구현된 ManualBuilder
+
+| Screen | Builder 파일 | 상태 |
+|--------|-------------|------|
+| TitleScreen | TitleScreenPrefabBuilder.cs | ✅ |
+| InGameContentDashboard | InGameContentDashboardPrefabBuilder.cs | ✅ |
+| LobbyScreen | LobbyScreenPrefabBuilder.Generated.cs | ✅ Generated |
+
+#### 구현 대상 (8개)
+
+| # | Screen | 작업 지시서 | 난이도 | 상태 |
+|---|--------|-------------|--------|------|
+| 1 | CharacterListScreen | [TASK_01](Design/Tasks/TASK_01_CharacterListScreen.md) | 중 | ✅ |
+| 2 | CharacterDetailScreen | [TASK_02](Design/Tasks/TASK_02_CharacterDetailScreen.md) | 상 | ✅ |
+| 3 | ShopScreen | [TASK_03](Design/Tasks/TASK_03_ShopScreen.md) | 중 | ✅ |
+| 4 | GachaScreen | [TASK_04](Design/Tasks/TASK_04_GachaScreen.md) | 중 | ✅ |
+| 5 | LiveEventScreen | [TASK_05](Design/Tasks/TASK_05_LiveEventScreen.md) | 중 | ✅ |
+| 6 | StageSelectScreen | [TASK_06](Design/Tasks/TASK_06_StageSelectScreen.md) | 상 | ✅ |
+| 7 | PartySelectScreen | [TASK_07](Design/Tasks/TASK_07_PartySelectScreen.md) | 상 | ✅ |
+| 8 | InventoryScreen | [TASK_08](Design/Tasks/TASK_08_InventoryScreen.md) | 중 | ✅ |
+
+#### 실행 방법
+
+```bash
+# 단일 작업
+claude "Docs/Design/Tasks/TASK_01_CharacterListScreen.md 작업 진행해줘"
+
+# 병렬 작업 (3개 터미널)
+claude "Docs/Design/Tasks/TASK_01_CharacterListScreen.md 작업 진행해줘"  # Terminal 1
+claude "Docs/Design/Tasks/TASK_03_ShopScreen.md 작업 진행해줘"          # Terminal 2
+claude "Docs/Design/Tasks/TASK_06_StageSelectScreen.md 작업 진행해줘"   # Terminal 3
+```
+
+### Phase 4: PrefabSync 적용 (대기)
 
 | 작업 | 상태 |
 |------|------|
-| 각 Screen JSON Spec 생성 | ⬜ (필요시) |
-| Generated Builder 검증 | ⬜ (필요시) |
-
-### 작업 순서 (우선순위)
-
-1. **HIGH**: CharacterList → CharacterDetail → Shop → Gacha
-2. **MEDIUM**: LiveEvent → StageSelect → PartySelect
-3. **LOW**: InGameContentDashboard → Inventory (신규 생성)
+| 각 Screen JSON Spec 생성 | ⬜ |
+| Generated Builder 검증 | ⬜ |
 
 ### 참조 문서
 
 | 문서 | 용도 |
 |------|------|
+| [MANUAL_BUILDER_OVERVIEW.md](Design/Tasks/MANUAL_BUILDER_OVERVIEW.md) | **ManualBuilder 작업 개요** |
 | [UI_DOCUMENTATION_GUIDE.md](Design/UI_DOCUMENTATION_GUIDE.md) | 문서화 가이드 |
 | [UI_DOCUMENTATION_TASKS.md](Design/UI_DOCUMENTATION_TASKS.md) | 작업 정의서 |
 | Specs/{Assembly}.md | 각 Screen UI 레이아웃 스펙 |
