@@ -1254,6 +1254,9 @@ namespace Sc.Editor.Wizard.PrefabSync
             if (File.Exists(outputPath))
             {
                 File.Delete(outputPath);
+                var metaPath = outputPath + ".meta";
+                if (File.Exists(metaPath))
+                    File.Delete(metaPath);
             }
 
             File.WriteAllText(outputPath, code);

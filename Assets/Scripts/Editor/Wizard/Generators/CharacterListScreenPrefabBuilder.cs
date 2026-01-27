@@ -571,6 +571,7 @@ namespace Sc.Editor.Wizard.Generators
         {
             var card = CreateChild(parent, "CharacterCardTemplate");
             var cardRect = card.GetComponent<RectTransform>();
+            if (cardRect == null) cardRect = card.AddComponent<RectTransform>();
             cardRect.sizeDelta = new Vector2(CARD_WIDTH, CARD_HEIGHT);
 
             // Add CharacterCard component
@@ -586,6 +587,7 @@ namespace Sc.Editor.Wizard.Generators
             // CharacterThumbnail
             var thumbnail = CreateChild(card, "CharacterThumbnail");
             var thumbRect = thumbnail.GetComponent<RectTransform>();
+            if (thumbRect == null) thumbRect = thumbnail.AddComponent<RectTransform>();
             thumbRect.anchorMin = new Vector2(0, 0.25f);
             thumbRect.anchorMax = new Vector2(1, 1);
             thumbRect.offsetMin = new Vector2(5, 0);
@@ -598,6 +600,7 @@ namespace Sc.Editor.Wizard.Generators
             // ElementIcon (top-left)
             var elementIcon = CreateChild(card, "ElementIcon");
             var elemRect = elementIcon.GetComponent<RectTransform>();
+            if (elemRect == null) elemRect = elementIcon.AddComponent<RectTransform>();
             elemRect.anchorMin = new Vector2(0, 1);
             elemRect.anchorMax = new Vector2(0, 1);
             elemRect.pivot = new Vector2(0, 1);
@@ -611,6 +614,7 @@ namespace Sc.Editor.Wizard.Generators
             // RoleIcon (top-right)
             var roleIcon = CreateChild(card, "RoleIcon");
             var roleRect = roleIcon.GetComponent<RectTransform>();
+            if (roleRect == null) roleRect = roleIcon.AddComponent<RectTransform>();
             roleRect.anchorMin = new Vector2(1, 1);
             roleRect.anchorMax = new Vector2(1, 1);
             roleRect.pivot = new Vector2(1, 1);
@@ -624,6 +628,7 @@ namespace Sc.Editor.Wizard.Generators
             // StarRating (bottom area)
             var starRating = CreateChild(card, "StarRating");
             var starRect = starRating.GetComponent<RectTransform>();
+            if (starRect == null) starRect = starRating.AddComponent<RectTransform>();
             starRect.anchorMin = new Vector2(0.5f, 0);
             starRect.anchorMax = new Vector2(0.5f, 0);
             starRect.pivot = new Vector2(0.5f, 0);
@@ -655,6 +660,7 @@ namespace Sc.Editor.Wizard.Generators
             // NameText (bottom)
             var nameText = CreateChild(card, "NameText");
             var nameRect = nameText.GetComponent<RectTransform>();
+            if (nameRect == null) nameRect = nameText.AddComponent<RectTransform>();
             nameRect.anchorMin = new Vector2(0, 0);
             nameRect.anchorMax = new Vector2(1, 0);
             nameRect.pivot = new Vector2(0.5f, 0);
