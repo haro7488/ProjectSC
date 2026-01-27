@@ -67,7 +67,9 @@
       "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\haro7\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log'' -Tail 100 | Select-String -Pattern ''error CS'' | Select-Object -Last 10\")",
       "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\haro7\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log'' -Tail 150 | Select-String -Pattern ''error CS'' | Select-Object -Last 15\")",
       "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\haro7\\\\AppData\\\\Local\\\\Unity\\\\Editor\\\\Editor.log'' -Tail 200 | Select-String -Pattern ''error CS|Compilation failed'' | Select-Object -Last 20\")",
-      "mcp__plugin_serena_serena__insert_before_symbol"
+      "mcp__plugin_serena_serena__insert_before_symbol",
+      "Bash(dir:*)",
+      "Bash(del \"C:\\\\Users\\\\haro7\\\\Projects\\\\Unity\\\\ProjectSC\\\\Assets\\\\Scripts\\\\Common\\\\Utility\\\\ElementType.cs\")"
     ]
   },
   "hooks": {
