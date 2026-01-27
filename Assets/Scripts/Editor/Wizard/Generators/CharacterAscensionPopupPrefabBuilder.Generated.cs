@@ -9,11 +9,11 @@ using Sc.Contents.Character;
 namespace Sc.Editor.Wizard.Generators
 {
     /// <summary>
-    /// CharacterAscensionPopup 프리팹 빌더 (자동 생성됨).
+    /// CharacterAscensionPopup ?�리??빌더 (?�동 ?�성??.
     /// Generated from: Assets/Prefabs/UI/Popups/CharacterAscensionPopup.prefab
     /// Generated at: 2026-01-26 21:34:17
     /// </summary>
-    public static class CharacterAscensionPopupPrefabBuilder
+    public static class CharacterAscensionPopupPrefabBuilder_Generated
     {
         #region Theme Colors
 
@@ -57,7 +57,7 @@ namespace Sc.Editor.Wizard.Generators
         #endregion
 
         /// <summary>
-        /// CharacterAscensionPopup 프리팹용 GameObject 생성.
+        /// CharacterAscensionPopup ?�리?�용 GameObject ?�성.
         /// </summary>
         public static GameObject Build()
         {

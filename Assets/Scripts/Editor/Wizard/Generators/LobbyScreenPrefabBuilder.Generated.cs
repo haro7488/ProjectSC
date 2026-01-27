@@ -10,11 +10,11 @@ using Sc.Contents.Lobby.Widgets;
 namespace Sc.Editor.Wizard.Generators
 {
     /// <summary>
-    /// LobbyScreen 프리팹 빌더 (자동 생성됨).
+    /// LobbyScreen ?�리??빌더 (?�동 ?�성??.
     /// Generated from: Assets/Prefabs/UI/Screens/LobbyScreen.prefab
     /// Generated at: 2026-01-26 23:09:59
     /// </summary>
-    public static class LobbyScreenPrefabBuilder
+    public static class LobbyScreenPrefabBuilder_Generated
     {
         #region Theme Colors
 
@@ -95,7 +95,7 @@ namespace Sc.Editor.Wizard.Generators
         #endregion
 
         /// <summary>
-        /// LobbyScreen 프리팹용 GameObject 생성.
+        /// LobbyScreen ?�리?�용 GameObject ?�성.
         /// </summary>
         public static GameObject Build()
         {
@@ -473,7 +473,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "레벨패스";
+            tmp.text = "?�벨?�스";
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -617,7 +617,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "사록패스";
+            tmp.text = "?�록?�스";
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -761,7 +761,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "트라이얼패스";
+            tmp.text = "?�라?�얼?�스";
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -905,7 +905,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "스텝업패키지";
+            tmp.text = "?�텝?�패?��?";
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -1081,7 +1081,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "최후의 방어선!";
+            tmp.text = "최후??방어??";
             tmp.fontSize = 14f;
             tmp.color = TextPrimary;
             tmp.alignment = TextAlignmentOptions.TopLeft;
@@ -1219,7 +1219,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "이벤트";
+            tmp.text = "?�벤??;
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -1363,7 +1363,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "평일농장";
+            tmp.text = "?�일?�장";
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -1651,7 +1651,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "퀘스트";
+            tmp.text = "?�스??;
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -1795,7 +1795,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "강해지기";
+            tmp.text = "강해지�?;
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -1939,7 +1939,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "월간달";
+            tmp.text = "?�간??;
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -2083,7 +2083,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "복귀환영";
+            tmp.text = "복�??�영";
             tmp.fontSize = 10f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -2415,7 +2415,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "내가 놀고 싶을 때 놀러 오고...";
+            tmp.text = "?��? ?��??�을 ???�???�고...";
             tmp.fontSize = 14f;
             tmp.color = TextPrimary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -2872,7 +2872,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "상점";
+            tmp.text = "?�점";
             tmp.fontSize = 12f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -3044,7 +3044,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "사도";
+            tmp.text = "?�도";
             tmp.fontSize = 12f;
             tmp.color = TextSecondary;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -3217,7 +3217,7 @@ namespace Sc.Editor.Wizard.Generators
 
 
             var tmp = go.AddComponent<TextMeshProUGUI>();
-            tmp.text = "11-1 바로 가자!";
+            tmp.text = "11-1 바로 가??";
             tmp.fontSize = 14f;
             tmp.color = BgDeep;
             tmp.alignment = TextAlignmentOptions.Center;

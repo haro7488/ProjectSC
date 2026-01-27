@@ -117,17 +117,22 @@ namespace Sc.Editor.Wizard.Generators
             // 실제 프로덕션에서는 디자인 리소스 적용
 
             // 칠판 (좌측 상단)
-            CreateDecoration(parent, "Blackboard", new Vector2(-400, 150), new Vector2(120, 80), new Color32(40, 50, 40, 200));
+            CreateDecoration(parent, "Blackboard", new Vector2(-400, 150), new Vector2(120, 80),
+                new Color32(40, 50, 40, 200));
 
             // 트로피 선반 (중앙 상단)
-            CreateDecoration(parent, "TrophyShelf", new Vector2(0, 180), new Vector2(200, 60), new Color32(100, 80, 60, 200));
+            CreateDecoration(parent, "TrophyShelf", new Vector2(0, 180), new Vector2(200, 60),
+                new Color32(100, 80, 60, 200));
 
             // 액자들 (우측)
-            CreateDecoration(parent, "Frame1", new Vector2(350, 120), new Vector2(60, 80), new Color32(80, 60, 40, 200));
-            CreateDecoration(parent, "Frame2", new Vector2(420, 100), new Vector2(50, 70), new Color32(90, 70, 50, 200));
+            CreateDecoration(parent, "Frame1", new Vector2(350, 120), new Vector2(60, 80),
+                new Color32(80, 60, 40, 200));
+            CreateDecoration(parent, "Frame2", new Vector2(420, 100), new Vector2(50, 70),
+                new Color32(90, 70, 50, 200));
         }
 
-        private static void CreateDecoration(GameObject parent, string name, Vector2 position, Vector2 size, Color color)
+        private static void CreateDecoration(GameObject parent, string name, Vector2 position, Vector2 size,
+            Color color)
         {
             var go = CreateChild(parent, name);
             var rect = go.GetComponent<RectTransform>();
@@ -301,12 +306,12 @@ namespace Sc.Editor.Wizard.Generators
             rect.offsetMax = new Vector2(0, -20);
 
             // Short Term Class Button (단기 속성반)
-            var shortTermBtn = CreateContentButton(leftSide, "ShortTermClassButton", "단기 속성반", 
+            var shortTermBtn = CreateContentButton(leftSide, "ShortTermClassButton", "단기 속성반",
                 new Vector2(0.5f, 0.7f), CONTENT_BUTTON_SIZE);
             CreateSubLabel(shortTermBtn, "SeasonInfoText", "02/19/11:00 시즌 시작");
 
             // Dimension Clash Button (차원 대충돌)
-            var dimensionBtn = CreateContentButton(leftSide, "DimensionClashButton", "차원 대충돌", 
+            var dimensionBtn = CreateContentButton(leftSide, "DimensionClashButton", "차원 대충돌",
                 new Vector2(0.5f, 0.25f), CONTENT_BUTTON_SIZE);
             CreateSubLabel(dimensionBtn, "DungeonInfoText", "딜: 리버리");
         }
@@ -321,13 +326,13 @@ namespace Sc.Editor.Wizard.Generators
             rect.offsetMax = new Vector2(0, -20);
 
             // Nuruling Busters Button (누루링 버스터즈)
-            CreateContentButton(center, "NurulingBustersButton", "누루링 버스터즈", 
+            CreateContentButton(center, "NurulingBustersButton", "누루링 버스터즈",
                 new Vector2(0.5f, 0.8f), CONTENT_BUTTON_SIZE);
 
             // PVP Button
-            var pvpBtn = CreateContentButton(center, "PVPButton", "PVP", 
+            var pvpBtn = CreateContentButton(center, "PVPButton", "PVP",
                 new Vector2(0.3f, 0.5f), SMALL_BUTTON_SIZE);
-            
+
             // Add trophy icon placeholder
             var trophyIcon = CreateChild(pvpBtn, "TrophyIcon");
             var trophyRect = trophyIcon.GetComponent<RectTransform>();
@@ -367,13 +372,15 @@ namespace Sc.Editor.Wizard.Generators
             layout.childForceExpandHeight = false;
 
             // Progress Label
-            CreateLabel(panel, "MainStoryProgressText", "제 1 엘리베이터 B7 도전중", 12, TextSecondary, TextAlignmentOptions.Center);
+            CreateLabel(panel, "MainStoryProgressText", "제 1 엘리베이터 B7 도전중", 12, TextSecondary,
+                TextAlignmentOptions.Center);
 
             // Stage Name
             CreateLabel(panel, "MainStoryStageNameText", "세계수 급착기지", 18, TextPrimary, TextAlignmentOptions.Center);
 
             // Time Remaining
-            CreateLabel(panel, "MainStoryTimeRemainingText", "06일 17시간 07분", 12, AccentYellow, TextAlignmentOptions.Center);
+            CreateLabel(panel, "MainStoryTimeRemainingText", "06일 17시간 07분", 12, AccentYellow,
+                TextAlignmentOptions.Center);
 
             // Enter Button (MainStory button reference)
             var enterBtn = CreateChild(panel, "MainStoryButton");
@@ -409,19 +416,20 @@ namespace Sc.Editor.Wizard.Generators
             rect.offsetMax = new Vector2(-20, -20);
 
             // Dungeon Button (던전)
-            CreateContentButton(rightSide, "DungeonButton", "던전", 
+            CreateContentButton(rightSide, "DungeonButton", "던전",
                 new Vector2(0.5f, 0.75f), CONTENT_BUTTON_SIZE);
 
             // Invasion Button (침략)
-            CreateContentButton(rightSide, "InvasionButton", "침략", 
+            CreateContentButton(rightSide, "InvasionButton", "침략",
                 new Vector2(0.5f, 0.45f), CONTENT_BUTTON_SIZE);
 
             // Deck Formation Button (덱 편성)
-            CreateContentButton(rightSide, "DeckFormationButton", "덱 편성", 
+            CreateContentButton(rightSide, "DeckFormationButton", "덱 편성",
                 new Vector2(0.5f, 0.15f), SMALL_BUTTON_SIZE);
         }
 
-        private static GameObject CreateContentButton(GameObject parent, string name, string label, Vector2 anchorPos, float size)
+        private static GameObject CreateContentButton(GameObject parent, string name, string label, Vector2 anchorPos,
+            float size)
         {
             var go = CreateChild(parent, name);
             var rect = go.GetComponent<RectTransform>();
@@ -594,7 +602,8 @@ namespace Sc.Editor.Wizard.Generators
             CreateActionButton(widget, "DeckFormationButton", "DeckFormationText", "덱 편성", 80, 40);
         }
 
-        private static GameObject CreateActionButton(GameObject parent, string name, string textName, string text, float width, float height)
+        private static GameObject CreateActionButton(GameObject parent, string name, string textName, string text,
+            float width, float height)
         {
             var btn = CreateChild(parent, name);
             var layoutElem = btn.AddComponent<LayoutElement>();
@@ -661,7 +670,8 @@ namespace Sc.Editor.Wizard.Generators
             rect.anchoredPosition = Vector2.zero;
         }
 
-        private static GameObject CreateButton(GameObject parent, string name, string text, float width, float height, Color bgColor)
+        private static GameObject CreateButton(GameObject parent, string name, string text, float width, float height,
+            Color bgColor)
         {
             var go = CreateChild(parent, name);
 
@@ -687,7 +697,8 @@ namespace Sc.Editor.Wizard.Generators
             return go;
         }
 
-        private static GameObject CreateLabel(GameObject parent, string name, string text, int fontSize, Color color, TextAlignmentOptions alignment)
+        private static GameObject CreateLabel(GameObject parent, string name, string text, int fontSize, Color color,
+            TextAlignmentOptions alignment)
         {
             var go = CreateChild(parent, name);
 
@@ -720,23 +731,33 @@ namespace Sc.Editor.Wizard.Generators
             ConnectField(so, "_quickActionWidget", root, "SafeArea/Content/WidgetsArea/QuickActionWidget");
 
             // Left Side
-            ConnectField(so, "_shortTermClassButton", root, "SafeArea/Content/ContentButtons/LeftSide/ShortTermClassButton");
-            ConnectField(so, "_shortTermClassSeasonText", root, "SafeArea/Content/ContentButtons/LeftSide/ShortTermClassButton/SeasonInfoText");
-            ConnectField(so, "_dimensionClashButton", root, "SafeArea/Content/ContentButtons/LeftSide/DimensionClashButton");
-            ConnectField(so, "_dimensionClashDungeonText", root, "SafeArea/Content/ContentButtons/LeftSide/DimensionClashButton/DungeonInfoText");
+            ConnectField(so, "_shortTermClassButton", root,
+                "SafeArea/Content/ContentButtons/LeftSide/ShortTermClassButton");
+            ConnectField(so, "_shortTermClassSeasonText", root,
+                "SafeArea/Content/ContentButtons/LeftSide/ShortTermClassButton/SeasonInfoText");
+            ConnectField(so, "_dimensionClashButton", root,
+                "SafeArea/Content/ContentButtons/LeftSide/DimensionClashButton");
+            ConnectField(so, "_dimensionClashDungeonText", root,
+                "SafeArea/Content/ContentButtons/LeftSide/DimensionClashButton/DungeonInfoText");
 
             // Center Area
-            ConnectField(so, "_nurulingBustersButton", root, "SafeArea/Content/ContentButtons/CenterArea/NurulingBustersButton");
+            ConnectField(so, "_nurulingBustersButton", root,
+                "SafeArea/Content/ContentButtons/CenterArea/NurulingBustersButton");
             ConnectField(so, "_pvpButton", root, "SafeArea/Content/ContentButtons/CenterArea/PVPButton");
-            ConnectField(so, "_mainStoryButton", root, "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryButton");
-            ConnectField(so, "_mainStoryProgressText", root, "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryProgressText");
-            ConnectField(so, "_mainStoryStageNameText", root, "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryStageNameText");
-            ConnectField(so, "_mainStoryTimeRemainingText", root, "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryTimeRemainingText");
+            ConnectField(so, "_mainStoryButton", root,
+                "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryButton");
+            ConnectField(so, "_mainStoryProgressText", root,
+                "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryProgressText");
+            ConnectField(so, "_mainStoryStageNameText", root,
+                "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryStageNameText");
+            ConnectField(so, "_mainStoryTimeRemainingText", root,
+                "SafeArea/Content/ContentButtons/CenterArea/MainStoryProgressPanel/MainStoryTimeRemainingText");
 
             // Right Side
             ConnectField(so, "_dungeonButton", root, "SafeArea/Content/ContentButtons/RightSide/DungeonButton");
             ConnectField(so, "_invasionButton", root, "SafeArea/Content/ContentButtons/RightSide/InvasionButton");
-            ConnectField(so, "_deckFormationButton", root, "SafeArea/Content/ContentButtons/RightSide/DeckFormationButton");
+            ConnectField(so, "_deckFormationButton", root,
+                "SafeArea/Content/ContentButtons/RightSide/DeckFormationButton");
 
             // Right Top Area
             ConnectField(so, "_stageProgressText", root, "SafeArea/RightTopArea/StageProgressText");

@@ -4,7 +4,7 @@
     "prefabPath": "Assets/Prefabs/UI/Screens/InGameContentDashboard.prefab",
     "componentType": "",
     "componentNamespace": "",
-    "generatedAt": "2026-01-27T00:56:06",
+    "generatedAt": "2026-01-27T01:14:45",
     "builderPath": "Assets/Scripts/Editor/Wizard/Generators/InGameContentDashboardPrefabBuilder.cs"
   },
   "hierarchy": {
