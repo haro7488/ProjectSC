@@ -148,7 +148,7 @@ namespace Sc.Contents.Event.Widgets
 
         private void UpdateSelectionUI()
         {
-            // TODO: 선택된 배너 하이라이트 표시
+            // TODO[P2]: 선택된 배너 하이라이트 표시
             foreach (var banner in _spawnedBanners)
             {
                 // banner.SetSelected(banner.EventInfo == _selectedEvent);

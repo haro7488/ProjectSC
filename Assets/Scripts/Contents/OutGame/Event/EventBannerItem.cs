@@ -12,8 +12,9 @@ namespace Sc.Contents.Event
     /// </summary>
     public class EventBannerItem : Widget
     {
-        [Header("UI References")]
-        [SerializeField] private Image _bannerImage;
+        [Header("UI References")] [SerializeField]
+        private Image _bannerImage;
+
         [SerializeField] private TMP_Text _nameText;
         [SerializeField] private TMP_Text _remainingDaysText;
         [SerializeField] private GameObject _newBadge;
@@ -51,7 +52,7 @@ namespace Sc.Contents.Event
             // 이름
             if (_nameText != null)
             {
-                // TODO: StringData에서 실제 이름 가져오기
+                // TODO[P1]: StringData에서 실제 이름 가져오기
                 _nameText.text = _eventInfo.NameKey ?? _eventInfo.EventId;
             }
 
@@ -91,7 +92,7 @@ namespace Sc.Contents.Event
                 _gracePeriodText.text = "이벤트 종료";
             }
 
-            // TODO: 배너 이미지 로드 (Addressables)
+            // TODO[P2]: 배너 이미지 로드 (Addressables)
             // LoadBannerImage(_eventInfo.BannerImage);
         }
 

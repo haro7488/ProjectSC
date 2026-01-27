@@ -195,7 +195,7 @@ namespace Sc.Contents.Stage
             if (IsCategoryLocked(category))
             {
                 Debug.Log($"[StageDashboard] Category locked: {category.Id}");
-                // TODO: 잠금 안내 팝업 표시
+                // TODO[P2]: 잠금 안내 팝업 표시
                 return;
             }
 

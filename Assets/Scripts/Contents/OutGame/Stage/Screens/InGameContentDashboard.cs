@@ -34,16 +34,14 @@ namespace Sc.Contents.Stage
 
         #region Widgets
 
-        [Header("Widgets")]
-        [SerializeField] private ContentProgressWidget _progressWidget;
+        [Header("Widgets")] [SerializeField] private ContentProgressWidget _progressWidget;
         [SerializeField] private QuickActionWidget _quickActionWidget;
 
         #endregion
 
         #region Content Buttons - Left Side
 
-        [Header("Left Side")]
-        [SerializeField] private Button _shortTermClassButton;
+        [Header("Left Side")] [SerializeField] private Button _shortTermClassButton;
         [SerializeField] private TMP_Text _shortTermClassSeasonText;
         [SerializeField] private Button _dimensionClashButton;
         [SerializeField] private TMP_Text _dimensionClashDungeonText;
@@ -52,8 +50,9 @@ namespace Sc.Contents.Stage
 
         #region Content Buttons - Center Area
 
-        [Header("Center Area")]
-        [SerializeField] private Button _nurulingBustersButton;
+        [Header("Center Area")] [SerializeField]
+        private Button _nurulingBustersButton;
+
         [SerializeField] private Button _pvpButton;
         [SerializeField] private Button _mainStoryButton;
         [SerializeField] private TMP_Text _mainStoryProgressText;
@@ -64,8 +63,9 @@ namespace Sc.Contents.Stage
 
         #region Content Buttons - Right Side
 
-        [Header("Right Side")]
-        [SerializeField] private Button _dungeonButton;
+        [Header("Right Side")] [SerializeField]
+        private Button _dungeonButton;
+
         [SerializeField] private Button _invasionButton;
         [SerializeField] private Button _deckFormationButton;
 
@@ -73,16 +73,17 @@ namespace Sc.Contents.Stage
 
         #region Right Top Area
 
-        [Header("Right Top Area")]
-        [SerializeField] private TMP_Text _stageProgressText;
+        [Header("Right Top Area")] [SerializeField]
+        private TMP_Text _stageProgressText;
+
         [SerializeField] private Button _stageProgressNavigateButton;
 
         #endregion
 
         #region Navigation
 
-        [Header("Navigation")]
-        [SerializeField] private Button _backButton;
+        [Header("Navigation")] [SerializeField]
+        private Button _backButton;
 
         #endregion
 
@@ -138,13 +139,16 @@ namespace Sc.Contents.Stage
 
             // Left Side
             if (_shortTermClassButton != null)
-                _shortTermClassButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.ShortTermClass));
+                _shortTermClassButton.onClick.AddListener(() =>
+                    OnContentButtonClicked(ContentButtonType.ShortTermClass));
             if (_dimensionClashButton != null)
-                _dimensionClashButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.DimensionClash));
+                _dimensionClashButton.onClick.AddListener(() =>
+                    OnContentButtonClicked(ContentButtonType.DimensionClash));
 
             // Center Area
             if (_nurulingBustersButton != null)
-                _nurulingBustersButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.NurulingBusters));
+                _nurulingBustersButton.onClick.AddListener(() =>
+                    OnContentButtonClicked(ContentButtonType.NurulingBusters));
             if (_pvpButton != null)
                 _pvpButton.onClick.AddListener(() => OnContentButtonClicked(ContentButtonType.PVP));
             if (_mainStoryButton != null)
@@ -230,7 +234,7 @@ namespace Sc.Contents.Stage
 
         private void RefreshContentButtons()
         {
-            // TODO: 실제 컨텐츠 상태를 UserData에서 가져와서 설정
+            // TODO[P1]: 실제 컨텐츠 상태를 UserData에서 가져와서 설정
             // 현재는 플레이스홀더 데이터 사용
 
             // Left Side - Short Term Class (단기 속성반)
@@ -256,7 +260,7 @@ namespace Sc.Contents.Stage
 
         private void RefreshProgressInfo()
         {
-            // TODO: 실제 진행 정보를 UserData에서 가져와서 설정
+            // TODO[P1]: 실제 진행 정보를 UserData에서 가져와서 설정
             // 현재는 플레이스홀더 데이터 사용
 
             // Right Top Area - Stage Progress Widget
@@ -281,7 +285,7 @@ namespace Sc.Contents.Stage
                 _mainStoryTimeRemainingText.text = "06일 17시간 07분";
             }
 
-            _currentMainStoryStageId = "stage_main_11_10"; // TODO: 실제 스테이지 ID
+            _currentMainStoryStageId = "stage_main_11_10"; // TODO[P1]: 실제 스테이지 ID
 
             // Progress Widget 설정
             if (_progressWidget != null)
@@ -292,7 +296,8 @@ namespace Sc.Contents.Stage
                     "세계수 급착기지",
                     _currentMainStoryStageId
                 );
-                _progressWidget.SetTimeRemaining(TimeSpan.FromDays(6).Add(TimeSpan.FromHours(17)).Add(TimeSpan.FromMinutes(7)));
+                _progressWidget.SetTimeRemaining(TimeSpan.FromDays(6).Add(TimeSpan.FromHours(17))
+                    .Add(TimeSpan.FromMinutes(7)));
             }
 
             // Quick Action Widget 설정
@@ -310,7 +315,7 @@ namespace Sc.Contents.Stage
 
             button.interactable = !isLocked;
 
-            // TODO: 잠금 아이콘/이펙트 표시
+            // TODO[P2]: 잠금 아이콘/이펙트 표시
             var canvasGroup = button.GetComponent<CanvasGroup>();
             if (canvasGroup != null)
             {
@@ -320,7 +325,7 @@ namespace Sc.Contents.Stage
 
         private bool IsContentLocked(ContentButtonType buttonType)
         {
-            // TODO: 실제 해금 조건 확인 (UserData 기반)
+            // TODO[P1]: 실제 해금 조건 확인 (UserData 기반)
             return buttonType switch
             {
                 ContentButtonType.MainStory => false,
@@ -366,35 +371,42 @@ namespace Sc.Contents.Stage
                     break;
 
                 case ContentButtonType.Invasion:
-                    // TODO: InvasionScreen 구현 시 연결
-                    Debug.Log("[InGameContentDashboard] Invasion not implemented yet");
+                    ShowComingSoonPopup("침공전");
                     break;
 
                 case ContentButtonType.ShortTermClass:
-                    // TODO: EventStageScreen 구현 시 연결
-                    Debug.Log("[InGameContentDashboard] ShortTermClass not implemented yet");
+                    ShowComingSoonPopup("단기 속성반");
                     break;
 
                 case ContentButtonType.DimensionClash:
-                    // TODO: DimensionRaidScreen 구현 시 연결
-                    Debug.Log("[InGameContentDashboard] DimensionClash not implemented yet");
+                    ShowComingSoonPopup("차원 대충돌");
                     break;
 
                 case ContentButtonType.NurulingBusters:
-                    // TODO: MinigameScreen 구현 시 연결
-                    Debug.Log("[InGameContentDashboard] NurulingBusters not implemented yet");
+                    ShowComingSoonPopup("누룽버스터즈");
                     break;
 
                 case ContentButtonType.PVP:
-                    // TODO: PVPLobbyScreen 구현 시 연결
-                    Debug.Log("[InGameContentDashboard] PVP not implemented yet");
+                    ShowComingSoonPopup("PVP");
                     break;
 
                 case ContentButtonType.DeckFormation:
-                    // TODO: DeckManageScreen 구현 시 연결
-                    Debug.Log("[InGameContentDashboard] DeckFormation not implemented yet");
+                    ShowComingSoonPopup("덱 편성");
                     break;
             }
+        }
+
+        private void ShowComingSoonPopup(string featureName)
+        {
+            Debug.Log($"[InGameContentDashboard] {featureName} not implemented yet");
+
+            ConfirmPopup.Open(new ConfirmState
+            {
+                Title = "준비 중",
+                Message = $"{featureName} 기능은\n추후 업데이트될 예정입니다.",
+                ConfirmText = "확인",
+                ShowCancelButton = false
+            });
         }
 
         private void OpenStageSelectScreen(InGameContentType contentType)
@@ -432,7 +444,7 @@ namespace Sc.Contents.Stage
         private void OnQuickEntryClicked()
         {
             Debug.Log("[InGameContentDashboard] Quick entry clicked");
-            // TODO: 빠른 전투 로직
+            // TODO[FUTURE]: 빠른 전투 로직 (InGame 시스템)
         }
 
         private void OnDeckFormationClicked()

@@ -56,7 +56,7 @@ namespace Sc.Core
                     case RewardType.PlayerExp:
                         newProfile.Exp += reward.Amount;
                         profileChanged = true;
-                        // TODO: 레벨업 처리 로직 추가 가능
+                        // TODO[FUTURE]: 레벨업 처리 로직 추가 가능
                         break;
                 }
             }

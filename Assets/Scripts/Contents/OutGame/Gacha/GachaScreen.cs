@@ -33,57 +33,47 @@ namespace Sc.Contents.Gacha
     {
         #region Widget References
 
-        [Header("위젯")]
-        [SerializeField] private GachaBannerWidget _bannerWidget;
+        [Header("위젯")] [SerializeField] private GachaBannerWidget _bannerWidget;
         [SerializeField] private GachaPullButtonWidget _pullButtonWidget;
 
         #endregion
 
         #region Legacy Fields (호환성 유지)
 
-        [Header("배너 영역")]
-        [SerializeField] private Transform _bannerContainer;
+        [Header("배너 영역")] [SerializeField] private Transform _bannerContainer;
         [SerializeField] private GameObject _bannerItemPrefab;
         [SerializeField] private ScrollRect _bannerScrollRect;
 
-        [Header("뽑기 버튼")]
-        [SerializeField] private Button _singlePullButton;
+        [Header("뽑기 버튼")] [SerializeField] private Button _singlePullButton;
         [SerializeField] private Button _multiPullButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private TMP_Text _singleCostText;
         [SerializeField] private TMP_Text _multiCostText;
 
-        [Header("배너 정보")]
-        [SerializeField] private TMP_Text _bannerTitleText;
+        [Header("배너 정보")] [SerializeField] private TMP_Text _bannerTitleText;
         [SerializeField] private TMP_Text _bannerPeriodText;
         [SerializeField] private TMP_Text _bannerDescriptionText;
 
-        [Header("정보 표시")]
-        [SerializeField] private TMP_Text _poolNameText;
+        [Header("정보 표시")] [SerializeField] private TMP_Text _poolNameText;
         [SerializeField] private TMP_Text _pityCountText;
         [SerializeField] private TMP_Text _gemText;
         [SerializeField] private Slider _pityProgressBar;
         [SerializeField] private TMP_Text _pityProgressText;
 
-        [Header("천장 정보")]
-        [SerializeField] private TMP_Text _pityLabel;
+        [Header("천장 정보")] [SerializeField] private TMP_Text _pityLabel;
         [SerializeField] private Button _exchangeButton;
 
-        [Header("추가 버튼")]
-        [SerializeField] private Button _rateDetailButton;
+        [Header("추가 버튼")] [SerializeField] private Button _rateDetailButton;
         [SerializeField] private Button _historyButton;
         [SerializeField] private Button _characterInfoButton;
 
-        [Header("메뉴 버튼 그룹")]
-        [SerializeField] private Button _gachaMenuButton;
+        [Header("메뉴 버튼 그룹")] [SerializeField] private Button _gachaMenuButton;
         [SerializeField] private Button _specialMenuButton;
         [SerializeField] private Button _cardMenuButton;
 
-        [Header("캐릭터 디스플레이")]
-        [SerializeField] private Transform _characterDisplay;
+        [Header("캐릭터 디스플레이")] [SerializeField] private Transform _characterDisplay;
 
-        [Header("로딩")]
-        [SerializeField] private GameObject _loadingIndicator;
+        [Header("로딩")] [SerializeField] private GameObject _loadingIndicator;
 
         #endregion
 
@@ -171,19 +161,19 @@ namespace Sc.Contents.Gacha
         private void OnCharacterInfoClicked()
         {
             Debug.Log("[GachaScreen] Character info clicked");
-            // TODO: CharacterDetailPopup 열기 (풀 내 캐릭터 목록)
+            // TODO[P2]: CharacterDetailPopup 열기 (풀 내 캐릭터 목록)
         }
 
         private void OnExchangeClicked()
         {
             Debug.Log("[GachaScreen] Exchange clicked");
-            // TODO: PityExchangePopup 열기 (신앙심 교환)
+            // TODO[P2]: PityExchangePopup 열기 (신앙심 교환)
         }
 
         private void OnMenuSelected(GachaMenuType menuType)
         {
             Debug.Log($"[GachaScreen] Menu selected: {menuType}");
-            // TODO: 메뉴 타입에 따른 화면 전환
+            // TODO[FUTURE]: 메뉴 타입에 따른 화면 전환
         }
 
         private enum GachaMenuType
@@ -302,6 +292,7 @@ namespace Sc.Contents.Gacha
                     Destroy(item.gameObject);
                 }
             }
+
             _bannerItems.Clear();
         }
 
@@ -575,7 +566,7 @@ namespace Sc.Contents.Gacha
             HideLoading();
             RefreshUI();
 
-            // TODO: 에러 팝업 표시
+            // TODO[P1]: 에러 팝업 표시
         }
 
         private void OnBackClicked()

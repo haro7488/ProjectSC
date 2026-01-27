@@ -19,21 +19,21 @@ namespace Sc.Contents.Event.Widgets
     /// </summary>
     public class EventDetailWidget : Widget
     {
-        [Header("Banner")]
-        [SerializeField] private Image _titleBannerImage;
+        [Header("Banner")] [SerializeField] private Image _titleBannerImage;
         [SerializeField] private Image _characterIllustImage;
 
-        [Header("Period Info")]
-        [SerializeField] private TMP_Text _startTimeLabel;
+        [Header("Period Info")] [SerializeField]
+        private TMP_Text _startTimeLabel;
+
         [SerializeField] private TMP_Text _endTimeLabel;
 
-        [Header("Reward Preview")]
-        [SerializeField] private TMP_Text _rewardPreviewTitle;
+        [Header("Reward Preview")] [SerializeField]
+        private TMP_Text _rewardPreviewTitle;
+
         [SerializeField] private Transform _rewardIconContainer;
         [SerializeField] private GameObject _rewardIconPrefab;
 
-        [Header("Actions")]
-        [SerializeField] private Button _enterButton;
+        [Header("Actions")] [SerializeField] private Button _enterButton;
         [SerializeField] private TMP_Text _enterButtonLabel;
 
         private LiveEventInfo _currentEvent;
@@ -116,9 +116,10 @@ namespace Sc.Contents.Event.Widgets
                 if (icon != null)
                     Destroy(icon);
             }
+
             _spawnedRewardIcons.Clear();
 
-            // TODO: 실제 보상 데이터 기반으로 아이콘 생성
+            // TODO[P2]: 실제 보상 데이터 기반으로 아이콘 생성
             // 현재는 플레이스홀더로 1개 생성
             if (_rewardIconContainer != null && _rewardIconPrefab != null)
             {
@@ -148,6 +149,7 @@ namespace Sc.Contents.Event.Widgets
                 if (icon != null)
                     Destroy(icon);
             }
+
             _spawnedRewardIcons.Clear();
             _currentEvent = null;
         }

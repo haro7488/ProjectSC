@@ -20,15 +20,14 @@ namespace Sc.Contents.Stage.Widgets
         /// </summary>
         public enum SortType
         {
-            CombatPower,    // 전투력
-            Level,          // 레벨
-            Rarity,         // 희귀도
-            Element,        // 속성
-            Name            // 이름
+            CombatPower, // 전투력
+            Level, // 레벨
+            Rarity, // 희귀도
+            Element, // 속성
+            Name // 이름
         }
 
-        [Header("Tab Bar")]
-        [SerializeField] private Button _rentalTab;
+        [Header("Tab Bar")] [SerializeField] private Button _rentalTab;
         [SerializeField] private TMP_Text _rentalTabText;
         [SerializeField] private Button _filterButton;
         [SerializeField] private TMP_Text _filterButtonText;
@@ -37,17 +36,18 @@ namespace Sc.Contents.Stage.Widgets
         [SerializeField] private Button _sortOrderButton;
         [SerializeField] private Image _sortOrderIcon;
 
-        [Header("Character Grid")]
-        [SerializeField] private Transform _characterGridContainer;
+        [Header("Character Grid")] [SerializeField]
+        private Transform _characterGridContainer;
+
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private GameObject _characterSlotPrefab;
 
-        [Header("Empty State")]
-        [SerializeField] private GameObject _emptyStateObject;
+        [Header("Empty State")] [SerializeField]
+        private GameObject _emptyStateObject;
+
         [SerializeField] private TMP_Text _emptyStateText;
 
-        [Header("Colors")]
-        [SerializeField] private Color _tabActiveColor = new Color32(100, 180, 100, 255);
+        [Header("Colors")] [SerializeField] private Color _tabActiveColor = new Color32(100, 180, 100, 255);
         [SerializeField] private Color _tabInactiveColor = new Color32(60, 60, 60, 200);
         [SerializeField] private Color _assignedBorderColor = new Color32(100, 200, 100, 255);
         [SerializeField] private Color _normalBorderColor = new Color32(80, 80, 80, 255);
@@ -241,7 +241,7 @@ namespace Sc.Contents.Stage.Widgets
             // 정렬 적용
             _filteredCharacters.Sort((a, b) =>
             {
-                // TODO: CombatPower, Rarity는 마스터 데이터 연동 필요
+                // TODO[P1]: CombatPower, Rarity는 마스터 데이터 연동 필요
                 int comparison = _currentSortType switch
                 {
                     SortType.CombatPower => (a.Level * 100).CompareTo(b.Level * 100), // 임시: Level 기반
@@ -468,24 +468,22 @@ namespace Sc.Contents.Stage.Widgets
     /// </summary>
     public class CharacterSelectSlot : MonoBehaviour
     {
-        [Header("Visual")]
-        [SerializeField] private Image _cardBackground;
+        [Header("Visual")] [SerializeField] private Image _cardBackground;
         [SerializeField] private Image _characterPortrait;
         [SerializeField] private Image _elementIcon;
         [SerializeField] private Image _assignedBorder;
         [SerializeField] private Image _assignedBadge;
 
-        [Header("Info")]
-        [SerializeField] private TMP_Text _levelText;
+        [Header("Info")] [SerializeField] private TMP_Text _levelText;
         [SerializeField] private Transform _starContainer;
         [SerializeField] private TMP_Text _combatPowerText;
 
-        [Header("Interaction")]
-        [SerializeField] private Button _button;
+        [Header("Interaction")] [SerializeField]
+        private Button _button;
+
         [SerializeField] private Button _detailButton;
 
-        [Header("Colors")]
-        [SerializeField] private Color _normalColor = new Color32(60, 60, 60, 255);
+        [Header("Colors")] [SerializeField] private Color _normalColor = new Color32(60, 60, 60, 255);
         [SerializeField] private Color _assignedColor = new Color32(60, 100, 60, 255);
 
         private OwnedCharacter _character;
@@ -578,12 +576,12 @@ namespace Sc.Contents.Stage.Widgets
             // 전투력
             if (_combatPowerText != null)
             {
-                // TODO: 실제 전투력 계산 로직 구현
+                // TODO[P1]: 실제 전투력 계산 로직 구현
                 int combatPower = _character.Level * 100;
                 _combatPowerText.text = $"{combatPower:N0}";
             }
 
-            // 별 표시 (TODO: 마스터 데이터에서 Rarity 조회)
+            // 별 표시 (TODO[P1]: 마스터 데이터에서 Rarity 조회)
             UpdateStarRating(1);
 
             // 편성 표시

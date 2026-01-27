@@ -126,7 +126,7 @@ namespace Sc.Contents.Stage
         /// </summary>
         public void RefreshItems()
         {
-            // TODO: 클리어 상태 변경 시 아이템 갱신
+            // TODO[P2]: 클리어 상태 변경 시 아이템 갱신
             Debug.Log("[StageListPanel] RefreshItems");
         }
 
@@ -173,7 +173,7 @@ namespace Sc.Contents.Stage
                 // 현재는 순서 기반으로 처리
             }
 
-            return -1; // TODO: 실제 구현
+            return -1; // TODO[P2]: 실제 구현
         }
 
         private StageClearInfo? GetClearInfo(string stageId)
@@ -186,7 +186,7 @@ namespace Sc.Contents.Stage
 
         private bool IsLocked(StageData stageData)
         {
-            // TODO: 실제 잠금 조건 확인
+            // TODO[P2]: 실제 잠금 조건 확인
             // - 선행 스테이지 클리어 여부
             // - 레벨 조건
             // 현재는 간단히 처리

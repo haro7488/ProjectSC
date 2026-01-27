@@ -41,28 +41,28 @@ namespace Sc.Contents.Stage
             public string SelectedStageId { get; set; }
         }
 
-        [Header("Header")]
-        [SerializeField] private TMP_Text _titleText;
+        [Header("Header")] [SerializeField] private TMP_Text _titleText;
         [SerializeField] private TMP_Text _entryLimitText;
 
-        [Header("Content Module Area")]
-        [SerializeField] private Transform _moduleContainer;
+        [Header("Content Module Area")] [SerializeField]
+        private Transform _moduleContainer;
 
-        [Header("Stage List")]
-        [SerializeField] private StageListPanel _stageListPanel;
+        [Header("Stage List")] [SerializeField]
+        private StageListPanel _stageListPanel;
 
-        [Header("Map View")]
-        [SerializeField] private ChapterSelectWidget _chapterSelectWidget;
+        [Header("Map View")] [SerializeField] private ChapterSelectWidget _chapterSelectWidget;
         [SerializeField] private StageMapWidget _stageMapWidget;
         [SerializeField] private TMP_Text _stageProgressText;
 
-        [Header("Footer Widgets")]
-        [SerializeField] private StarProgressBarWidget _starProgressBar;
+        [Header("Footer Widgets")] [SerializeField]
+        private StarProgressBarWidget _starProgressBar;
+
         [SerializeField] private DifficultyTabWidget _difficultyTabWidget;
         [SerializeField] private Button _worldMapButton;
 
-        [Header("Stage Detail")]
-        [SerializeField] private GameObject _detailPanel;
+        [Header("Stage Detail")] [SerializeField]
+        private GameObject _detailPanel;
+
         [SerializeField] private TMP_Text _stageNameText;
         [SerializeField] private TMP_Text _stageDifficultyText;
         [SerializeField] private TMP_Text _stageDescriptionText;
@@ -70,15 +70,14 @@ namespace Sc.Contents.Stage
         [SerializeField] private TMP_Text _rewardPreviewText;
         [SerializeField] private Button _stageInfoButton;
 
-        [Header("Footer")]
-        [SerializeField] private TMP_Text _staminaCostText;
+        [Header("Footer")] [SerializeField] private TMP_Text _staminaCostText;
         [SerializeField] private Button _enterButton;
         [SerializeField] private TMP_Text _enterButtonText;
         [SerializeField] private Button _sweepButton;
         [SerializeField] private TMP_Text _sweepButtonText;
 
-        [Header("Navigation")]
-        [SerializeField] private Button _backButton;
+        [Header("Navigation")] [SerializeField]
+        private Button _backButton;
 
         private StageSelectState _currentState;
         private StageData _selectedStage;
@@ -167,7 +166,8 @@ namespace Sc.Contents.Stage
             _currentState = state ?? new StageSelectState();
             _currentCategoryId = _currentState.CategoryId;
 
-            Debug.Log($"[StageSelectScreen] OnBind - ContentType: {_currentState.ContentType}, CategoryId: {_currentState.CategoryId}");
+            Debug.Log(
+                $"[StageSelectScreen] OnBind - ContentType: {_currentState.ContentType}, CategoryId: {_currentState.CategoryId}");
 
             // Header 설정
             ScreenHeader.Instance?.Configure("stage_select");
@@ -370,6 +370,7 @@ namespace Sc.Contents.Stage
                 {
                     _detailPanel.SetActive(false);
                 }
+
                 return;
             }
 
@@ -406,7 +407,7 @@ namespace Sc.Contents.Stage
 
         private void RefreshEntryLimit()
         {
-            // TODO: 입장 제한 횟수 표시
+            // TODO[P2]: 입장 제한 횟수 표시
             if (_entryLimitText != null)
             {
                 _entryLimitText.text = ""; // 제한 없음 표시 안함
@@ -508,7 +509,7 @@ namespace Sc.Contents.Stage
 
             Debug.Log($"[StageSelectScreen] Sweep clicked: {_selectedStage.Id}");
 
-            // TODO: 소탕 확인 팝업 표시
+            // TODO[FUTURE]: 소탕 확인 팝업 표시 (InGame 시스템)
             ShowSweepConfirmPopup();
         }
 
@@ -548,7 +549,7 @@ namespace Sc.Contents.Stage
 
         private void ExecuteSweep()
         {
-            // TODO: 소탕 요청
+            // TODO[FUTURE]: 소탕 요청 (InGame 시스템)
             Debug.Log($"[StageSelectScreen] Executing sweep for: {_selectedStage?.Id}");
         }
 
@@ -651,14 +652,14 @@ namespace Sc.Contents.Stage
         private void OnWorldMapClicked()
         {
             Debug.Log("[StageSelectScreen] World map clicked");
-            // TODO: 월드맵 화면으로 이동
+            // TODO[FUTURE]: 월드맵 화면으로 이동
             // WorldMapScreen.Open();
         }
 
         private void OnMilestoneClicked(int milestoneIndex, int requiredStars)
         {
             Debug.Log($"[StageSelectScreen] Milestone clicked: index={milestoneIndex}, requiredStars={requiredStars}");
-            // TODO: 마일스톤 보상 수령 처리
+            // TODO[P2]: 마일스톤 보상 수령 처리
         }
 
         private void LoadStageListForDifficulty(Difficulty difficulty)

@@ -130,7 +130,7 @@ namespace Sc.Contents.Stage
 
         private (int currentFloor, int highestFloor) GetTowerProgress()
         {
-            // TODO: 유저 데이터에서 탑 진행도 조회
+            // TODO[P1]: 유저 데이터에서 탑 진행도 조회
             // 현재는 플레이스홀더 값 사용
             if (DataManager.Instance != null)
             {

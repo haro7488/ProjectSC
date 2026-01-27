@@ -12,26 +12,30 @@ namespace Sc.Contents.Inventory.Widgets
     /// </summary>
     public class ItemDetailWidget : MonoBehaviour
     {
-        [Header("Empty State")]
-        [SerializeField] private GameObject _emptyState;
+        [Header("Empty State")] [SerializeField]
+        private GameObject _emptyState;
+
         [SerializeField] private TMP_Text _emptyStateText;
 
-        [Header("Detail View")]
-        [SerializeField] private GameObject _detailView;
+        [Header("Detail View")] [SerializeField]
+        private GameObject _detailView;
+
         [SerializeField] private Image _itemImage;
         [SerializeField] private Image _rarityFrame;
         [SerializeField] private TMP_Text _itemName;
         [SerializeField] private TMP_Text _itemDescription;
         [SerializeField] private TMP_Text _itemStats;
 
-        [Header("Action Buttons")]
-        [SerializeField] private Button _useButton;
+        [Header("Action Buttons")] [SerializeField]
+        private Button _useButton;
+
         [SerializeField] private TMP_Text _useButtonText;
         [SerializeField] private Button _sellButton;
         [SerializeField] private TMP_Text _sellButtonText;
 
-        [Header("Rarity Frame Colors")]
-        [SerializeField] private Color _frameColorN = new Color32(180, 180, 180, 255);
+        [Header("Rarity Frame Colors")] [SerializeField]
+        private Color _frameColorN = new Color32(180, 180, 180, 255);
+
         [SerializeField] private Color _frameColorR = new Color32(100, 200, 100, 255);
         [SerializeField] private Color _frameColorSR = new Color32(100, 150, 255, 255);
         [SerializeField] private Color _frameColorSSR = new Color32(200, 100, 255, 255);
@@ -177,7 +181,7 @@ namespace Sc.Contents.Inventory.Widgets
 
         private void UpdateItemImage()
         {
-            // TODO: Addressables로 아이템 이미지 로드
+            // TODO[P2]: Addressables로 아이템 이미지 로드
             // LoadItemImageAsync(_currentItem.IconPath);
         }
 

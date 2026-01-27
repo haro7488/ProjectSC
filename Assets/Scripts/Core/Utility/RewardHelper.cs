@@ -36,6 +36,7 @@ namespace Sc.Core
                 if (i > 0) sb.Append(separator);
                 sb.Append(FormatText(rewards[i]));
             }
+
             return sb.ToString();
         }
 
@@ -50,11 +51,11 @@ namespace Sc.Core
                     return GetCurrencyDisplayName(reward.ItemId);
 
                 case RewardType.Character:
-                    // TODO: CharacterDatabase에서 이름 조회
+                    // TODO[P1]: CharacterDatabase에서 이름 조회
                     return reward.ItemId;
 
                 case RewardType.Item:
-                    // TODO: ItemDatabase에서 이름 조회
+                    // TODO[P1]: ItemDatabase에서 이름 조회
                     return reward.ItemId;
 
                 case RewardType.PlayerExp:
@@ -162,11 +163,11 @@ namespace Sc.Core
                     return GetCurrencyRarityColor(reward.ItemId);
 
                 case RewardType.Character:
-                    // TODO: CharacterDatabase에서 희귀도 조회
+                    // TODO[P1]: CharacterDatabase에서 희귀도 조회
                     return RarityColors.Epic; // 캐릭터는 기본 Epic
 
                 case RewardType.Item:
-                    // TODO: ItemDatabase에서 희귀도 조회
+                    // TODO[P1]: ItemDatabase에서 희귀도 조회
                     return RarityColors.Common;
 
                 case RewardType.PlayerExp:
@@ -216,11 +217,11 @@ namespace Sc.Core
         /// </summary>
         public static class RarityColors
         {
-            public static readonly Color Common = new Color(0.7f, 0.7f, 0.7f);       // 회색
-            public static readonly Color Uncommon = new Color(0.4f, 0.8f, 0.4f);     // 녹색
-            public static readonly Color Rare = new Color(0.3f, 0.5f, 1.0f);         // 파랑
-            public static readonly Color Epic = new Color(0.7f, 0.3f, 0.9f);         // 보라
-            public static readonly Color Legendary = new Color(1.0f, 0.7f, 0.2f);    // 금색
+            public static readonly Color Common = new Color(0.7f, 0.7f, 0.7f); // 회색
+            public static readonly Color Uncommon = new Color(0.4f, 0.8f, 0.4f); // 녹색
+            public static readonly Color Rare = new Color(0.3f, 0.5f, 1.0f); // 파랑
+            public static readonly Color Epic = new Color(0.7f, 0.3f, 0.9f); // 보라
+            public static readonly Color Legendary = new Color(1.0f, 0.7f, 0.2f); // 금색
         }
 
         #endregion
@@ -246,7 +247,7 @@ namespace Sc.Core
         {
             return reward.Type switch
             {
-                RewardType.Character => 0,  // 최우선
+                RewardType.Character => 0, // 최우선
                 RewardType.Item => 1,
                 RewardType.Currency => 2,
                 RewardType.PlayerExp => 3,

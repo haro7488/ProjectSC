@@ -82,7 +82,7 @@ namespace Sc.Contents.Shop
             // 이름
             if (_nameText != null)
             {
-                // TODO: StringData에서 실제 이름 가져오기
+                // TODO[P1]: StringData에서 실제 이름 가져오기
                 _nameText.text = _productData.NameKey ?? _productData.Id;
             }
 
@@ -113,7 +113,7 @@ namespace Sc.Contents.Shop
                 _discountBadge.SetActive(false);
             }
 
-            // TODO: 상품 아이콘 로드 (Addressables)
+            // TODO[P2]: 상품 아이콘 로드 (Addressables)
             // LoadProductIcon(_productData.IconPath);
         }
 
@@ -157,7 +157,7 @@ namespace Sc.Contents.Shop
         {
             if (_costTypeIcon == null) return;
 
-            // TODO: CostType별 아이콘 설정
+            // TODO[P2]: CostType별 아이콘 설정
             // var iconPath = _productData.CostType switch
             // {
             //     CostType.Gold => "Icons/Currency/Gold",

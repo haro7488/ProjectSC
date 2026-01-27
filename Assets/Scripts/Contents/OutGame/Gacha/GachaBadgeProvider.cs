@@ -4,7 +4,7 @@ namespace Sc.Contents.Gacha
 {
     /// <summary>
     /// 가챠 배지 제공자 - 무료 가챠 가능 여부
-    /// TODO: 무료 일일 가챠 기능 구현 시 활성화
+    /// TODO[FUTURE]: 무료 일일 가챠 기능 구현 시 활성화
     /// </summary>
     public class GachaBadgeProvider : IBadgeProvider
     {

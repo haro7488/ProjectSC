@@ -9,8 +9,9 @@ namespace Sc.Contents.Event
     /// </summary>
     public class EventShopTab : Widget
     {
-        [Header("UI References")]
-        [SerializeField] private TMP_Text _placeholderText;
+        [Header("UI References")] [SerializeField]
+        private TMP_Text _placeholderText;
+
         [SerializeField] private GameObject _shopContainer;
 
         private string _eventId;
@@ -50,7 +51,7 @@ namespace Sc.Contents.Event
                 _shopContainer.SetActive(false);
             }
 
-            // TODO: 실제 상점 구현
+            // TODO[P2]: 실제 상점 구현
             // 1. ShopScreen 재사용
             // 2. EventShop 카테고리 필터
             // 3. 이벤트 재화 사용

@@ -39,7 +39,7 @@ namespace Sc.LocalServer
             return currency.Stamina >= required;
         }
 
-        // TODO: 상점 구매 제한 기능 - ShopPurchaseRecord 타입 정의 후 구현
+        // TODO[P2]: 상점 구매 제한 기능 - ShopPurchaseRecord 타입 정의 후 구현
         // public bool CanPurchase(ShopPurchaseRecord record, LimitType limitType, int limitCount)
 
         /// <summary>

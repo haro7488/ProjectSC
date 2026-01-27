@@ -47,8 +47,7 @@ namespace Sc.Contents.Character
     {
         #region Header
 
-        [Header("Header")]
-        [SerializeField] private Button _backButton;
+        [Header("Header")] [SerializeField] private Button _backButton;
         [SerializeField] private TMP_Text _titleText;
         [SerializeField] private Button _homeButton;
 
@@ -56,8 +55,9 @@ namespace Sc.Contents.Character
 
         #region Left Menu Area
 
-        [Header("Left Menu Area")]
-        [SerializeField] private Transform _menuButtonContainer;
+        [Header("Left Menu Area")] [SerializeField]
+        private Transform _menuButtonContainer;
+
         [SerializeField] private MenuButtonWidget _infoMenuButton;
         [SerializeField] private MenuButtonWidget _levelUpMenuButton;
         [SerializeField] private MenuButtonWidget _equipmentMenuButton;
@@ -70,8 +70,9 @@ namespace Sc.Contents.Character
 
         #region Center Area
 
-        [Header("Center Area - Character Display")]
-        [SerializeField] private Image _characterImage;
+        [Header("Center Area - Character Display")] [SerializeField]
+        private Image _characterImage;
+
         [SerializeField] private Image _companionImage;
         [SerializeField] private Button _characterSwitchButton;
         [SerializeField] private Button _dogamButton;
@@ -80,8 +81,9 @@ namespace Sc.Contents.Character
 
         #region Bottom Info Area
 
-        [Header("Bottom Info Area")]
-        [SerializeField] private CharacterInfoWidget _characterInfoWidget;
+        [Header("Bottom Info Area")] [SerializeField]
+        private CharacterInfoWidget _characterInfoWidget;
+
         [SerializeField] private Image _rarityBadge;
         [SerializeField] private TMP_Text _rarityText;
         [SerializeField] private TMP_Text _nameText;
@@ -90,8 +92,9 @@ namespace Sc.Contents.Character
 
         #region Right Top Area
 
-        [Header("Right Top Area - Level & Power")]
-        [SerializeField] private TMP_Text _levelText;
+        [Header("Right Top Area - Level & Power")] [SerializeField]
+        private TMP_Text _levelText;
+
         [SerializeField] private Transform _starRatingContainer;
         [SerializeField] private CombatPowerWidget _combatPowerWidget;
 
@@ -99,39 +102,43 @@ namespace Sc.Contents.Character
 
         #region Right Center Area
 
-        [Header("Right Center Area - Stats")]
-        [SerializeField] private CharacterStatWidget _characterStatWidget;
+        [Header("Right Center Area - Stats")] [SerializeField]
+        private CharacterStatWidget _characterStatWidget;
 
         #endregion
 
         #region Right Bottom Area
 
-        [Header("Right Bottom Area - Costume")]
-        [SerializeField] private CostumeWidget _costumeWidget;
+        [Header("Right Bottom Area - Costume")] [SerializeField]
+        private CostumeWidget _costumeWidget;
 
         #endregion
 
         #region Legacy Fields (Backward Compatibility)
 
-        [Header("Legacy - 기본 정보")]
-        [SerializeField] private TMP_Text _classText;
+        [Header("Legacy - 기본 정보")] [SerializeField]
+        private TMP_Text _classText;
+
         [SerializeField] private TMP_Text _elementText;
 
-        [Header("Legacy - 스탯 정보")]
-        [SerializeField] private TMP_Text _hpText;
+        [Header("Legacy - 스탯 정보")] [SerializeField]
+        private TMP_Text _hpText;
+
         [SerializeField] private TMP_Text _atkText;
         [SerializeField] private TMP_Text _defText;
         [SerializeField] private TMP_Text _spdText;
         [SerializeField] private TMP_Text _critRateText;
         [SerializeField] private TMP_Text _critDamageText;
 
-        [Header("Legacy - 추가 정보")]
-        [SerializeField] private TMP_Text _descriptionText;
+        [Header("Legacy - 추가 정보")] [SerializeField]
+        private TMP_Text _descriptionText;
+
         [SerializeField] private TMP_Text _ascensionText;
         [SerializeField] private TMP_Text _powerText;
 
-        [Header("Legacy - 강화 버튼")]
-        [SerializeField] private Button _levelUpButton;
+        [Header("Legacy - 강화 버튼")] [SerializeField]
+        private Button _levelUpButton;
+
         [SerializeField] private Button _ascensionButton;
         [SerializeField] private TMP_Text _levelUpButtonText;
         [SerializeField] private TMP_Text _ascensionButtonText;
@@ -153,6 +160,7 @@ namespace Sc.Contents.Character
             {
                 _backButton.onClick.AddListener(OnBackClicked);
             }
+
             if (_homeButton != null)
             {
                 _homeButton.onClick.AddListener(OnHomeClicked);
@@ -166,6 +174,7 @@ namespace Sc.Contents.Character
             {
                 _characterSwitchButton.onClick.AddListener(OnCharacterSwitchClicked);
             }
+
             if (_dogamButton != null)
             {
                 _dogamButton.onClick.AddListener(OnDogamClicked);
@@ -179,6 +188,7 @@ namespace Sc.Contents.Character
             {
                 _levelUpButton.onClick.AddListener(OnLevelUpClicked);
             }
+
             if (_ascensionButton != null)
             {
                 _ascensionButton.onClick.AddListener(OnAscensionClicked);
@@ -386,12 +396,13 @@ namespace Sc.Contents.Character
             // CharacterStatWidget
             if (_characterStatWidget != null)
             {
+                var attackType = GetAttackType(_masterData.CharacterClass);
                 var statData = new CharacterStatData
                 {
                     HP = stats.HP,
-                    SP = 400, // TODO: SP 데이터 추가
-                    PhysicalAttack = stats.ATK,
-                    MagicAttack = (int)(stats.ATK * 0.2f), // 임시 값
+                    SP = GetBaseSP(_masterData.CharacterClass),
+                    PhysicalAttack = attackType == AttackType.Physical ? stats.ATK : (int)(stats.ATK * 0.2f),
+                    MagicAttack = attackType == AttackType.Magic ? stats.ATK : (int)(stats.ATK * 0.2f),
                     PhysicalDefense = stats.DEF,
                     MagicDefense = stats.DEF,
                     CritRate = stats.CritRate,
@@ -413,9 +424,9 @@ namespace Sc.Contents.Character
                     Ascension = _ownedCharacter?.Ascension ?? 0,
                     Element = ConvertElement(_masterData.Element),
                     Role = ConvertRole(_masterData.CharacterClass),
-                    Personality = PersonalityType.Active, // TODO: 데이터에서 가져오기
-                    Attack = AttackType.Physical, // TODO: 데이터에서 가져오기
-                    Position = PositionType.Back // TODO: 데이터에서 가져오기
+                    Personality = GetPersonality(_masterData.CharacterClass),
+                    Attack = GetAttackType(_masterData.CharacterClass),
+                    Position = GetPosition(_masterData.CharacterClass)
                 };
                 _characterInfoWidget.Configure(infoData);
             }
@@ -565,6 +576,71 @@ namespace Sc.Contents.Character
             };
         }
 
+
+        /// <summary>
+        /// 캐릭터 클래스 기반 기본 SP 값 계산
+        /// </summary>
+        private int GetBaseSP(CharacterClass characterClass)
+        {
+            return characterClass switch
+            {
+                CharacterClass.Healer => 500, // 힐러는 SP 높음
+                CharacterClass.Mage => 450, // 마법사 SP 높음
+                CharacterClass.Tank => 350, // 탱커 SP 중간
+                CharacterClass.Warrior => 400, // 전사 기본
+                CharacterClass.Archer => 400, // 궁수 기본
+                CharacterClass.Assassin => 380, // 암살자 낮음
+                _ => 400
+            };
+        }
+
+        /// <summary>
+        /// 캐릭터 클래스 기반 공격 타입 결정
+        /// </summary>
+        private AttackType GetAttackType(CharacterClass characterClass)
+        {
+            return characterClass switch
+            {
+                CharacterClass.Mage => AttackType.Magic,
+                CharacterClass.Healer => AttackType.Magic,
+                _ => AttackType.Physical
+            };
+        }
+
+        /// <summary>
+        /// 캐릭터 클래스 기반 포지션 결정
+        /// </summary>
+        private PositionType GetPosition(CharacterClass characterClass)
+        {
+            return characterClass switch
+            {
+                CharacterClass.Tank => PositionType.Front,
+                CharacterClass.Warrior => PositionType.Front,
+                CharacterClass.Assassin => PositionType.Front,
+                CharacterClass.Mage => PositionType.Back,
+                CharacterClass.Healer => PositionType.Back,
+                CharacterClass.Archer => PositionType.Back,
+                _ => PositionType.Back
+            };
+        }
+
+        /// <summary>
+        /// 캐릭터 클래스 기반 성격 타입 결정
+        /// </summary>
+        private PersonalityType GetPersonality(CharacterClass characterClass)
+        {
+            return characterClass switch
+            {
+                CharacterClass.Warrior => PersonalityType.Bold,
+                CharacterClass.Tank => PersonalityType.Calm,
+                CharacterClass.Assassin => PersonalityType.Shy,
+                CharacterClass.Mage => PersonalityType.Calm,
+                CharacterClass.Healer => PersonalityType.Active,
+                CharacterClass.Archer => PersonalityType.Calm,
+                _ => PersonalityType.Active
+            };
+        }
+
         private void SetEmptyState()
         {
             if (_nameText != null) _nameText.text = "???";
@@ -592,9 +668,9 @@ namespace Sc.Contents.Character
         {
             return rarity switch
             {
-                Rarity.SSR => new Color(1f, 0.84f, 0f),      // 금색
-                Rarity.SR => new Color(0.7f, 0.3f, 0.9f),    // 보라색
-                Rarity.R => new Color(0.3f, 0.6f, 1f),       // 파란색
+                Rarity.SSR => new Color(1f, 0.84f, 0f), // 금색
+                Rarity.SR => new Color(0.7f, 0.3f, 0.9f), // 보라색
+                Rarity.R => new Color(0.3f, 0.6f, 1f), // 파란색
                 _ => Color.gray
             };
         }
@@ -671,7 +747,7 @@ namespace Sc.Contents.Character
         private void OnHomeClicked()
         {
             Debug.Log("[CharacterDetailScreen] Home clicked");
-            // TODO: NavigationManager.Instance?.NavigateTo("LobbyScreen");
+            // TODO[P2]: NavigationManager.Instance?.NavigateTo("LobbyScreen");
         }
 
         private void OnHeaderBackClicked(HeaderBackClickedEvent evt)
@@ -726,22 +802,22 @@ namespace Sc.Contents.Character
                     OnLevelUpClicked();
                     break;
                 case MenuButtonType.Equipment:
-                    // TODO: 장비 화면 이동
+                    // TODO[FUTURE]: 장비 화면 이동 (InGame 시스템)
                     Debug.Log("[CharacterDetailScreen] Navigate to Equipment screen");
                     break;
                 case MenuButtonType.Skill:
-                    // TODO: 스킬 화면 이동
+                    // TODO[FUTURE]: 스킬 화면 이동 (InGame 시스템)
                     Debug.Log("[CharacterDetailScreen] Navigate to Skill screen");
                     break;
                 case MenuButtonType.Promotion:
                     OnAscensionClicked();
                     break;
                 case MenuButtonType.Board:
-                    // TODO: 보드 화면 이동
+                    // TODO[FUTURE]: 보드 화면 이동 (InGame 시스템)
                     Debug.Log("[CharacterDetailScreen] Navigate to Board screen");
                     break;
                 case MenuButtonType.Aside:
-                    // TODO: 어사이드 화면 이동
+                    // TODO[FUTURE]: 어사이드 화면 이동 (InGame 시스템)
                     Debug.Log("[CharacterDetailScreen] Navigate to Aside screen");
                     break;
             }
@@ -754,13 +830,13 @@ namespace Sc.Contents.Character
         private void OnCharacterSwitchClicked()
         {
             Debug.Log("[CharacterDetailScreen] Character switch clicked");
-            // TODO: 다음/이전 캐릭터로 전환
+            // TODO[P2]: 다음/이전 캐릭터로 전환
         }
 
         private void OnDogamClicked()
         {
             Debug.Log("[CharacterDetailScreen] Dogam (Encyclopedia) clicked");
-            // TODO: 캐릭터 도감 화면으로 이동
+            // TODO[FUTURE]: 캐릭터 도감 화면으로 이동
         }
 
         #endregion
@@ -770,25 +846,25 @@ namespace Sc.Contents.Character
         private void OnFavoriteToggled(bool isFavorite)
         {
             Debug.Log($"[CharacterDetailScreen] Favorite toggled: {isFavorite}");
-            // TODO: 서버에 즐겨찾기 상태 업데이트 요청
+            // TODO[P2]: 서버에 즐겨찾기 상태 업데이트 요청
         }
 
         private void OnStatInfoClicked()
         {
             Debug.Log("[CharacterDetailScreen] Stat info clicked");
-            // TODO: 스탯 설명 팝업 표시
+            // TODO[P2]: 스탯 설명 팝업 표시
         }
 
         private void OnStatDetailClicked()
         {
             Debug.Log("[CharacterDetailScreen] Stat detail clicked");
-            // TODO: 전체 스탯 상세 팝업 표시
+            // TODO[P2]: 전체 스탯 상세 팝업 표시
         }
 
         private void OnCostumeClicked()
         {
             Debug.Log("[CharacterDetailScreen] Costume clicked");
-            // TODO: 코스튬 화면으로 이동
+            // TODO[FUTURE]: 코스튬 화면으로 이동
         }
 
         #endregion
@@ -831,7 +907,7 @@ namespace Sc.Contents.Character
         {
             if (!_ownedCharacter.HasValue) return;
 
-            // TODO: NetworkManager를 통해 서버 요청
+            // TODO[P1]: NetworkManager를 통해 서버 요청
             Debug.Log($"[CharacterDetailScreen] LevelUp requested with {materials.Count} materials");
 
             // 로컬 테스트용 - 직접 처리
@@ -865,7 +941,7 @@ namespace Sc.Contents.Character
         {
             if (!_ownedCharacter.HasValue) return;
 
-            // TODO: NetworkManager를 통해 서버 요청
+            // TODO[P1]: NetworkManager를 통해 서버 요청
             Debug.Log($"[CharacterDetailScreen] Ascension requested");
 
             // 로컬 테스트용 - 직접 처리

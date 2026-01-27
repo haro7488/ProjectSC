@@ -170,7 +170,7 @@ namespace Sc.Contents.Inventory.Widgets
 
         private void UpdateItemIcon()
         {
-            // TODO: Addressables로 아이템 아이콘 로드
+            // TODO[P2]: Addressables로 아이템 아이콘 로드
             // LoadItemIconAsync(_itemData.IconPath);
         }
 

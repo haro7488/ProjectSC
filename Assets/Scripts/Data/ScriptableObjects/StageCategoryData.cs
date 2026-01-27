@@ -9,25 +9,21 @@ namespace Sc.Data
     [CreateAssetMenu(fileName = "StageCategoryData", menuName = "SC/Data/StageCategory")]
     public class StageCategoryData : ScriptableObject
     {
-        [Header("기본 정보")]
-        [SerializeField] private string _id;
+        [Header("기본 정보")] [SerializeField] private string _id;
         [SerializeField] private InGameContentType _contentType;
         [SerializeField] private string _nameKey;
         [SerializeField] private string _descriptionKey;
         [SerializeField] private Sprite _iconSprite;
 
-        [Header("컨텐츠별 특화 필드")]
-        [Tooltip("속성 던전용")]
-        [SerializeField] private Element _element;
+        [Header("컨텐츠별 특화 필드")] [Tooltip("속성 던전용")] [SerializeField]
+        private Element _element;
 
-        [Tooltip("난이도 던전용")]
-        [SerializeField] private Difficulty _difficulty;
+        [Tooltip("난이도 던전용")] [SerializeField] private Difficulty _difficulty;
 
-        [Tooltip("메인스토리 챕터용")]
-        [SerializeField] private int _chapterNumber;
+        [Tooltip("메인스토리 챕터용")] [SerializeField]
+        private int _chapterNumber;
 
-        [Header("표시")]
-        [SerializeField] private int _displayOrder;
+        [Header("표시")] [SerializeField] private int _displayOrder;
         [SerializeField] private bool _isEnabled = true;
 
         // Properties
@@ -47,7 +43,7 @@ namespace Sc.Data
         /// </summary>
         public string GetDisplayName()
         {
-            // TODO: LocalizationManager 연동
+            // TODO[P2]: LocalizationManager 연동
             return _nameKey;
         }
 

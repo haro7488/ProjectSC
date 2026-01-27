@@ -12,14 +12,12 @@ namespace Sc.Contents.Character.Widgets
     /// </summary>
     public class CombatPowerWidget : Widget
     {
-        [Header("Background")]
-        [SerializeField] private Image _background;
+        [Header("Background")] [SerializeField]
+        private Image _background;
 
-        [Header("Icon")]
-        [SerializeField] private Image _powerIcon;
+        [Header("Icon")] [SerializeField] private Image _powerIcon;
 
-        [Header("Text")]
-        [SerializeField] private TMP_Text _labelText;
+        [Header("Text")] [SerializeField] private TMP_Text _labelText;
         [SerializeField] private TMP_Text _valueText;
 
         private int _combatPower;
@@ -79,7 +77,7 @@ namespace Sc.Contents.Character.Widgets
         /// </summary>
         public void AnimatePowerChange(int fromPower, int toPower, float duration = 0.5f)
         {
-            // TODO: DOTween을 사용한 애니메이션 구현
+            // TODO[P2]: DOTween을 사용한 애니메이션 구현
             // 현재는 단순 설정
             SetCombatPower(toPower);
         }

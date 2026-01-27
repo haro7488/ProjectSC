@@ -171,7 +171,7 @@ namespace Sc.Contents.Stage
 
         private void UpdateBossStatus()
         {
-            // TODO: 서버에서 보스 레이드 상태 조회
+            // TODO[FUTURE]: 서버에서 보스 레이드 상태 조회 (InGame 시스템)
             // 현재는 플레이스홀더 값 사용
             var currentHP = 75f;
             var maxHP = 100f;
@@ -204,7 +204,7 @@ namespace Sc.Contents.Stage
         private void OnRankingButtonClicked()
         {
             Log.Debug("[BossRaidContentModule] Ranking button clicked", LogCategory.UI);
-            // TODO: 랭킹 팝업 표시
+            // TODO[FUTURE]: 랭킹 팝업 표시 (InGame 시스템)
         }
 
         #endregion

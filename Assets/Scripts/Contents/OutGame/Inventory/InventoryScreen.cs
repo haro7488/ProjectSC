@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sc.Common.UI;
 using Sc.Common.UI.Attributes;
 using Sc.Common.UI.Widgets;
@@ -35,28 +36,29 @@ namespace Sc.Contents.Inventory
             public string InitialItemId { get; set; }
         }
 
-        [Header("Tab")]
-        [SerializeField] private InventoryTabWidget _tabWidget;
+        [Header("Tab")] [SerializeField] private InventoryTabWidget _tabWidget;
 
-        [Header("Filter Bar")]
-        [SerializeField] private TMP_Dropdown _categoryDropdown;
+        [Header("Filter Bar")] [SerializeField]
+        private TMP_Dropdown _categoryDropdown;
+
         [SerializeField] private TMP_Dropdown _sortDropdown;
         [SerializeField] private Button _settingsButton;
 
-        [Header("Item Grid")]
-        [SerializeField] private Transform _itemGridContainer;
+        [Header("Item Grid")] [SerializeField] private Transform _itemGridContainer;
         [SerializeField] private ItemCard _itemCardPrefab;
         [SerializeField] private ScrollRect _itemScrollRect;
 
-        [Header("Detail Panel")]
-        [SerializeField] private ItemDetailWidget _itemDetailWidget;
+        [Header("Detail Panel")] [SerializeField]
+        private ItemDetailWidget _itemDetailWidget;
 
-        [Header("Empty State")]
-        [SerializeField] private GameObject _emptyStateObject;
+        [Header("Empty State")] [SerializeField]
+        private GameObject _emptyStateObject;
+
         [SerializeField] private TMP_Text _emptyStateText;
 
-        [Header("Navigation")]
-        [SerializeField] private Button _backButton;
+        [Header("Navigation")] [SerializeField]
+        private Button _backButton;
+
         [SerializeField] private Button _homeButton;
 
         private InventoryState _currentState;
@@ -185,13 +187,39 @@ namespace Sc.Contents.Inventory
 
         private void LoadInventoryData()
         {
-            // TODO: DataManager에서 인벤토리 데이터 로드
-            // _allItems = DataManager.Instance?.GetAllItems();
-            // _itemCounts = DataManager.Instance?.GetItemCounts();
-
-            // 임시 더미 데이터
             _allItems = new List<ItemData>();
             _itemCounts = new Dictionary<string, int>();
+
+            if (DataManager.Instance?.IsInitialized != true) return;
+
+            var itemDatabase = DataManager.Instance.Items;
+            var ownedItems = DataManager.Instance.OwnedItems;
+
+            if (itemDatabase == null || ownedItems == null) return;
+
+            // 보유 아이템의 마스터 데이터와 수량 매핑
+            foreach (var owned in ownedItems)
+            {
+                var itemData = itemDatabase.GetById(owned.ItemId);
+                if (itemData != null)
+                {
+                    // 아이템이 이미 목록에 없으면 추가
+                    if (!_allItems.Any(i => i.Id == owned.ItemId))
+                    {
+                        _allItems.Add(itemData);
+                    }
+
+                    // 수량 업데이트 (소모품은 Count, 장비는 1씩 누적)
+                    if (_itemCounts.ContainsKey(owned.ItemId))
+                    {
+                        _itemCounts[owned.ItemId] += owned.Count;
+                    }
+                    else
+                    {
+                        _itemCounts[owned.ItemId] = owned.Count;
+                    }
+                }
+            }
         }
 
         private void OnUserDataChanged()
@@ -284,9 +312,10 @@ namespace Sc.Contents.Inventory
             {
                 InventoryCategory.Usage => item.Type == ItemType.Consumable,
                 InventoryCategory.Growth => item.Type == ItemType.Material || item.IsExpMaterial,
-                InventoryCategory.Equipment => item.Type == ItemType.Weapon || item.Type == ItemType.Armor || item.Type == ItemType.Accessory,
-                InventoryCategory.Guild => false, // TODO: 길드 아이템 타입 추가 필요
-                InventoryCategory.Card => false,  // TODO: 카드 아이템 타입 추가 필요
+                InventoryCategory.Equipment => item.Type == ItemType.Weapon || item.Type == ItemType.Armor ||
+                                               item.Type == ItemType.Accessory,
+                InventoryCategory.Guild => false, // TODO[FUTURE]: 길드 아이템 타입 추가 필요
+                InventoryCategory.Card => false, // TODO[FUTURE]: 카드 아이템 타입 추가 필요
                 _ => true
             };
         }
@@ -296,7 +325,7 @@ namespace Sc.Contents.Inventory
             if (string.IsNullOrEmpty(subCategory) || subCategory == "전체")
                 return true;
 
-            // TODO: 서브 카테고리 필터 구현
+            // TODO[P2]: 서브 카테고리 필터 구현
             return true;
         }
 
@@ -315,7 +344,7 @@ namespace Sc.Contents.Inventory
                     break;
 
                 case InventorySortType.Recent:
-                    // TODO: 획득 시간 기준 정렬
+                    // TODO[P2]: 획득 시간 기준 정렬
                     break;
 
                 case InventorySortType.Default:
@@ -324,7 +353,9 @@ namespace Sc.Contents.Inventory
                     sorted.Sort((a, b) =>
                     {
                         int rarityCompare = b.Rarity.CompareTo(a.Rarity);
-                        return rarityCompare != 0 ? rarityCompare : string.Compare(a.Name, b.Name, System.StringComparison.Ordinal);
+                        return rarityCompare != 0
+                            ? rarityCompare
+                            : string.Compare(a.Name, b.Name, System.StringComparison.Ordinal);
                     });
                     break;
             }
@@ -413,7 +444,7 @@ namespace Sc.Contents.Inventory
         private void OnSettingsClicked()
         {
             Debug.Log("[InventoryScreen] Settings clicked");
-            // TODO: FilterSettingsPopup 열기
+            // TODO[P2]: FilterSettingsPopup 열기
         }
 
         #endregion
@@ -426,12 +457,12 @@ namespace Sc.Contents.Inventory
 
             if (item.IsExpMaterial)
             {
-                // TODO: 캐릭터 선택 화면으로 이동
+                // TODO[P2]: 캐릭터 선택 화면으로 이동
                 Debug.Log("[InventoryScreen] Opening character selection for exp material");
             }
             else if (item.IsConsumable)
             {
-                // TODO: 아이템 사용 확인 팝업
+                // TODO[P2]: 아이템 사용 확인 팝업
                 Debug.Log("[InventoryScreen] Opening item use confirm popup");
             }
         }
@@ -439,7 +470,7 @@ namespace Sc.Contents.Inventory
         private void OnItemSell(ItemData item)
         {
             Debug.Log($"[InventoryScreen] Sell item: {item.Name}");
-            // TODO: 아이템 판매 확인 팝업
+            // TODO[P2]: 아이템 판매 확인 팝업
         }
 
         #endregion
@@ -480,7 +511,7 @@ namespace Sc.Contents.Inventory
         private void OnHomeClicked()
         {
             Debug.Log("[InventoryScreen] Home clicked");
-            // TODO: LobbyScreen으로 이동
+            // TODO[P2]: LobbyScreen으로 이동
         }
 
         private void OnHeaderBackClicked(HeaderBackClickedEvent evt)

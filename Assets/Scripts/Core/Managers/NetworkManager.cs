@@ -99,7 +99,7 @@ namespace Sc.Core
                 }
                 else
                 {
-                    // TODO: 실제 서버 클라이언트 구현
+                    // TODO[FUTURE]: 실제 서버 클라이언트 구현
                     // _apiClient = new HttpApiClient();
                     // _wsClient = new WebSocketClient();
                     throw new NotImplementedException("Server mode not implemented yet");

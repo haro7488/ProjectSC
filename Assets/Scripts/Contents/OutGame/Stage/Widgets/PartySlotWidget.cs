@@ -237,7 +237,7 @@ namespace Sc.Contents.Stage.Widgets
                 _starContainer.gameObject.SetActive(hasCharacter);
                 if (hasCharacter)
                 {
-                    // TODO: Rarity는 마스터 데이터에서 조회 필요
+                    // TODO[P1]: Rarity는 마스터 데이터에서 조회 필요
                     UpdateStarRating(1);
                 }
             }
@@ -248,7 +248,7 @@ namespace Sc.Contents.Stage.Widgets
                 _combatPowerText.gameObject.SetActive(hasCharacter);
                 if (hasCharacter)
                 {
-                    // TODO: 실제 전투력 계산 로직 구현
+                    // TODO[P1]: 실제 전투력 계산 로직 구현
                     int combatPower = _assignedCharacter.Level * 100;
                     _combatPowerText.text = $"{combatPower:N0}";
                 }

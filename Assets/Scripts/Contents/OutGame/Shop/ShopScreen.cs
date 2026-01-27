@@ -37,40 +37,44 @@ namespace Sc.Contents.Shop
             public ShopProductType InitialTab { get; set; } = ShopProductType.Currency;
         }
 
-        [Header("Shopkeeper Display")]
-        [SerializeField] private Image _shopkeeperImage;
+        [Header("Shopkeeper Display")] [SerializeField]
+        private Image _shopkeeperImage;
+
         [SerializeField] private TMP_Text _dialogueText;
 
-        [Header("Tab")]
-        [SerializeField] private TabGroupWidget _tabGroup;
+        [Header("Tab")] [SerializeField] private TabGroupWidget _tabGroup;
         [SerializeField] private ShopTabButton[] _tabButtons;
 
-        [Header("Product Grid")]
-        [SerializeField] private Transform _productContainer;
+        [Header("Product Grid")] [SerializeField]
+        private Transform _productContainer;
+
         [SerializeField] private ShopProductItem _productItemPrefab;
         [SerializeField] private ShopProductCard _productCardPrefab;
         [SerializeField] private ScrollRect _scrollRect;
 
-        [Header("Category Shortcuts")]
-        [SerializeField] private Transform _categoryShortcutContainer;
+        [Header("Category Shortcuts")] [SerializeField]
+        private Transform _categoryShortcutContainer;
+
         [SerializeField] private CategoryShortcut[] _categoryShortcuts;
 
-        [Header("Currency Display")]
-        [SerializeField] private TMP_Text _goldText;
+        [Header("Currency Display")] [SerializeField]
+        private TMP_Text _goldText;
+
         [SerializeField] private TMP_Text _gemText;
 
-        [Header("Footer")]
-        [SerializeField] private TMP_Text _refreshTimerText;
+        [Header("Footer")] [SerializeField] private TMP_Text _refreshTimerText;
         [SerializeField] private Toggle _selectAllToggle;
         [SerializeField] private TMP_Text _selectAllText;
         [SerializeField] private Button _bulkPurchaseButton;
 
-        [Header("Empty State")]
-        [SerializeField] private GameObject _emptyStateObject;
+        [Header("Empty State")] [SerializeField]
+        private GameObject _emptyStateObject;
+
         [SerializeField] private TMP_Text _emptyStateText;
 
-        [Header("Navigation")]
-        [SerializeField] private Button _backButton;
+        [Header("Navigation")] [SerializeField]
+        private Button _backButton;
+
         [SerializeField] private Button _homeButton;
 
         private ShopState _currentState;
@@ -388,9 +392,22 @@ namespace Sc.Contents.Shop
             {
                 CostType.Gold => (int)currency.Gold,
                 CostType.Gem => currency.TotalGem,
-                CostType.EventCurrency => 0, // TODO: 이벤트 재화는 EventCurrencyData에서 별도 조회 필요
+                CostType.EventCurrency => GetEventCurrencyAmount(),
                 _ => 0
             };
+        }
+
+
+        private int GetEventCurrencyAmount()
+        {
+            // 현재 상점의 ShopId를 eventId로 사용하여 이벤트 재화 조회
+            var shopId = _provider?.ShopId;
+            if (string.IsNullOrEmpty(shopId)) return 0;
+
+            var eventCurrency = DataManager.Instance?.EventCurrency;
+            if (eventCurrency == null) return 0;
+
+            return eventCurrency.Value.GetCurrency(shopId);
         }
 
         private void ExecutePurchase(ShopProductData product)
@@ -423,7 +440,7 @@ namespace Sc.Contents.Shop
             // 보상 팝업 표시 (선택적)
             if (evt.Rewards != null && evt.Rewards.Count > 0)
             {
-                // TODO: RewardPopup 연동
+                // TODO[P1]: RewardPopup 연동
                 Debug.Log($"[ShopScreen] Rewards: {evt.Rewards.Count} items");
             }
         }
@@ -435,7 +452,7 @@ namespace Sc.Contents.Shop
             _isPurchasing = false;
             UpdatePurchaseState();
 
-            // TODO: 에러 팝업 표시
+            // TODO[P1]: 에러 팝업 표시
         }
 
         private void UpdatePurchaseState()
@@ -507,6 +524,7 @@ namespace Sc.Contents.Shop
             {
                 card?.SetSelected(false);
             }
+
             _selectedCards.Clear();
         }
 
@@ -573,7 +591,7 @@ namespace Sc.Contents.Shop
         {
             if (_isPurchasing || _selectedCards.Count == 0) return;
 
-            // TODO: 일괄 구매 요청 구현
+            // TODO[P2]: 일괄 구매 요청 구현
             // 현재는 개별 구매로 처리
             foreach (var card in _selectedCards.ToList())
             {

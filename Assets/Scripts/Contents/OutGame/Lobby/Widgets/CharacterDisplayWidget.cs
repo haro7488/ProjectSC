@@ -76,7 +76,7 @@ namespace Sc.Contents.Lobby.Widgets
 
         private void LoadCharacter(string characterId)
         {
-            // TODO: CharacterId로 스프라이트와 대사 로드
+            // TODO[P2]: CharacterId로 스프라이트와 대사 로드
             // DataManager에서 캐릭터 데이터 조회
             SetCharacter(null, $"캐릭터 {characterId}의 대사");
         }

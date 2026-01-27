@@ -14,24 +14,20 @@ namespace Sc.Contents.Gacha
     /// </summary>
     public class GachaBannerWidget : MonoBehaviour
     {
-        [Header("배너 캐러셀")]
-        [SerializeField] private Transform _bannerContainer;
+        [Header("배너 캐러셀")] [SerializeField] private Transform _bannerContainer;
         [SerializeField] private GameObject _bannerItemPrefab;
         [SerializeField] private ScrollRect _bannerScrollRect;
         [SerializeField] private Transform _indicatorContainer;
         [SerializeField] private GameObject _indicatorPrefab;
 
-        [Header("배너 정보")]
-        [SerializeField] private TMP_Text _bannerTitleText;
+        [Header("배너 정보")] [SerializeField] private TMP_Text _bannerTitleText;
         [SerializeField] private TMP_Text _bannerPeriodText;
         [SerializeField] private TMP_Text _bannerDescriptionText;
 
-        [Header("캐릭터 디스플레이")]
-        [SerializeField] private Image _characterImage;
+        [Header("캐릭터 디스플레이")] [SerializeField] private Image _characterImage;
         [SerializeField] private Transform _characterDisplay;
 
-        [Header("자동 스크롤")]
-        [SerializeField] private float _autoScrollInterval = 5f;
+        [Header("자동 스크롤")] [SerializeField] private float _autoScrollInterval = 5f;
         [SerializeField] private bool _enableAutoScroll = true;
 
         private readonly List<GachaBannerItem> _bannerItems = new();
@@ -90,6 +86,7 @@ namespace Sc.Contents.Gacha
                         }
                     }
                 }
+
                 SelectBanner(initialIndex);
             }
         }
@@ -225,6 +222,7 @@ namespace Sc.Contents.Gacha
                     Destroy(item.gameObject);
                 }
             }
+
             _bannerItems.Clear();
 
             foreach (var indicator in _indicators)
@@ -234,6 +232,7 @@ namespace Sc.Contents.Gacha
                     Destroy(indicator);
                 }
             }
+
             _indicators.Clear();
 
             _selectedPool = null;
@@ -273,7 +272,8 @@ namespace Sc.Contents.Gacha
             {
                 if (!string.IsNullOrEmpty(_selectedPool.StartDate) && !string.IsNullOrEmpty(_selectedPool.EndDate))
                 {
-                    _bannerPeriodText.text = $"{FormatDate(_selectedPool.StartDate)} ~ {FormatDate(_selectedPool.EndDate)}";
+                    _bannerPeriodText.text =
+                        $"{FormatDate(_selectedPool.StartDate)} ~ {FormatDate(_selectedPool.EndDate)}";
                     _bannerPeriodText.gameObject.SetActive(true);
                 }
                 else
@@ -295,7 +295,7 @@ namespace Sc.Contents.Gacha
                                 !string.IsNullOrEmpty(_selectedPool.RateUpCharacterId);
                 _characterDisplay.gameObject.SetActive(hasPickup);
 
-                // TODO: 캐릭터 이미지 로드
+                // TODO[P2]: 캐릭터 이미지 로드
             }
         }
 
@@ -313,6 +313,7 @@ namespace Sc.Contents.Gacha
             {
                 return date.ToString("yyyy-MM-dd HH:mm");
             }
+
             return isoDate;
         }
     }

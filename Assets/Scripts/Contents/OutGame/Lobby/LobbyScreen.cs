@@ -1,3 +1,4 @@
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Sc.Common.UI;
 using Sc.Common.UI.Attributes;
@@ -169,8 +170,13 @@ namespace Sc.Contents.Lobby
             _characterDisplay.OnCharacterClicked += OnCharacterClicked;
             _characterDisplay.OnCharacterChanged += OnCharacterChanged;
 
-            // TODO: 보유 캐릭터 목록으로 초기화
-            // _characterDisplay.Initialize(ownedCharacterIds);
+            // 보유 캐릭터 목록으로 초기화
+            var ownedCharacters = DataManager.Instance?.OwnedCharacters;
+            if (ownedCharacters != null && ownedCharacters.Count > 0)
+            {
+                var characterIds = ownedCharacters.Select(c => c.CharacterId).ToArray();
+                _characterDisplay.Initialize(characterIds);
+            }
         }
 
         private void InitializeInGameDashboard()
@@ -289,13 +295,13 @@ namespace Sc.Contents.Lobby
         private void OnBannerClicked(int index)
         {
             Debug.Log($"[LobbyScreen] Banner clicked: {index}");
-            // TODO: 배너에 연결된 화면으로 이동
+            // TODO[P2]: 배너에 연결된 화면으로 이동
         }
 
         private void OnPassButtonClicked(string passType)
         {
             Debug.Log($"[LobbyScreen] Pass button clicked: {passType}");
-            // TODO: 패스 상세 화면으로 이동
+            // TODO[P2]: 패스 상세 화면으로 이동
         }
 
         private void OnQuickMenuClicked(string targetScreen)
@@ -307,7 +313,7 @@ namespace Sc.Contents.Lobby
         private void OnCharacterClicked(string characterId)
         {
             Debug.Log($"[LobbyScreen] Character clicked: {characterId}");
-            // TODO: 캐릭터 상호작용 또는 상세 화면
+            // TODO[P2]: 캐릭터 상호작용 또는 상세 화면
         }
 
         private void OnCharacterChanged(int index)
@@ -410,22 +416,54 @@ namespace Sc.Contents.Lobby
         {
             if (_stageProgressWidget == null) return;
 
-            // TODO: DataManager에서 현재 스테이지 진행 정보 가져오기
-            _stageProgressWidget.SetProgress(11, 10, "최후의 방어선!");
+            // DataManager에서 현재 스테이지 진행 정보 가져오기
+            var stageProgress = DataManager.Instance?.StageProgress;
+            if (stageProgress == null)
+            {
+                _stageProgressWidget.SetProgress(1, 1, "시작의 길");
+                return;
+            }
+
+            var chapter = stageProgress.Value.CurrentChapter;
+            var stage = stageProgress.Value.CurrentStageNumber;
+
+            // 스테이지 이름 가져오기 (StageDatabase에서 조회)
+            var stageName = GetCurrentStageName(chapter, stage);
+            _stageProgressWidget.SetProgress(chapter, stage, stageName);
+        }
+
+
+        private string GetCurrentStageName(int chapter, int stage)
+        {
+            // StageDatabase에서 현재 스테이지 정보 조회
+            var stages = DataManager.Instance?.Stages;
+            if (stages == null) return $"챕터 {chapter} - {stage}";
+
+            // stageId 형식: "stage_{chapter}_{stage}" 또는 유사한 패턴
+            var stageId = $"stage_{chapter}_{stage}";
+            var stageData = stages.GetById(stageId);
+
+            return stageData?.Name ?? $"챕터 {chapter} - {stage}";
         }
 
         private void RefreshCharacterDisplay()
         {
             if (_characterDisplay == null) return;
 
-            // TODO: DataManager에서 보유 캐릭터 정보 가져와서 표시
+            // DataManager에서 보유 캐릭터 정보 가져와서 표시
+            var ownedCharacters = DataManager.Instance?.OwnedCharacters;
+            if (ownedCharacters != null && ownedCharacters.Count > 0)
+            {
+                var characterIds = ownedCharacters.Select(c => c.CharacterId).ToArray();
+                _characterDisplay.Initialize(characterIds);
+            }
         }
 
         private void RefreshInGameDashboard()
         {
             if (_stageShortcutLabel == null) return;
 
-            // TODO: DataManager에서 현재 스테이지 정보 가져오기
+            // TODO[P2]: DataManager에서 현재 스테이지 정보 가져오기
             _stageShortcutLabel.text = "11-1 바로 가자!";
         }
 

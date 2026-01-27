@@ -232,7 +232,7 @@ namespace Sc.Contents.Character.Widgets
             // 현재는 빈 상태로 표시
             ClearDynamicRows();
 
-            // TODO: 특성 데이터 표시
+            // TODO[FUTURE]: 특성 데이터 표시 (InGame 시스템)
         }
 
         private void ClearDynamicRows()

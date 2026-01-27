@@ -217,7 +217,7 @@ namespace Sc.Contents.Shop.Widgets
                 _productAmount.text = firstReward.Amount > 1 ? $"x{firstReward.Amount}" : "";
             }
 
-            // TODO: Addressables로 아이콘 로드
+            // TODO[P2]: Addressables로 아이콘 로드
             // LoadProductIcon(_productData.IconPath);
         }
 
@@ -261,13 +261,13 @@ namespace Sc.Contents.Shop.Widgets
                 _priceText.text = $"{_productData.Price:N0}";
             }
 
-            // TODO: CostType에 따른 아이콘 설정
+            // TODO[P2]: CostType에 따른 아이콘 설정
             // UpdatePriceIcon(_productData.CostType);
 
             // 할인 시 원가 표시
             if (_originalPriceContainer != null)
             {
-                // TODO: 할인 시스템 연동
+                // TODO[FUTURE]: 할인 시스템 연동
                 _originalPriceContainer.SetActive(false);
             }
         }
@@ -292,7 +292,7 @@ namespace Sc.Contents.Shop.Widgets
         {
             if (_discountBadge == null) return;
 
-            // TODO: 할인 시스템 연동
+            // TODO[FUTURE]: 할인 시스템 연동
             _discountBadge.SetActive(false);
         }
 

@@ -40,27 +40,57 @@
 ## ⚠️ 기술 부채
 
 > **상세**: [SPEC_INDEX.md 간극 요약](Specs/SPEC_INDEX.md#문서-구현-간극-요약-2026-01-21)
+> **정리일**: 2026-01-27
 
 ### 미구현 (문서만 존재)
 
-| 우선순위 | 항목 | 스펙 문서 |
-|---------|------|----------|
-| HIGH | Utility (CollectionExtensions, MathHelper) | Common/Utility.md |
-| MEDIUM | AudioManager | Core/AudioManager.md |
-| LOW | SceneLoader | Core/SceneLoader.md |
-| LOW | DeepLink 시스템 | Common/NavigationEnhancement.md |
-| LOW | Badge 시스템 | Common/NavigationEnhancement.md |
+| 우선순위 | 항목 | 스펙 문서 | 비고 |
+|---------|------|----------|------|
+| ✅ | Utility (CollectionExtensions, MathHelper) | Common/Utility.md | 구현 완료 |
+| - | AudioManager | Core/AudioManager.md | 의도적 제외 |
+| LOW | SceneLoader | Core/SceneLoader.md | |
+| LOW | DeepLink 시스템 | Common/NavigationEnhancement.md | |
+| LOW | Badge 시스템 | Common/NavigationEnhancement.md | |
 
 ### 플레이스홀더 (부분 구현)
 
 | 항목 | 시스템 | 현재 상태 |
 |------|--------|----------|
-| EventMissionTab | LiveEvent | UI만 존재, 기능 미구현 |
-| EventShopTab | LiveEvent/Shop | UI만 존재, Provider 연동 안됨 |
-| PartySelectScreen | Stage | 플레이스홀더 상태 |
-| AttendanceCheckTask | Lobby | Stub 구현 |
-| NewEventNotificationTask | Lobby | Stub 구현 |
+| EventMissionTab | LiveEvent | "준비 중" UI 표시 |
+| EventShopTab | LiveEvent/Shop | "준비 중" UI 표시 |
+| PartySelectScreen | Stage | DataManager 연동 완료 |
+| AttendanceCheckTask | Lobby | 스킵 처리 (CheckRequired = false) |
+| NewEventNotificationTask | Lobby | 스킵 처리 (CheckRequired = false) |
+| InGameContentDashboard | Stage | 미구현 버튼 "Coming Soon" 팝업 |
 | ClaimEventMission API | LiveEvent | 에러코드 6099 반환 |
+
+### TODO 현황 (2026-01-27)
+
+모든 TODO에 우선순위 태그 적용 완료.
+
+| 태그 | 개수 | 설명 |
+|------|------|------|
+| `[P1]` | 35개 | 필수 기능 (OutGame 핵심) |
+| `[P2]` | 44개 | 개선 사항 (UX 향상) |
+| `[FUTURE]` | 27개 | 향후 확장 (InGame 등) |
+| **합계** | **106개** | |
+
+#### P1 주요 항목
+
+| 영역 | 항목 |
+|------|------|
+| 데이터 연동 | StringData 이름 조회, CharacterDatabase/ItemDatabase 연동 |
+| 파티 시스템 | 파티 슬롯 UI, 전투력 계산, 파티 검증 |
+| 서버 통신 | NetworkManager 요청, RewardPopup 연동, 에러 팝업 |
+| 컨텐츠 상태 | UserData 기반 진행도/해금 조건 |
+
+#### FUTURE 주요 항목 (InGame 범위)
+
+| 영역 | 항목 |
+|------|------|
+| 전투 시스템 | BattleScreen 전환, 빠른 전투/소탕 로직 |
+| 캐릭터 확장 | 장비/스킬/보드/어사이드 화면 |
+| 기타 시스템 | 출석 체크, 신규 이벤트 알림, 할인 시스템 |
 
 ---
 
@@ -368,11 +398,65 @@ claude "Docs/Design/Tasks/TASK_06_StageSelectScreen.md 작업 진행해줘"   # 
 
 ---
 
+## ✅ 완료: OUTGAME-CLEANUP
+
+> **완료일**: 2026-01-27
+> **목표**: OutGame 정리 및 기술 부채 해소
+> **범위**: InGame 제외, OutGame만 완성
+
+### 마일스톤 요약
+
+| # | 작업 | 상태 |
+|---|------|------|
+| M1 | 데이터 연동 (5개 Screen) | ✅ |
+| M2 | Utility 최소 구현 | ✅ |
+| M3 | 플레이스홀더 정리 | ✅ |
+| M4 | TODO 정리 | ✅ |
+
+### M1: OUTGAME-DATA
+
+플레이스홀더 데이터를 DataManager/UserData로 교체
+
+| 파일 | 작업 |
+|------|------|
+| LobbyScreen.cs | 스테이지 진행, 캐릭터 정보 연동 |
+| CharacterDetailScreen.cs | 마스터 데이터 연동 (SP, Attack, Position) |
+| InventoryScreen.cs | 인벤토리 데이터 로드 |
+| PartySelectScreen.cs | 캐릭터 목록 로드 |
+| ShopScreen.cs | EventCurrency 조회 |
+
+### M2: UTILITY-MINIMAL
+
+| 파일 | 메서드 |
+|------|--------|
+| CollectionExtensions.cs | RandomPick, IsNullOrEmpty, SafeGet 등 8개 |
+| MathHelper.cs | Clamp, CheckProbability 등 10개 |
+| ElementType.cs | enum 정의 |
+| 테스트 파일 2개 | 70+ 테스트 케이스 |
+
+### M3: PLACEHOLDER-CLEANUP
+
+| 파일 | 처리 |
+|------|------|
+| InGameContentDashboard.cs | 미구현 버튼 "Coming Soon" 팝업 |
+| 기타 파일 | 이미 적절히 처리됨 |
+
+### M4: TODO-CLEANUP
+
+| 태그 | 개수 | 설명 |
+|------|------|------|
+| `[P1]` | 35개 | 필수 기능 |
+| `[P2]` | 44개 | 개선 사항 |
+| `[FUTURE]` | 27개 | InGame 등 |
+| **합계** | **106개** | |
+
+---
+
 ## 🚀 이후 단계
 
-1. **인게임 전투 시스템 (BATTLE-V1)** - 핵심 게임플레이
-2. **기술 부채 해소** - Utility, AudioManager, SceneLoader
-3. **플레이스홀더 완성** - EventMission, EventShop
+1. ~~인게임 전투 시스템 (BATTLE-V1)~~ - **범위 제외**
+2. ~~기술 부채 해소~~ - ✅ Utility 완료, AudioManager 의도적 제외
+3. **P1 TODO 해소** - OutGame 필수 기능 완성
 
 ---
 

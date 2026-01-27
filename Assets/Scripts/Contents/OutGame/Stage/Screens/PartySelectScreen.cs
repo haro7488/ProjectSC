@@ -271,7 +271,7 @@ namespace Sc.Contents.Stage
 
         private void InitializePartySlots()
         {
-            // TODO: 파티 슬롯 UI 초기화
+            // TODO[P1]: 파티 슬롯 UI 초기화
             // 현재는 플레이스홀더
             _selectedCharacterIds.Clear();
 
@@ -280,7 +280,7 @@ namespace Sc.Contents.Stage
 
         private void RefreshPartyPower()
         {
-            // TODO: 선택된 캐릭터들의 전투력 합산
+            // TODO[P1]: 선택된 캐릭터들의 전투력 합산
             int totalPower = 0;
 
             if (_partyPowerText != null)
@@ -295,14 +295,19 @@ namespace Sc.Contents.Stage
 
         private void LoadCharacterList()
         {
-            // TODO: 보유 캐릭터 목록 로드
-            // 현재는 플레이스홀더
+            // 보유 캐릭터 목록 로드
+            var ownedCharacters = DataManager.Instance?.OwnedCharacters;
+            var characterList = ownedCharacters?.ToList() ?? new List<OwnedCharacter>();
 
-            int characterCount = DataManager.Instance?.OwnedCharacters?.Count ?? 0;
+            // CharacterSelectWidget에 캐릭터 목록 전달
+            if (_characterSelectWidget != null)
+            {
+                _characterSelectWidget.Initialize(characterList);
+            }
 
             if (_characterCountText != null)
             {
-                _characterCountText.text = $"캐릭터: {characterCount}";
+                _characterCountText.text = $"캐릭터: {characterList.Count}";
             }
         }
 
@@ -331,8 +336,8 @@ namespace Sc.Contents.Stage
             // - 스태미나 충분
             // - 진행 중 아님
             bool canStart = !_isStarting;
-            // TODO: && _selectedCharacterIds.Count > 0
-            // TODO: && HasEnoughStamina()
+            // TODO[P1]: && _selectedCharacterIds.Count > 0
+            // TODO[P1]: && HasEnoughStamina()
 
             if (_startButton != null)
             {
@@ -350,7 +355,7 @@ namespace Sc.Contents.Stage
 
             Debug.Log($"[PartySelectScreen] Start clicked - StageId: {_currentState.StageId}");
 
-            // TODO: 파티 선택 검증
+            // TODO[P1]: 파티 선택 검증
             if (_selectedCharacterIds.Count == 0)
             {
                 // 임시: 기본 파티로 시작 (첫 번째 캐릭터)
@@ -406,7 +411,7 @@ namespace Sc.Contents.Stage
             Debug.Log($"[PartySelectScreen] Stage entered successfully: {evt.BattleSessionId}");
             _isStarting = false;
 
-            // TODO: BattleScreen으로 전환
+            // TODO[FUTURE]: BattleScreen으로 전환 (InGame 시스템)
             // BattleReadyEvent 발행하여 Battle 시스템에 알림
             EventManager.Instance?.Publish(new BattleReadyEvent
             {
@@ -449,7 +454,7 @@ namespace Sc.Contents.Stage
         private void OnHomeClicked()
         {
             Debug.Log("[PartySelectScreen] Home clicked");
-            // TODO: 문자열 기반 네비게이션 구현 필요
+            // TODO[P2]: 문자열 기반 네비게이션 구현 필요
             // 현재는 순환 참조 방지를 위해 스택 팝으로 대체
             while (NavigationManager.Instance?.ScreenCount > 1)
             {
@@ -541,7 +546,7 @@ namespace Sc.Contents.Stage
         private void OnCharacterDetailRequested(OwnedCharacter character)
         {
             Debug.Log($"[PartySelectScreen] Character detail requested: {character.InstanceId}");
-            // TODO: CharacterDetailPopup 열기
+            // TODO[P2]: CharacterDetailPopup 열기
         }
 
         private void AssignCharacterToSlot(PartySlotWidget slot, OwnedCharacter character)
@@ -588,7 +593,7 @@ namespace Sc.Contents.Stage
         private void OnAutoFormClicked()
         {
             Debug.Log("[PartySelectScreen] Auto form clicked");
-            // TODO: 자동 편성 로직
+            // TODO[P2]: 자동 편성 로직
             // 전투력 순으로 최적의 캐릭터 자동 선택
         }
 
@@ -615,7 +620,7 @@ namespace Sc.Contents.Stage
         private void OnStageInfoClicked()
         {
             Debug.Log("[PartySelectScreen] Stage info clicked");
-            // TODO: StageInfoPopup 열기
+            // 이미 구현됨 - StageInfoPopup.Open 호출
             if (_currentState?.StageData != null)
             {
                 StageInfoPopup.Open(new StageInfoState
@@ -628,13 +633,13 @@ namespace Sc.Contents.Stage
         private void OnFormationSettingClicked()
         {
             Debug.Log("[PartySelectScreen] Formation setting clicked");
-            // TODO: PresetManagePopup 열기
+            // TODO[P2]: PresetManagePopup 열기
         }
 
         private void OnQuickBattleClicked()
         {
             Debug.Log("[PartySelectScreen] Quick battle clicked");
-            // TODO: 빠른 전투 (소탕) 로직
+            // TODO[FUTURE]: 빠른 전투 (소탕) 로직 (InGame 시스템)
         }
 
         private void OnAutoToggleClicked()
@@ -669,7 +674,7 @@ namespace Sc.Contents.Stage
             {
                 if (!string.IsNullOrEmpty(slot.AssignedCharacter.InstanceId))
                 {
-                    // TODO: 실제 전투력 계산 로직 구현
+                    // TODO[P1]: 실제 전투력 계산 로직 구현
                     // 현재는 레벨 * 100으로 임시 계산
                     totalPower += slot.AssignedCharacter.Level * 100;
                 }

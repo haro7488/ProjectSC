@@ -75,12 +75,12 @@ namespace Sc.LocalServer
                     break;
 
                 case RewardType.Item:
-                    // TODO: 인벤토리 시스템 연동
+                    // TODO[P1]: 인벤토리 시스템 연동
                     break;
 
                 case RewardType.PlayerExp:
                     userData.Profile.Exp += reward.Amount;
-                    // TODO: 레벨업 체크
+                    // TODO[FUTURE]: 레벨업 체크
                     break;
             }
         }

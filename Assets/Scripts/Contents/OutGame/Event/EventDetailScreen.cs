@@ -41,19 +41,22 @@ namespace Sc.Contents.Event
     [ScreenTemplate(ScreenTemplateType.Detail)]
     public class EventDetailScreen : ScreenWidget<EventDetailScreen, EventDetailState>
     {
-        [Header("UI References")]
-        [SerializeField] private TMP_Text _titleText;
+        [Header("UI References")] [SerializeField]
+        private TMP_Text _titleText;
+
         [SerializeField] private TMP_Text _remainingDaysText;
         [SerializeField] private TabGroupWidget _tabGroup;
         [SerializeField] private Button _backButton;
 
-        [Header("Tab Contents")]
-        [SerializeField] private EventMissionTab _missionTab;
+        [Header("Tab Contents")] [SerializeField]
+        private EventMissionTab _missionTab;
+
         [SerializeField] private EventStageTab _stageTab;
         [SerializeField] private EventShopTab _shopTab;
 
-        [Header("Currency Display")]
-        [SerializeField] private GameObject _currencyDisplay;
+        [Header("Currency Display")] [SerializeField]
+        private GameObject _currencyDisplay;
+
         [SerializeField] private Image _currencyIcon;
         [SerializeField] private TMP_Text _currencyAmountText;
 
@@ -126,7 +129,7 @@ namespace Sc.Contents.Event
             // 제목
             if (_titleText != null)
             {
-                // TODO: StringData에서 실제 이름 가져오기
+                // TODO[P1]: StringData에서 실제 이름 가져오기
                 _titleText.text = _eventInfo.NameKey ?? _eventInfo.EventId;
             }
 
@@ -162,13 +165,13 @@ namespace Sc.Contents.Event
 
             _currencyDisplay.SetActive(true);
 
-            // TODO: 실제 재화 수량 표시 (DataManager에서 가져오기)
+            // TODO[P1]: 실제 재화 수량 표시 (DataManager에서 가져오기)
             if (_currencyAmountText != null)
             {
                 _currencyAmountText.text = "0";
             }
 
-            // TODO: 아이콘 로드
+            // TODO[P2]: 아이콘 로드
         }
 
         private void SetupTabs()
@@ -195,7 +198,7 @@ namespace Sc.Contents.Event
 
             foreach (var subContent in _sortedSubContents)
             {
-                // TODO: StringData에서 실제 탭 이름 가져오기
+                // TODO[P1]: StringData에서 실제 탭 이름 가져오기
                 var label = GetTabLabel(subContent.Type);
 
                 tabDataList.Add(new TabData
@@ -312,6 +315,7 @@ namespace Sc.Contents.Event
             {
                 _tabGroup.OnTabChanged -= OnTabChanged;
             }
+
             _sortedSubContents.Clear();
         }
     }

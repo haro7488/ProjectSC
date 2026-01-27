@@ -9,8 +9,9 @@ namespace Sc.Contents.Event
     /// </summary>
     public class EventMissionTab : Widget
     {
-        [Header("UI References")]
-        [SerializeField] private TMP_Text _placeholderText;
+        [Header("UI References")] [SerializeField]
+        private TMP_Text _placeholderText;
+
         [SerializeField] private GameObject _missionListContainer;
 
         private string _eventId;
@@ -50,7 +51,7 @@ namespace Sc.Contents.Event
                 _missionListContainer.SetActive(false);
             }
 
-            // TODO: 실제 미션 목록 구현
+            // TODO[P2]: 실제 미션 목록 구현
             // 1. EventMissionGroup 로드
             // 2. EventMissionItem[] 동적 생성
             // 3. 미션 진행도 표시

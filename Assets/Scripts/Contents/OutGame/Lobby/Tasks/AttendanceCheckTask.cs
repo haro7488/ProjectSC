@@ -16,7 +16,7 @@ namespace Sc.Contents.Lobby
 
         public UniTask<bool> CheckRequiredAsync()
         {
-            // TODO: 오늘 이미 출석체크했는지 확인
+            // TODO[FUTURE]: 오늘 이미 출석체크했는지 확인
             // UserSaveData.LastAttendanceDate 비교
             Debug.Log("[AttendanceCheckTask] CheckRequired: Stub - 항상 스킵");
             return UniTask.FromResult(false);
@@ -24,7 +24,7 @@ namespace Sc.Contents.Lobby
 
         public UniTask<Result<LobbyTaskResult>> ExecuteAsync()
         {
-            // TODO: 실제 출석 로직 구현
+            // TODO[FUTURE]: 실제 출석 로직 구현
             // 1. 서버에 출석 요청
             // 2. 보상 수령
             // 3. UserSaveData 업데이트

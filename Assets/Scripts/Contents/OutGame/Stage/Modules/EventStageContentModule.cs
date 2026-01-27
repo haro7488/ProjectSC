@@ -121,7 +121,8 @@ namespace Sc.Contents.Stage
             }
             else
             {
-                Log.Debug($"[EventStageContentModule] Loaded event: {_eventData.Id}, Name: {_eventData.NameKey}", LogCategory.UI);
+                Log.Debug($"[EventStageContentModule] Loaded event: {_eventData.Id}, Name: {_eventData.NameKey}",
+                    LogCategory.UI);
             }
         }
 
@@ -142,7 +143,7 @@ namespace Sc.Contents.Stage
             // 이벤트 배너 (BannerImage는 Addressables 주소, 필요 시 비동기 로드)
             if (_eventBanner != null && !string.IsNullOrEmpty(_eventData.BannerImage))
             {
-                // TODO: AssetManager.LoadAsync로 배너 이미지 로드
+                // TODO[P2]: AssetManager.LoadAsync로 배너 이미지 로드
                 _eventBanner.gameObject.SetActive(true);
             }
 
