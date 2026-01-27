@@ -49,6 +49,16 @@ namespace Sc.Editor.Wizard.PrefabSync
             public bool HasManualBuilder; // 수동 빌더 존재 여부
         }
 
+        private class ManualBuilderEntry
+        {
+            public PrefabBuilderRegistry.BuilderInfo Builder;
+            public bool Selected;
+        }
+
+        // Manual Builder mode
+        private List<ManualBuilderEntry> _manualBuilders = new();
+        private bool _manualBuildersFoldout = true;
+
         [MenuItem("Tools/ProjectSC/PrefabSync/Sync Window")]
         public static void ShowWindow()
         {
@@ -59,6 +69,7 @@ namespace Sc.Editor.Wizard.PrefabSync
         private void OnEnable()
         {
             RefreshPrefabList();
+            RefreshManualBuilderList();
         }
 
         private void OnGUI()
@@ -143,6 +154,121 @@ namespace Sc.Editor.Wizard.PrefabSync
             DrawPrefabSection();
             DrawSpecSection();
             DrawWorkflowSection();
+            DrawSingleManualBuilderSection();
+        }
+
+        private void DrawSingleManualBuilderSection()
+        {
+            EditorGUILayout.Space(10);
+            EditorGUILayout.LabelField("4. Manual Builder", EditorStyles.boldLabel);
+
+            EditorGUILayout.BeginVertical("box");
+
+            // 선택된 프리팹에 해당하는 Manual Builder가 있는지 확인
+            string prefabName = _selectedPrefab != null ? _selectedPrefab.name : null;
+            PrefabBuilderRegistry.BuilderInfo builderInfo = null;
+
+            if (!string.IsNullOrEmpty(prefabName))
+            {
+                builderInfo = ManualBuilderExecutor.FindBuilderForPrefab(prefabName);
+            }
+
+            if (builderInfo != null)
+            {
+                EditorGUILayout.LabelField($"Found: {builderInfo.TypeName}", EditorStyles.miniLabel);
+
+                EditorGUILayout.Space(5);
+
+                // Build from Manual → Prefab → JSON
+                GUI.backgroundColor = new Color(0.6f, 0.6f, 1f);
+                if (GUILayout.Button("Build from Manual → Prefab + JSON", GUILayout.Height(28)))
+                {
+                    BuildSingleFromManual(builderInfo, generateCode: false);
+                }
+
+                EditorGUILayout.Space(3);
+
+                // Full Pipeline
+                GUI.backgroundColor = new Color(0.8f, 0.4f, 1f);
+                if (GUILayout.Button("Full Pipeline → Prefab + JSON + Generated", GUILayout.Height(30)))
+                {
+                    BuildSingleFromManual(builderInfo, generateCode: true);
+                }
+
+                GUI.backgroundColor = Color.white;
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(
+                    prefabName != null
+                        ? $"No manual builder found for '{prefabName}'"
+                        : "Select a prefab to check for manual builder",
+                    MessageType.Info);
+            }
+
+            EditorGUILayout.EndVertical();
+        }
+
+        private void BuildSingleFromManual(PrefabBuilderRegistry.BuilderInfo builderInfo, bool generateCode)
+        {
+            try
+            {
+                if (generateCode)
+                {
+                    var (buildResult, jsonPath, generatedPath) =
+                        ManualBuilderExecutor.ExecuteFullPipeline(builderInfo, overwritePrefab: true);
+
+                    if (buildResult.Success)
+                    {
+                        _lastAnalyzedPath = jsonPath;
+                        _lastGeneratedPath = generatedPath;
+
+                        // 프리팹 새로고침
+                        _selectedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(buildResult.PrefabPath);
+                        if (!string.IsNullOrEmpty(jsonPath))
+                        {
+                            _selectedSpec = AssetDatabase.LoadAssetAtPath<TextAsset>(jsonPath);
+                        }
+
+                        Log($"Full pipeline completed!\nPrefab: {buildResult.PrefabPath}\nJSON: {jsonPath}\nGenerated: {generatedPath}",
+                            MessageType.Info);
+                    }
+                    else
+                    {
+                        Log($"Failed: {buildResult.ErrorMessage}", MessageType.Error);
+                    }
+                }
+                else
+                {
+                    var (buildResult, jsonPath) =
+                        ManualBuilderExecutor.ExecuteBuilderAndAnalyze(builderInfo, overwritePrefab: true);
+
+                    if (buildResult.Success)
+                    {
+                        _lastAnalyzedPath = jsonPath;
+
+                        _selectedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(buildResult.PrefabPath);
+                        if (!string.IsNullOrEmpty(jsonPath))
+                        {
+                            _selectedSpec = AssetDatabase.LoadAssetAtPath<TextAsset>(jsonPath);
+                        }
+
+                        Log($"Build completed!\nPrefab: {buildResult.PrefabPath}\nJSON: {jsonPath}",
+                            MessageType.Info);
+                    }
+                    else
+                    {
+                        Log($"Failed: {buildResult.ErrorMessage}", MessageType.Error);
+                    }
+                }
+
+                AssetDatabase.Refresh();
+            }
+            catch (System.Exception e)
+            {
+                Log($"Error: {e.Message}", MessageType.Error);
+                Debug.LogException(e);
+            }
         }
 
         private void DrawPrefabSection()
@@ -508,6 +634,96 @@ namespace Sc.Editor.Wizard.PrefabSync
             GUI.enabled = true;
 
             EditorGUILayout.EndVertical();
+
+            EditorGUILayout.Space(10);
+
+            // Manual Builder 섹션
+            DrawManualBuilderSection();
+        }
+
+        private void DrawManualBuilderSection()
+        {
+            EditorGUILayout.LabelField("Manual Builder Actions", EditorStyles.boldLabel);
+
+            EditorGUILayout.BeginVertical("box");
+
+            EditorGUILayout.HelpBox(
+                "수동 작성된 PrefabBuilder를 실행하여 프리팹을 재생성합니다.\n" +
+                "Manual Builder → Prefab → JSON Spec → Generated Code",
+                MessageType.None);
+
+            EditorGUILayout.Space(5);
+
+            // 새로고침 버튼
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Refresh", GUILayout.Width(70)))
+            {
+                RefreshManualBuilderList();
+            }
+            EditorGUILayout.LabelField($"Found: {_manualBuilders.Count} builders", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(5);
+
+            // Select All / Deselect All 버튼
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Select All", GUILayout.Width(80)))
+            {
+                foreach (var entry in _manualBuilders) entry.Selected = true;
+            }
+            if (GUILayout.Button("Deselect All", GUILayout.Width(80)))
+            {
+                foreach (var entry in _manualBuilders) entry.Selected = false;
+            }
+            var selectedCount = _manualBuilders.Count(e => e.Selected);
+            EditorGUILayout.LabelField($"Selected: {selectedCount}", EditorStyles.miniLabel);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space(3);
+
+            // Manual Builder 목록 (체크박스)
+            _manualBuildersFoldout = EditorGUILayout.Foldout(_manualBuildersFoldout, "Manual Builders", true);
+            if (_manualBuildersFoldout)
+            {
+                EditorGUI.indentLevel++;
+                foreach (var entry in _manualBuilders)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    entry.Selected = EditorGUILayout.Toggle(entry.Selected, GUILayout.Width(20));
+
+                    var labelStyle = new GUIStyle(EditorStyles.label);
+                    labelStyle.normal.textColor = new Color(0.6f, 0.6f, 1f); // 파란색
+                    EditorGUILayout.LabelField(entry.Builder.PrefabName, labelStyle);
+
+                    EditorGUILayout.EndHorizontal();
+                }
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.Space(5);
+
+            GUI.enabled = selectedCount > 0;
+
+            // Manual Builder → Prefab → JSON
+            GUI.backgroundColor = new Color(0.6f, 0.6f, 1f);
+            if (GUILayout.Button($"Build from Manual → Prefabs + JSON ({selectedCount})", GUILayout.Height(28)))
+            {
+                BatchBuildFromManual(generateCode: false);
+            }
+
+            EditorGUILayout.Space(3);
+
+            // Full Pipeline: Manual Builder → Prefab → JSON → Generated
+            GUI.backgroundColor = new Color(0.8f, 0.4f, 1f);
+            if (GUILayout.Button($"Full Pipeline: Manual → Prefab → JSON → Generated ({selectedCount})", GUILayout.Height(35)))
+            {
+                BatchBuildFromManual(generateCode: true);
+            }
+
+            GUI.backgroundColor = Color.white;
+            GUI.enabled = true;
+
+            EditorGUILayout.EndVertical();
         }
 
         #endregion
@@ -519,6 +735,17 @@ namespace Sc.Editor.Wizard.PrefabSync
             _screenPrefabs = ScanPrefabFolder(SCREENS_FOLDER);
             _popupPrefabs = ScanPrefabFolder(POPUPS_FOLDER);
             Repaint();
+        }
+
+
+        private void RefreshManualBuilderList()
+        {
+            var builders = ManualBuilderExecutor.FindAllManualBuilders();
+            _manualBuilders = builders.Select(b => new ManualBuilderEntry
+            {
+                Builder = b,
+                Selected = false
+            }).OrderBy(e => e.Builder.PrefabName).ToList();
         }
 
         private List<PrefabEntry> ScanPrefabFolder(string folder)
@@ -810,6 +1037,91 @@ namespace Sc.Editor.Wizard.PrefabSync
             RefreshPrefabList();
 
             Log($"Batch full sync completed.\nSuccess: {successCount}, Failed: {failCount}", MessageType.Info);
+        }
+
+        private void BatchBuildFromManual(bool generateCode)
+        {
+            // 선택된 빌더만 가져오기
+            var selectedBuilders = _manualBuilders
+                .Where(e => e.Selected)
+                .Select(e => e.Builder)
+                .ToArray();
+
+            if (selectedBuilders.Length == 0)
+            {
+                Log("No manual builders selected.", MessageType.Warning);
+                return;
+            }
+
+            var successCount = 0;
+            var failCount = 0;
+
+            try
+            {
+                var actionName = generateCode ? "Full Pipeline" : "Build from Manual";
+                EditorUtility.DisplayProgressBar(actionName, "Starting...", 0f);
+
+                for (int i = 0; i < selectedBuilders.Length; i++)
+                {
+                    var builder = selectedBuilders[i];
+                    var progress = (float)i / selectedBuilders.Length;
+
+                    EditorUtility.DisplayProgressBar(actionName,
+                        $"[{i + 1}/{selectedBuilders.Length}] Processing {builder.PrefabName}...", progress);
+
+                    try
+                    {
+                        if (generateCode)
+                        {
+                            // Full Pipeline: Manual → Prefab → JSON → Generated
+                            var (buildResult, jsonPath, generatedPath) =
+                                ManualBuilderExecutor.ExecuteFullPipeline(builder, overwritePrefab: true);
+
+                            if (buildResult.Success && !string.IsNullOrEmpty(jsonPath))
+                            {
+                                successCount++;
+                                Debug.Log($"[PrefabSync] Full pipeline completed: {builder.PrefabName}");
+                            }
+                            else
+                            {
+                                failCount++;
+                                Debug.LogWarning($"[PrefabSync] Failed: {builder.PrefabName} - {buildResult.ErrorMessage}");
+                            }
+                        }
+                        else
+                        {
+                            // Build + Analyze only
+                            var (buildResult, jsonPath) =
+                                ManualBuilderExecutor.ExecuteBuilderAndAnalyze(builder, overwritePrefab: true);
+
+                            if (buildResult.Success && !string.IsNullOrEmpty(jsonPath))
+                            {
+                                successCount++;
+                            }
+                            else
+                            {
+                                failCount++;
+                            }
+                        }
+                    }
+                    catch (System.Exception e)
+                    {
+                        failCount++;
+                        Debug.LogError($"[PrefabSync] Exception for {builder.PrefabName}: {e.Message}");
+                    }
+                }
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            RefreshPrefabList();
+
+            var operationType = generateCode ? "Full pipeline" : "Build from manual";
+            Log($"{operationType} completed.\nSuccess: {successCount}, Failed: {failCount}", MessageType.Info);
         }
 
         private void Log(string message, MessageType type)

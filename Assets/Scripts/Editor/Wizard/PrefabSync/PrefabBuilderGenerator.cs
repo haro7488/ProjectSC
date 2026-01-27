@@ -17,12 +17,30 @@ namespace Sc.Editor.Wizard.PrefabSync
         private const string OUTPUT_FOLDER = "Assets/Scripts/Editor/Wizard/Generators";
         private const string SPEC_FOLDER = "Assets/Scripts/Editor/Wizard/PrefabSync/Specs";
 
+        // .Widgets 서브 네임스페이스가 존재하는 모듈 목록
+        private static readonly HashSet<string> NamespacesWithWidgets = new HashSet<string>
+        {
+            "Sc.Contents.Character",
+            "Sc.Contents.Event",
+            "Sc.Contents.Inventory",
+            "Sc.Contents.Lobby",
+            "Sc.Contents.Stage",
+            "Sc.Contents.Shop"
+        };
+
         #region Public API
 
         /// <summary>
         /// JSON Spec 파일로부터 Builder 코드 생성.
         /// </summary>
-        public static string Generate(string specPath)
+        public static string Generate(string specPath) => Generate(specPath, forceOverwrite: false);
+
+        /// <summary>
+        /// JSON Spec 파일로부터 Builder 코드 생성.
+        /// </summary>
+        /// <param name="specPath">JSON Spec 파일 경로</param>
+        /// <param name="forceOverwrite">true이면 수동 빌더가 있어도 Generated 파일 생성</param>
+        public static string Generate(string specPath, bool forceOverwrite)
         {
             if (!File.Exists(specPath))
             {
@@ -40,11 +58,14 @@ namespace Sc.Editor.Wizard.PrefabSync
             }
 
             // 기존 수동 빌더가 있는지 확인 (Generated가 아닌 파일)
-            var manualBuilderPath = $"{OUTPUT_FOLDER}/{spec.metadata.prefabName}PrefabBuilder.cs";
-            if (File.Exists(manualBuilderPath))
+            if (!forceOverwrite)
             {
-                Debug.LogWarning($"[PrefabBuilderGenerator] Skipped: Manual builder exists - {manualBuilderPath}");
-                return null;
+                var manualBuilderPath = $"{OUTPUT_FOLDER}/{spec.metadata.prefabName}PrefabBuilder.cs";
+                if (File.Exists(manualBuilderPath))
+                {
+                    Debug.LogWarning($"[PrefabBuilderGenerator] Skipped: Manual builder exists - {manualBuilderPath}");
+                    return null;
+                }
             }
 
             var code = GenerateBuilderCode(spec);
@@ -109,8 +130,8 @@ namespace Sc.Editor.Wizard.PrefabSync
             {
                 sb.AppendLine($"using {componentNs};");
 
-                // Widget 네임스페이스 추가
-                if (componentNs.EndsWith(".Lobby"))
+                // .Widgets 서브 네임스페이스가 존재하는 경우만 추가
+                if (NamespacesWithWidgets.Contains(componentNs))
                 {
                     sb.AppendLine($"using {componentNs}.Widgets;");
                 }
@@ -126,7 +147,7 @@ namespace Sc.Editor.Wizard.PrefabSync
             sb.AppendLine($"    /// Generated from: {spec.metadata.prefabPath}");
             sb.AppendLine($"    /// Generated at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             sb.AppendLine($"    /// </summary>");
-            sb.AppendLine($"    public static class {prefabName}PrefabBuilder");
+            sb.AppendLine($"    public static class {prefabName}PrefabBuilder_Generated");
             sb.AppendLine("    {");
 
             // Theme Colors
@@ -138,12 +159,14 @@ namespace Sc.Editor.Wizard.PrefabSync
             // Font Helper
             GenerateFontHelper(sb);
 
-            // Build Method
-            GenerateBuildMethod(sb, spec);
+            // 중복 이름 미리 수집 (Build 메서드와 Create 메서드에서 공유)
+            var duplicateNames = CollectDuplicateNames(spec.hierarchy);
+            var nameCounter = new Dictionary<string, int>();
+
+            // Build Method - duplicateNames 전달
+            GenerateBuildMethod(sb, spec, duplicateNames);
 
             // Create Methods for each hierarchy node
-            var duplicateNames = CollectDuplicateNames(spec.hierarchy);
-            var nameCounter = new Dictionary<string, int>(); // 각 이름별 발생 횟수 추적
             GenerateCreateMethods(sb, spec.hierarchy, 0, duplicateNames, nameCounter);
 
             // SerializedField Connection
@@ -245,7 +268,8 @@ namespace Sc.Editor.Wizard.PrefabSync
             sb.AppendLine();
         }
 
-        private static void GenerateBuildMethod(StringBuilder sb, PrefabStructureSpec spec)
+        private static void GenerateBuildMethod(StringBuilder sb, PrefabStructureSpec spec,
+            HashSet<string> duplicateNames)
         {
             var prefabName = spec.metadata.prefabName;
             var componentType = spec.metadata.componentType;
@@ -258,10 +282,29 @@ namespace Sc.Editor.Wizard.PrefabSync
             sb.AppendLine($"            var root = CreateRoot(\"{prefabName}\");");
             sb.AppendLine();
 
-            // 자식 노드들 생성 호출
+            // 자식 노드들 생성 호출 - 중복 이름 인덱스 추적
+            var nameCounter = new Dictionary<string, int>();
             foreach (var child in spec.hierarchy.children ?? new List<HierarchyNode>())
             {
-                var methodName = GetCreateMethodName(child.name);
+                var cleanName = SanitizeNodeName(child.name);
+                var isDuplicate = duplicateNames.Contains(cleanName);
+
+                int index = 0;
+                if (isDuplicate)
+                {
+                    if (nameCounter.ContainsKey(cleanName))
+                    {
+                        nameCounter[cleanName]++;
+                    }
+                    else
+                    {
+                        nameCounter[cleanName] = 1;
+                    }
+
+                    index = nameCounter[cleanName];
+                }
+
+                var methodName = GetCreateMethodName(child.name, isDuplicate ? index : 0);
                 var varName = ToCamelCase(child.name);
                 sb.AppendLine($"            var {varName} = {methodName}(root);");
             }
@@ -303,7 +346,7 @@ namespace Sc.Editor.Wizard.PrefabSync
                 return;
             }
 
-            var cleanName = node.name.Replace(" ", "");
+            var cleanName = SanitizeNodeName(node.name);
             var isDuplicate = duplicateNames.Contains(cleanName);
 
             // 인덱스 계산: 중복 이름인 경우에만 인덱스 사용
@@ -352,7 +395,7 @@ namespace Sc.Editor.Wizard.PrefabSync
                 sb.AppendLine();
                 foreach (var child in node.children)
                 {
-                    var childCleanName = child.name.Replace(" ", "");
+                    var childCleanName = SanitizeNodeName(child.name);
                     var childIsDuplicate = duplicateNames.Contains(childCleanName);
 
                     int childIndex = 0;
@@ -986,7 +1029,7 @@ namespace Sc.Editor.Wizard.PrefabSync
             // 루트는 제외
             if (!string.IsNullOrEmpty(node.name))
             {
-                var cleanName = node.name.Replace(" ", "");
+                var cleanName = SanitizeNodeName(node.name);
                 if (nameCount.ContainsKey(cleanName))
                     nameCount[cleanName]++;
                 else
@@ -1099,9 +1142,28 @@ namespace Sc.Editor.Wizard.PrefabSync
             return ParseHexColor(hex);
         }
 
+
+        /// <summary>
+        /// 노드 이름을 C# 식별자로 사용할 수 있도록 정제
+        /// </summary>
+        private static string SanitizeNodeName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return "Node";
+
+            var sb = new StringBuilder();
+            foreach (var c in name)
+            {
+                if (char.IsLetterOrDigit(c) || c == '_')
+                    sb.Append(c);
+            }
+
+            var result = sb.ToString();
+            return string.IsNullOrEmpty(result) ? "Node" : result;
+        }
+
         private static string GetCreateMethodName(string nodeName, int index = 0)
         {
-            var baseName = nodeName.Replace(" ", "");
+            var baseName = SanitizeNodeName(nodeName);
 
             // 인덱스가 0이면 고유한 이름, 1 이상이면 중복 이름
             if (index > 0)
@@ -1116,9 +1178,26 @@ namespace Sc.Editor.Wizard.PrefabSync
         {
             if (string.IsNullOrEmpty(name)) return name;
 
+            // 공백 및 특수문자 제거
+            name = name.Replace(" ", "");
+
+            // 유효하지 않은 문자 제거
+            var sb = new StringBuilder();
+            foreach (var c in name)
+            {
+                if (char.IsLetterOrDigit(c) || c == '_')
+                    sb.Append(c);
+            }
+
+            name = sb.ToString();
+
+            if (string.IsNullOrEmpty(name)) return "item";
+
             // _prefix 제거
             if (name.StartsWith("_"))
                 name = name.Substring(1);
+
+            if (string.IsNullOrEmpty(name)) return "item";
 
             return char.ToLower(name[0]) + name.Substring(1);
         }
@@ -1131,13 +1210,35 @@ namespace Sc.Editor.Wizard.PrefabSync
             {
                 var c = name[i];
 
-                if (char.IsUpper(c) && i > 0)
+                // 공백은 언더스코어로 변환
+                if (char.IsWhiteSpace(c))
+                {
+                    if (result.Length > 0 && result[result.Length - 1] != '_')
+                        result.Append('_');
+                    continue;
+                }
+
+                // 유효하지 않은 문자는 건너뜀 (문자, 숫자, 언더스코어만 허용)
+                if (!char.IsLetterOrDigit(c) && c != '_')
+                {
+                    continue;
+                }
+
+                // 대문자 앞에 언더스코어 추가 (연속 언더스코어 방지)
+                if (char.IsUpper(c) && i > 0 && result.Length > 0 && result[result.Length - 1] != '_')
                     result.Append('_');
 
                 result.Append(char.ToUpper(c));
             }
 
-            return result.ToString();
+            // 연속 언더스코어 제거
+            var final = result.ToString();
+            while (final.Contains("__"))
+            {
+                final = final.Replace("__", "_");
+            }
+
+            return final.Trim('_');
         }
 
         private static string EscapeString(string str)
@@ -1148,8 +1249,18 @@ namespace Sc.Editor.Wizard.PrefabSync
         private static string SaveBuilderCode(string prefabName, string code)
         {
             var outputPath = $"{OUTPUT_FOLDER}/{prefabName}PrefabBuilder.Generated.cs";
+
+            // 기존 파일이 있으면 삭제 후 재생성 (meta 파일 문제 방지)
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+
             File.WriteAllText(outputPath, code);
-            AssetDatabase.Refresh();
+
+            // 단일 파일만 Import (Refresh 대신)
+            AssetDatabase.ImportAsset(outputPath, ImportAssetOptions.ForceUpdate);
+
             return outputPath;
         }
 

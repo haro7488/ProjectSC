@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Sc.Common.UI;
 using Sc.Common.UI.Attributes;
+using Sc.Editor.Wizard.PrefabSync;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -180,76 +180,40 @@ namespace Sc.Editor.Wizard.Generators
 
         private static GameObject CreateScreenGameObject(Type screenType)
         {
-            // 1. PrefabBuilder 클래스가 있는지 리플렉션으로 확인
-            var go = TryBuildWithPrefabBuilder(screenType);
+            // 1. PrefabBuilderRegistry를 통해 빌더 검색 및 실행 (Generated → Manual 순서)
+            var (go, usedType) = PrefabBuilderRegistry.ExecuteBestBuilder(screenType.Name);
             if (go != null)
             {
                 return go;
             }
 
-            // 2. ScreenTemplateAttribute 기반 팩토리 사용
+            // 2. 빌더가 없으면 경고 후 템플릿 사용
+            if (usedType == PrefabBuilderRegistry.BuilderType.None)
+            {
+                Debug.LogWarning($"[PrefabGenerator] {screenType.Name}: Generated/Manual 빌더 없음, 기본 템플릿 사용");
+            }
+
+            // 3. ScreenTemplateAttribute 기반 팩토리 사용
             return ScreenTemplateFactory.Create(screenType);
         }
 
         private static GameObject CreatePopupGameObject(Type popupType)
         {
-            // 1. PrefabBuilder 클래스가 있는지 리플렉션으로 확인
-            var go = TryBuildWithPrefabBuilder(popupType);
+            // 1. PrefabBuilderRegistry를 통해 빌더 검색 및 실행 (Generated → Manual 순서)
+            var (go, usedType) = PrefabBuilderRegistry.ExecuteBestBuilder(popupType.Name);
             if (go != null)
             {
                 return go;
             }
 
-            // 2. PopupTemplateAttribute 기반 팩토리 사용
+            // 2. 빌더가 없으면 경고 후 템플릿 사용
+            if (usedType == PrefabBuilderRegistry.BuilderType.None)
+            {
+                Debug.LogWarning($"[PrefabGenerator] {popupType.Name}: Generated/Manual 빌더 없음, 기본 템플릿 사용");
+            }
+
+            // 3. PopupTemplateAttribute 기반 팩토리 사용
             return PopupTemplateFactory.Create(popupType);
-        }
-
-        /// <summary>
-        /// 리플렉션으로 {TypeName}PrefabBuilder.Build() 메서드를 찾아 실행.
-        /// </summary>
-        private static GameObject TryBuildWithPrefabBuilder(Type targetType)
-        {
-            var builderTypeName = $"Sc.Editor.Wizard.Generators.{targetType.Name}PrefabBuilder";
-
-            // 현재 어셈블리에서 Builder 타입 검색
-            var builderType = typeof(PrefabGenerator).Assembly.GetType(builderTypeName);
-
-            if (builderType == null)
-            {
-                return null;
-            }
-
-            // Build() static 메서드 찾기
-            var buildMethod = builderType.GetMethod("Build", BindingFlags.Public | BindingFlags.Static);
-
-            if (buildMethod == null)
-            {
-                Debug.LogWarning($"[PrefabGenerator] {builderTypeName}에 Build() 메서드가 없음");
-                return null;
-            }
-
-            // 반환 타입 확인
-            if (buildMethod.ReturnType != typeof(GameObject))
-            {
-                Debug.LogWarning($"[PrefabGenerator] {builderTypeName}.Build()의 반환 타입이 GameObject가 아님");
-                return null;
-            }
-
-            // Build() 메서드 호출
-            try
-            {
-                var result = buildMethod.Invoke(null, null) as GameObject;
-                if (result != null)
-                {
-                    Debug.Log($"[PrefabGenerator] Builder 사용: {builderTypeName}");
-                }
-                return result;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[PrefabGenerator] {builderTypeName}.Build() 실행 실패: {e.Message}");
-                return null;
-            }
         }
 
         #endregion
